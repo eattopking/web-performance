@@ -43,6 +43,25 @@
 线程是程序执行的最小单位, 线程是进程中代码的不同执行路径
 
 
+四 、 html文件, css文件, js文件相互影响关系
+
+1. 谷歌浏览器html 初始化时,是所有html全部解析完毕后, 在一起渲染, 之后的更新不是全部解析完毕在渲染,而是解析一定数量之后就就渲染
+
+2. css文件加载, 不影响html元素的解析, 但是阻止html元素的渲染, 这也是浏览器自我优化的一部分, 避免多于的重排和重绘, 
+css文件加载, 阻止css文件后面的script文件的执行, 等css文件加载完成后, script文件内的代码才继续执行, css加载是并行加载可以多个css同时加载互不影响, css加载不会影响它下面的js文件的下载
+
+3. 正常不加defer 和 async的script标签, 会同步下载和执行js代码, 所以在下载和执行的时候就会阻止html元素的解析,
+当添加defer属性时, script标签异步下载js文件, 不会阻塞html元素的解析, 当html元素全部解析完成后, DOMCContentLoaded事件触发之前,
+按照加载顺序, 执行js文件, DOMContentLoaded事件就是html全部元素都解析完成后, 就会执行, DOMContentLoaded是document上的事件,
+当添加async属性时, 会异步下载和执行js代码, 不会阻塞html元素解析, js代码会异步下载完成后立即异步执行, defer和async都是只在外部引用js文件时生效, 正常不加defer 和 async的script标签会阻塞link元素的解析, 所以会阻塞css的加载
+
+4. load事件 是在window上的事件, 是在整个页面的资源加载完成后执行,就是页面所有资源都下载并且解析完成之后, 如果没有外部资源, 和DOMContentLoaded一样, 都是在html元素解析完成后执行, 在DOMContentLoaded之后执行, (这里经过实验的)结论是对的
+
+5. html元素的解析, 是包括html标签在内的所以元素的解析, 当</html>解析完成后, 才是所有html元素解析完成
+
+
+
+
 
 
 
