@@ -54,3 +54,7 @@ Provisional headers are shown，可能原因就是， 后端的问题， 后端�
 四. 路由问题
 
 1. Router 刷新界面 state 就没了 ，state 刷新界面不会保留, 所以种不是一锤子买卖的， 需要用 search, 因为 search 是在地址栏中保留的, 所以跳路由的需求, 需要在目标界面发送请求, 只通过 router 传递参数, 我还得看看为啥 state 刷新界面后就不会保留了
+
+五. antd 问题
+
+1. form 自定义分组, 设值和取值, 现在探究的方式的通过 formitem 包裹自定义的受控组件实现
