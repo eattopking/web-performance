@@ -21,10 +21,10 @@ video.style.display = "none"; //隐藏
 
 myScroll.on('scrollEnd', function() {
 if(this.y > -\_wh/2 && this.y < 0) {
-myScroll.scrollTo(0,0,500);
+myScroll.scrollTo(0, 0, 500);
 }
 if(this.y > -\_wh && this.y < -\_wh/2) {
-myScroll.scrollTo(0,-\_wh,500);
+myScroll.scrollTo(0, -\_wh, 500);
 }
 video.style.display = "block"; // 重新展示视频
 });
@@ -39,6 +39,7 @@ video.style.display = "block"; // 重新展示视频
 
 2. react 不要犯的错误, 不要将父组件的 this 直接传到子组件, 这样可能会发生报错, (现在移动端发生了疑似的报错, pc 端是没有问题的) ,
 3. 不要将组件内的对象或者 createref 通过 props 传入子组件,然后在子组件内更改, 在父组件内获取跟新的值, 就是不要直接更改 props, 这样做违背的 react 的单向数据流原则, 可能出现不可预测的问题, 可以通过传一个函数给子组件, 然后在函数内更改父组件内的对象的值, 这就是 render props, 这样是可以的
+
 4.
 
 三. http 问题
@@ -49,7 +50,7 @@ video.style.display = "block"; // 重新展示视频
 
 Provisional headers are shown，可能原因就是， 后端的问题， 后端在浏览器第一次发送 option 请求时， 后端 response 的 Access-Control-Allow-Headers 中没有 content-type， 导致浏览器认为 post 请求返回的 content-type 是非法的，所以浏览器直接拦截 post 请求， 不带参数没事， 不会先发一次 option 请求,
 
-现在后端处理跨域，两种方式， 一种是前端传和地址栏 host 不同的全路径请求， 二种是前端不改变正常的 host,只是在 url 中加上特定的标识，后端再去判断
+现在后端处理跨域，两种方式， 一种是前端传和地址栏 host 不同的全路径请求， 二种是前端不改变正常的 host, 只是在 url 中加上特定的标识，后端再去判断
 
 四. 路由问题
 
