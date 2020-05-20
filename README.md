@@ -21,6 +21,7 @@
 9. 防止重复请求, 截流防抖
 
 10. 使用transfrom:translate实现移动, 避免使用定位, 因为定位会重复触发浏览器布局和之后的绘制的过程,而transfrom:translate直接跳过了, 布局和绘制, 直接执行了绘制之后的合成过程, 这样减小了浏览器的开销,优化了性能
+ 11. service work 就是离线缓存， 在用户没有网的时候也可以用原来的数据进行操作界面
 
 ***
 ## 对浏览器的一些理解
@@ -173,7 +174,7 @@ cors 分为两种： 简单请求、复杂请求
     预请求响应头Access-Control-Allow-Origin: 这个字段的值包含当前地址栏中的协议+host（就是包括当前源），表示服务端允许访问了
 
     预请求的特殊请求头：
-        orign: 当前发送跨域请求时， 所在的源（就是地址栏中的协议+host）
+        orign: 当前发送跨域请求时， 所在的源（就是地址栏中的协议+host，orign只有在cors跨域的时候才会使用
         Access-Control-Request-Method: POST (正式请求时使用的方法)
         Access-Control-Request-Headers: X-PINGOTHER, Content-Type （正式请求时将携带的请求头， 然后响应返回允许这些请求头， 才可以发送正式请求）
 
@@ -183,4 +184,20 @@ cors 分为两种： 简单请求、复杂请求
         Access-Control-allow-Headers: X-PINGOTHER, Content-Type (正式请求时允许允许携带的请求头， 当正式请求的请求头包含这里面时， 才能发送正式请求)
 
         这三个响应头都满足了，就可以发送正式的请求了，可以发送正式请求就代表可以发送复杂请求了， 可以进行跨域了
+
+3. token是什么
+
+    token 称为jwt （json+web+token）
+
+    token就是登录成功之后， 后端在响应体里面返回的，一个字符串， 这个字符串在响应体中对应的key，是前后端商量好的一个字段(不是必须叫token， 也可以叫token1 等等)， token也是起到验证的作用， 登录成功后的接口请求，必须带上token， 否则无法请求。
+
+    token的组成：头部+有效载荷+签名，token是用.分割的字符串
+
+### token和cookie的区别
+ 1. token是服务端在响应体数据中， 返回给客户端的， 而cookie是服务端在响应头返回给客户端的
+ 2. token需要前端开发在请求时在请求头上手动添加， 而cookie是在请求时，浏览器自动添加到请求头
+
+ ### token和cookie的相同点
+
+ 1. 都是字符串
 

@@ -55,3 +55,10 @@ myScroll.on('scrollEnd', function() {
 ## 五. antd 问题
 
 1. form 自定义分组, 设值和取值, 现在探究的方式的通过 formitem 包裹自定义的受控组件实现
+
+## 六 prettier 配置vscode 问题
+
+1. vscode只有一个setting.json配置文件，所有的东西都是在这里面配置的
+2. prettier 的一些配置可以在vscode的setting.json配置文件中配置， 有些不行配置了不生效
+3. prettier可以在项目根目录的.prettierrc文件中配置
+4. 还有一点很重要，在vscode的setting.json中配置prettier， 一定要重启vscode
