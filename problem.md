@@ -48,9 +48,70 @@ myScroll.on('scrollEnd', function() {
 
 1. 带参数的 post 请求跨域问题: 直接传全路径这种链接跨域 带参数的 post 请求，浏览器会先给后端发送一个 option 请求确认，如果后端返回的响应头和 post 一样，浏览器就会正常的发送 post 请求，给后端，Provisional headers are shown，可能原因就是， 后端的问题， 后端在浏览器第一次发送 option 请求时， 后端 response 的 Access-Control-Allow-Headers 中没有 content-type， 导致浏览器认为 post 请求返回的 content-type 是非法的，所以浏览器直接拦截 post 请求， 不带参数没事， 不会先发一次 option 请求, 现在后端处理跨域，两种方式， 一种是前端传和地址栏 host 不同的全路径请求， 二种是前端不改变正常的 host, 只是在 url 中加上特定的标识，后端再去判断
 
-## 四. 路由问题
+## 四. react问题
 
-1. Router 刷新界面 state 就没了 ，state 刷新界面不会保留, 所以种不是一锤子买卖的， 需要用 search, 因为 search 是在地址栏中保留的, 所以跳路由的需求, 需要在目标界面发送请求, 只通过 router 传递参数, 我还得看看为啥 state 刷新界面后就不会保留了
+1. 路由问题，Router 刷新界面 state 就没了 ，state 刷新界面不会保留, 所以种不是一锤子买卖的， 需要用 search, 因为 search 是在地址栏中保留的, 所以跳路由的需求, 需要在目标界面发送请求, 只通过 router 传递参数, 我还得看看为啥 state 刷新界面后就不会保留了
+
+2. state取得值，不是最新的问题
+
+```
+const componentSelectConfig = [
+        {
+            label: '课堂组件',
+            icon: 'icon-ic_Left-guide_Classroom-components',
+            key: 1,
+            children: [
+                {
+                    label: '导航栏',
+                    icon: 'icon-ic_Left-guide_navigation',
+                    key: 1,
+                    disabled: hasNav(),
+                    onClick: () => {
+                        // 在这里addNav里面加的配置里面的使用state 定义fixedConfig话，
+                        // 在deleteNav中取到的就是fixedConfig没有新增之前值， 这就不对
+                        // 在当前层取到的fixedConfig就是正确的
+                        // 使用useref定义fixedConfig就能取到最新正确的值
+                        // state在这种情况下，多一层就取不到最新的值了
+                        addNav();
+                    },
+                }
+            ],
+        },
+    ];
+// 增加导航栏
+    function addNav() {
+        const key = 'nav';
+        const type = 'nav';
+        const addItem = {
+            type,
+            key,
+            onClick: () => {
+                setCurrentlySelectedKey(key);
+                setCurrentlySelectedType(type);
+            },
+        };
+        btnConfig[key] = [
+            {
+                label: '上移',
+                key: 'up',
+            },
+            {label: '下移', key: 'down'},
+            {
+                label: '删除',
+                key: 'delete',
+                onClick: () => {
+                    deleteNav(key);
+                },
+            },
+        ];
+        // 更新全部配置
+        fixedConfig.current = [...fixedConfig.current, addItem];
+        // 更新当前选中组件key
+        setCurrentlySelectedKey(key);
+        // 更新当前选中组件类型
+        setCurrentlySelectedType(type);
+    }
+```
 
 ## 五. antd 问题
 
