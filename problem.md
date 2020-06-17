@@ -48,6 +48,8 @@ myScroll.on('scrollEnd', function() {
 
 1. 带参数的 post 请求跨域问题: 直接传全路径这种链接跨域 带参数的 post 请求，浏览器会先给后端发送一个 option 请求确认，如果后端返回的响应头和 post 一样，浏览器就会正常的发送 post 请求，给后端，Provisional headers are shown，可能原因就是， 后端的问题， 后端在浏览器第一次发送 option 请求时， 后端 response 的 Access-Control-Allow-Headers 中没有 content-type， 导致浏览器认为 post 请求返回的 content-type 是非法的，所以浏览器直接拦截 post 请求， 不带参数没事， 不会先发一次 option 请求, 现在后端处理跨域，两种方式， 一种是前端传和地址栏 host 不同的全路径请求， 二种是前端不改变正常的 host, 只是在 url 中加上特定的标识，后端再去判断
 
+2. location.href跳转页面， 路径前面不加/  ,会和当前路径拼接请求， 出现错误， 这是个坑
+
 ## 四. react问题
 
 1. 路由问题，Router 刷新界面 state 就没了 ，state 刷新界面不会保留, 所以种不是一锤子买卖的， 需要用 search, 因为 search 是在地址栏中保留的, 所以跳路由的需求, 需要在目标界面发送请求, 只通过 router 传递参数, 我还得看看为啥 state 刷新界面后就不会保留了
@@ -123,3 +125,12 @@ const componentSelectConfig = [
 2. prettier 的一些配置可以在vscode的setting.json配置文件中配置， 有些不行配置了不生效
 3. prettier可以在项目根目录的.prettierrc文件中配置
 4. 还有一点很重要，在vscode的setting.json中配置prettier， 一定要重启vscode
+
+
+### css 问题
+
+1. 父元素设置felx， 子元素就不能给他撑高了， 这是个坑
+
+
+2. 是值overfolw-y : auto , 这时候x也会出滚动条莫名的， 此时只要设置overflow-x：hidden就可以解决了
+
