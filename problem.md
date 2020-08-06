@@ -53,6 +53,14 @@ myScroll.on('scrollEnd', function() {
 
 2. location.href跳转页面， 路径前面不加/  ,会和当前路径拼接请求， 出现错误， 这是个坑
 
+3. charles可以代理文件的响应值， 也可以代理数据的响应值
+
+4.
+```
+<input type="file"/ > 上传图片的时候，ie浏览器会把png的图片，解析成x-png的格式，把jpg和jpeg的图片转成pjpeg格式， 而其他浏览器将png的图片转成png， 将jpeg和jpg转为jpeg了， 所有在前端类型判断的时候就踩了坑
+
+```
+
 ## 四. react问题
 
 1. 路由问题，Router 刷新界面 state 就没了 ，state 刷新界面不会保留, 所以种不是一锤子买卖的， 需要用 search, 因为 search 是在地址栏中保留的, 所以跳路由的需求, 需要在目标界面发送请求, 只通过 router 传递参数, 我还得看看为啥 state 刷新界面后就不会保留了

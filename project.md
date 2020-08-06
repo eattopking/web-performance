@@ -13,6 +13,8 @@
 4. 自己第一次搭建了一个完整的项目, 知道了 nginx 服务是 web 的容器,
 5. 首次使用了 g2 搞可视化，但是感觉有点不好用， 也是踩了一些坑， 现在是只能初始化设置了数据之后， 才能用 changedata 在更改数据， 不知道是不是我用的不对， 现在是这样， 有点不爽，还有就是图表需要 ajax 数据请求完毕在构建， 就是为了解决上面的问题，只能初始化设置了数据之后， 才能用 changedata 在更改数据， 这里感觉也是不太合理的
 
+意义： 帮助运营伙伴统计和记录数据
+
 ### 三、m站课堂首页配置平台开发，（pc配置页面和m的配置结果展示页面都开发了）
 ### 做可配置的页面， 就是自己确定-套模板，然后就维护这套模板，就行了
 1. pc配置平台是分为三个部分， 组件选择区域， 预览区域， 右侧组件配置区域
@@ -43,6 +45,8 @@
 
 踩坑了 git 提交后构建的文件夹名字就是不对， 这个时候出现了混乱， 直接重新拉一遍项目就好了， 干别的都是徒劳
 
+意义： 帮助用户更改m站的风格，
+
 ### 四、pc站批量排课
 
 ## 经验积累
@@ -61,3 +65,25 @@
 开发前一定要看代码，根据实际复杂程度分析
 
 做好思考， 有问题积极复盘， 总结原因， 提升自己, 评时间一定要把会议、周五还有、上线算进去
+
+
+
+react-native 问题总结
+
+
+搭建环境
+
+1. 需要react-native link  在安卓和ios项目中全局安装
+
+2. ios项目pods的安装可能有问题， 需要在ios目录下手动pod install 重新安装
+
+
+3. [!] No podspec found for `RNVectorIcons` in `../node_modules/react-native-vector-icons`  缺少图标依赖  ， 解决方式 yarn add react-native-vector-icons
+
+4. 要先启动安卓模拟器， 才能启动安卓项目， 如果模拟器不自动启动的话
+
+5. 安卓除了编译器还有很多jdk的版本需要符合
+
+6. java 版本需要是11
+
+7. 安卓启动报错 Error:Execution failed for task ':app:validateSigningDebug'. > Keystore file D:\Android_keystore\deb  解决方式： 把安卓staio里面把Store File里指定的Keystore文件的路径删除就可以了
