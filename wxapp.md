@@ -10,7 +10,7 @@
 
 4. 在存储storage数据的时候， 要根据环境，添加上环境字段， 避免测试环境和线上环境，切换环境的时候， 出现storage数据混乱的情况，比如将测试环境的storage数据带到线上
 
-5. 用户登录的时候， 后端将根据微信login 返回的code+session_Key生成的token设置成无限期， 然后前端只判断checkSession是否过期， 在token存在情况下
+5. 用户登录的时候， 后端将根据微信login 返回的code+session_Key生成的token设置成无限期， 然后前端只判断checkSession是否过期， 在token存在情况下, 需要使用wx.getsetting获取， 是否有各种权限， 没有的话，主要我们弹出获取权限页面， 如果需要手动触发的话， 不要手动触发的话，直接弹出获取权限弹窗
 
 6. 小程序底部tabbar只能使用图片不能使用图标
 
