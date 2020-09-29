@@ -147,3 +147,5 @@ const componentSelectConfig = [
 
 2. 是值overfolw-y : auto , 这时候x也会出滚动条莫名的， 此时只要设置overflow-x：hidden就可以解决了
 
+3. 元素设置display： flex后， 在元素中添加文字， 并设置溢出后点点， 会失效，需要在里面在加一个元素放文字， 然后在这个元素上设置文字溢出...
+
