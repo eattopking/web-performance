@@ -107,3 +107,19 @@ cors 分为两种： 简单请求、复杂请求
  ### token和cookie的相同点
 
  1. 都是字符串
+
+ ### 四 cookie的理解
+
+ 1. cookie是浏览器提供的一种在本地存储数据的方式
+ 2. 前端想要设置和读取cookie值， 需要通过document.cookie操作
+ 3. 前端想要对已有cookie进行取值和修改， 需要cookie没有设置httpOnly， httpOnly只有服务端在
+ Response header 中通过Set-Cookie设置cookie时，才能设置到cookie上， 前端通过document.cookie
+ 创建cookie时不能设置这个属性
+ 4. 请求携带cookie时， 只能携带同源的cookie，和源为请求域名的父级域名的cookie
+ 5. 前端通过document.cookie设置cookie时和获取cookie时都是字符串， 设置cookie时是设置cookie中的一个值， 获取cookie时是获取所有cookie的值
+ 6. document.cookie获取的是"name=value;name=value;"的集合组成的字符串
+ 7. document.cookie设置一个cookie， 是通过一个字符串设置，形如：document.cookie='myname=huaminlai;path=/;domain=.google.com;expires=Feb,13-Mar-2018 11:47:50;secure';
+ 8. myname=huaminlai 表示name和value，path表示cookie在它作用的源的哪些文件路径下可以被携带，/表示所有路径，domain表示cookie作用的源域名，就是在这个域名下或者这个域名的子域名下，这个cookie请求时才能被携带，通过document.cookie获取时，才能生效, secure设置后表示只有请求时https或者时ssl加密的情况下，这个cookie在请求时才能携带, Expires表示cookie的过期时间， 设置的日期格式必须是GMT格式的
+ 9. 跨域的时候携带cookie， 只能携带源为自己请求域名或者请求的域名的上级域名
+ 10. 请求时cookie就是请求头上的一个字段， ajax不能自定义cookie这个请求头， 这个行为是被禁止的
+ 11. cors跨域携带cookie的是问题， 需要在ajax 中配置withCredentials为true， 让cors跨域的时候，能携带上cookie值
