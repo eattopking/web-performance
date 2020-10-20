@@ -92,10 +92,14 @@ pc端：
 1. 使用canvas封装公共的批改组件
 2. 封装公共组件table、form、search 组件，减少冗余代码
 3. pc端图片上穿预览、音频上传预览
+4. 图片直传oss提高用户体验， 提高性能
+5. 使用cors跨域， 这个时候携带父域名的cookie， 需要在ajax中配置  withCredentials为true
+6.
 
 难点：
+1. canvas计算， 封装canvas批改组件
+2. 前端图片直传oss， 没有相关的实际实践， 通过官方文档， 摸索尝试， 实现oss直传
 
-批改组件的封装，手写涉及各种计算
 
 
 
