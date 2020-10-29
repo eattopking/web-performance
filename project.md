@@ -119,6 +119,12 @@
 14. 需要回显用户输入的空格和换行， 直接使用textArea组件， 就是支持回显， 换行是默认支持的， 当时
 空格需要配置 scope=nbsp
 
+15. 写三角形，只需要不设置元素宽高， 通过设置border的宽度就可以实现
+
+16. 可以给textArea直接设置padding，不让内部的placeHolder和内部的文字贴边
+
+17. 可以通过getImgInfo获取到图片的类型， 进行类型判断
+
 
 pc端：
 技术点：
@@ -154,9 +160,6 @@ pc端：
 7. 回显用户输入空格和换行， 使用正则匹配字符串换行， 将他换成br标签， 批改空格替换成&nbsp，最后将这个字符串使用dangerouslySetInnerHTML添加到一个div中展示
 
 8. 使用withRouter包裹后的组件， 能够在props中获取router实例，在上面能够获取到监听切换路由的事件setRouteLeaveHook, 在这个事件回调中返回true，允许切换路由， 返回false就不允许切换, 还有在from.create中可以注册valueChange监听事件， form中的值变化后这个事件就会执行，使用这两个事件实现， 作业创建页面修改后， 离开页面会弹出二次确认弹窗的功能, 只要是要离开路由的页面都会触发setRouteLeaveHook事件
-
-
-
 
 
 踩坑：
