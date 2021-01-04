@@ -201,7 +201,39 @@ pc端：
 
 9. 图片使用腾讯安全校验，图片过大导致校验事件过长， 超过三十秒就被判定为验证失败，所以解决方法，需要在验证的时候压缩图片
 
-10. （前端直传后，下载附件文件）前端直接请求文件地址， 通过location.href,这样浏览器会自动识别，资源内容直接展示，不会下载文件到本地，通过location.href下载地址可以下载保存文件到本地
+10. （前端直传后，下载附件文件）前端直接请求文件地址， 浏览器可直接浏览的文件类型是不提供下载的, 直接预览， 这是浏览器的默认机制（例如doc文件可以被下载, 浏览器无法直接预览)，现在的一个解决方案就是使用fetch请求资源为blob对象， 然后将blob对象转换为blobUrl， 通过给a标签设置download属性， 并且使用将objectUrl赋值给a标签，实现所以文件的下载， 但是这个会有兼容性问题， 谷歌浏览器好使， 其他的浏览器可能不好使。
+
+```
+具体代码如下：
+
+    需要注意的是，代码中对创建的<a> 进行的 appendChild 和 remove 操作主要是为了兼容 FireFox 浏览器，在 FireFox 浏览器下调用该方法如果不将创建的<a>标签添加到 body 里，点击链接不会有任何反应，无法触发下载，而在 Chrome 浏览器中则不受此影响。
+
+    function download(href, filename = '') {
+        // download属性目前仅适用于同源 URL
+        const a = document.createElement('a');
+        a.download = filename;
+        a.href = href;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    }
+
+    function downloadFile(url, filename = '') {
+        fetch(url, {
+            headers: new Headers({
+                Origin: location.origin,
+            }),
+            mode: 'cors',
+        })
+            .then(res => res.blob())
+            .then(blob => {
+                // blobUrl是同源的
+                const blobUrl = window.URL.createObjectURL(blob);
+                download(blobUrl, filename);
+                window.URL.revokeObjectURL(blobUrl);
+            });
+    }
+```
 
 11. 在开发附件上传组件的时候，遇到了一个闭包的坑， 发现原来自己之前对闭包的理解是有偏差的， 只有定义的闭包函数和函数内引用的变量在同一个作用域下的是时候， 这个时候闭包函数引用的变量的值发生改变，我们在执行闭包函数时， 在闭包函数内取到的对应变量才会跟着改变， 如果不在同一个作用域，闭包函数内或者是闭包函数内调用的其他函数引用这个变量时， 这个变量的值都是保持在闭包函数初始化的时候的值， 这个变量在闭包函数或者闭包函数内调用的其他函数内不会被更新, 出现异常的情况我感觉一般就是注册事件时， 出现闭包嵌套的时候，导致内层闭包函数出现这种情况， 其他情况都是正常的， 都是可以去外层获取到最新的变量值
 

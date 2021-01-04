@@ -68,3 +68,49 @@ css文件加载, 阻止css文件后面的script文件的执行, 等css文件加�
 service worker是什么：
 
      service worker是浏览器支持的一个功能，可以注册一个js脚本， 这个脚本是在一个全新的js线程执行，和页面的js线程不是一个， 并且在window.Navigator.serviceWorker 上提供了一系列的api， 让我们可以实现推送通知，劫持请求， 缓存数据， 后台同步等功能， 结合这些功能实现我们的离线体验
+
+### 七 、 浏览器下载问题
+     **我们正常请求文件资源， 图片资源，返回的就是文件流
+
+     文件流和Blob二进制对象，还有file二进制对象，是两个东西， 不一样， 文件流可以转换为Blob二进制对象
+
+     浏览器下载， 浏览器可直接浏览的文件类型是不提供下载的, 直接预览， 这是浏览器的默认机制
+
+     现在比较常见的是a标签的download可以是实现所有文件的下载， 但是download有个特性，就是跨域请求的资源， download的下载属性就消失了
+
+     正常后端给的就是文件流
+
+     ```
+          具体代码如下：
+
+              需要注意的是，代码中对创建的<a> 进行的 appendChild 和 remove 操作主要是为了兼容 FireFox 浏览器，在 FireFox 浏览器下      调用该方法如果不将创建的<a>标签添加到 body 里，点击链接不会有任何反应，无法触发下载，而在 Chrome 浏览器中则不受此影响。
+
+              function download(href, filename = '') {
+                  // download属性目前仅适用于同源 URL
+                  const a = document.createElement('a');
+                  a.download = filename;
+                  a.href = href;
+                  document.body.appendChild(a);
+                  a.click();
+                  a.remove();
+              }
+
+              function downloadFile(url, filename = '') {
+                  fetch(url, {
+                      headers: new Headers({
+                          Origin: location.origin,
+                      }),
+                      mode: 'cors',
+                  })
+                      .then(res => res.blob())
+                      .then(blob => {
+                          // blobUrl是同源的
+                          const blobUrl = window.URL.createObjectURL(blob);
+                          download(blobUrl, filename);
+                          window.URL.revokeObjectURL(blobUrl);
+                      });
+              }
+     ```
+
+
+
