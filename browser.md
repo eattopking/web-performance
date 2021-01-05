@@ -78,6 +78,8 @@ service worker是什么：
 
      现在比较常见的是a标签的download可以是实现所有文件的下载， 但是download有个特性，就是跨域请求的资源， download的下载属性就消失了
 
+     给download设置的值就是下载后的文件名称， 不包括后缀
+
      正常后端给的就是文件流
 
      ```
