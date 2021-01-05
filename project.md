@@ -251,6 +251,27 @@ pc端：
 5、写功能之前要想清楚， 想顺了， 写的时候就顺了
 
 
+### 六、react-native
+
+
+搭建环境
+
+1. 需要react-native link  在安卓和ios项目中全局安装
+
+2. ios项目pods的安装可能有问题， 需要在ios目录下手动pod install 重新安装
+
+
+3. [!] No podspec found for `RNVectorIcons` in `../node_modules/react-native-vector-icons`  缺少图标依赖  ， 解决方式 yarn add react-native-vector-icons
+
+4. 要先启动安卓模拟器， 才能启动安卓项目， 如果模拟器不自动启动的话
+
+5. 安卓除了编译器还有很多jdk的版本需要符合
+
+6. java 版本需要是11
+
+7. 安卓启动报错 Error:Execution failed for task ':app:validateSigningDebug'. > Keystore file D:\Android_keystore\deb  解决方式： 把安卓staio里面把Store File里指定的Keystore文件的路径删除就可以了
+
+
 
 ## 经验积累
 
@@ -271,22 +292,4 @@ pc端：
 
 
 
-react-native 问题总结
 
-
-搭建环境
-
-1. 需要react-native link  在安卓和ios项目中全局安装
-
-2. ios项目pods的安装可能有问题， 需要在ios目录下手动pod install 重新安装
-
-
-3. [!] No podspec found for `RNVectorIcons` in `../node_modules/react-native-vector-icons`  缺少图标依赖  ， 解决方式 yarn add react-native-vector-icons
-
-4. 要先启动安卓模拟器， 才能启动安卓项目， 如果模拟器不自动启动的话
-
-5. 安卓除了编译器还有很多jdk的版本需要符合
-
-6. java 版本需要是11
-
-7. 安卓启动报错 Error:Execution failed for task ':app:validateSigningDebug'. > Keystore file D:\Android_keystore\deb  解决方式： 把安卓staio里面把Store File里指定的Keystore文件的路径删除就可以了
