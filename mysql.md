@@ -14,4 +14,10 @@ default-character-set=utf8
 
 [mysql]
 default-character-set=utf8
+
+创建容器指令
+
+docker run -p 3306:3306 --name mysql -v /mydocker/mysql/conf:/etc/mysql/conf.d -v /mydocker/mysql/logs:/var/log/mysql -v /mydocker/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql
+
+mydocker 就是我们自己创建的存储容器数据的主机目录
 ```
