@@ -1,5 +1,12 @@
 # Nginx总结
 
+### Nginx机制规则总结
+```
+1. 浏览器请求文件的时候，我们写的文件路径会和地址栏的host + pathname 组成文件请求路径
+2. 在浏览器ajax请求接口的时候， 接口（接口就是pathname）会和地址栏里的host 组成请求路径，此时ajax请求时， 不会使用地址栏里的pathname， 而是使用接口替换地址栏中的pathname，这是ajax原理和规则
+3. 在请求的pathname， 不会被location匹配到的时候， 这个时候才会去匹配root， 去查找文件
+```
+
 ### nginx 基础
 
 nginx 分为多个块包括全局块， http块， event块等
@@ -39,5 +46,7 @@ index 用来表示nginx服务的静态资源获取默认文件
 include 是用来引入其他nginx配置的
 
 使用include 将nginx配置引入到一个总的配置中， 然后一起执行nginx配置
+
+
 
 
