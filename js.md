@@ -1,0 +1,25 @@
+# js基础总结
+
+### == 比较的规则
+```
+1. == 比较会先将两边的数据隐式转换为相同类型， 然后在进行比较
+2. null == undefined 是相等的， 而且null 还有 undefined 和其他值比较时不会被隐式转换类型，其他值正常进行隐式转换后也不能转换为null 和 undefined， 和他们类型不同, 所以null 和 undefined和其他值都不相等
+3. 在进行原始类型的 == 比较隐式转换过程中， 地位的高低分别为 number（不需要进行隐式转换） > string(和数字进行比较的时候， 要隐式转换为数字后，在和数字进行比较) > boolean （和数字或者字符串进行比较的时候， 要先转换为数字然后在和它们进行比较）
+4. 复杂类型 和 原始类型进行 == 比较时， 地位是最低的，首先隐式转换复杂类型为原始类型（就是执行ToPrimitive）， 然后在和原始类型数据进行比较
+5. 原始类型进行 == 比较时， 需要两个值类型相同时才开始比较， 除了不能将类型为相同的时候
+```
+
+### js 隐式类型转换的步骤, 这三个操作只有隐式类型转换的时候才执行
+
+```
+1. 首先 执行ToPrimitive ， 将值转换为原始值, 执行下面两种转换的前是先执行ToPrimitive
+2. 如果要转换为 number就是ToNumber, ToNumber的时候， 首先执行ToPrimitive， 然后将结果转换为number
+3. 如果要转换为 string就是ToString, ToString的时候， 首先执行ToPrimitive， 然后将结果转换为string
+4. ToPrimitive转换的规则， 就是如果是原始类型， 直接就返回原始类型的值，只有Date实例转化时参数是string， 其他类型转换是参数都是number， 类型是number就是先执行valueOf(), 不行在执行toString(), 而类型是string， 就是先执行toString()，不行在执行valueOf()
+```
+
+### js 显式转换
+
+```
+!a, +a, Boolean(), String(), Number() 这些都属于js显式转换
+```
