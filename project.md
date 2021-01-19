@@ -170,6 +170,8 @@ webview中加载对应域名下的资源， 并且需要在业务域名的资源
         "request": 500,
     }, 全局配置networkTimeout是设置请求超时时间的， 当请求后端接口， 超过这个时间还没有响应时，就执行fail函数
 31. 小程序上报使用habo， 按照小程的habo上报文档设置就行， setConfig在入口文件的组件以外的上面初始化调用， setConfig初始化需要一个name， 这个需要和大数据那边发邮件申请， 让那边给一个name就行了
+
+33. 小程序路由之前忽略的知识点， 就是不能从其他页面通过navigateTo跳转到tabBar页面， 但是tabBar页面可以通过navigateTo跳转到其他非tabBar页面， 然后其他页面还可以通过navigateBack返回刚才的tabBar页面， 之前没有理解透，现在理解了
 ```
 ```
 pc端：
