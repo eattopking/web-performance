@@ -1,0 +1,86 @@
+version: '3.9'
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:5.7.33
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - mysql_conf:/etc/mysql/conf.d
+    environment:
+      MYSQL_ROOT_PASSWORD: bjhl
+      MYSQL_DATABASE: weishi
+      MYSQL_USER: weishi
+      MYSQL_PASSWORD: bjhl
+    networks:
+      - weishi-fe
+    restart: always
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+
+  redis:
+    container_name: redis
+    image: redis:6.0.10
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+    networks:
+      - weishi-fe
+    restart: always
+
+  zookeeper:
+    container_name: zookeeper
+    image: 'docker.io/bitnami/zookeeper:3-debian-10'
+    ports:
+      - '2181:2181'
+    volumes:
+      - 'zookeeper_data:/bitnami'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - weishi-fe
+
+  kafka:
+    container_name: kafka
+    image: 'docker.io/bitnami/kafka:2-debian-10'
+    ports:
+      - '9092:9092'
+    volumes:
+      - 'kafka_data:/bitnami'
+    environment:
+      - KAFKA_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper
+    networks:
+      - weishi-fe
+
+  kafka-manager:
+    container_name: kafka-manager
+    image: 'kafkamanager/kafka-manager'
+    ports:
+      - '9000:9000'
+    environment:
+      - KAFKA_MANAGER_AUTH_ENABLED=true
+      - KAFKA_MANAGER_USERNAME=weishi
+      - KAFKA_MANAGER_PASSWORD=bjhl
+      - ZK_HOSTS=zookeeper:2181
+    depends_on:
+      - zookeeper
+      - kafka
+    networks:
+      - weishi-fe
+
+networks:
+  weishi-fe:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  mysql_conf:
+  redis_data:
+  zookeeper_data:
+  kafka_data:
