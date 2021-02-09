@@ -33,31 +33,31 @@
 
 1. 基本配置
 
-![alt jenkins基本配置](./images/git-tag-plugin-jenkins.jpeg)
+![jenkins基本配置](./images/git-tag-plugin-jenkins.jpeg)
 
 2. git插件配置
 
-![alt jenkins git配置](./images/git-plugin-jenkins.png)
+![jenkins git配置](./images/git-plugin-jenkins.png)
 
-![alt jenkins git ssh配置](./images/git-plugin-ssh-jenkins.png)
+![jenkins git ssh配置](./images/git-plugin-ssh-jenkins.png)
 
 3. node插件配置
 
-![alt jenkins node插件配置](./images/node-plugin-jenkins.jpeg)
+![jenkins node插件配置](./images/node-plugin-jenkins.jpeg)
 
 4. 构建配置
 
-![alt jenkins 构建配置](./images/build-jenkins.png)
+![jenkins 构建配置](./images/build-jenkins.png)
 
 5. node插件引入配置
 
-![alt jenkins node插件引入配置](./images/node-plugin-jenkins-import.png)
+![jenkins node插件引入配置](./images/node-plugin-jenkins-import.png)
 
 6. publish插件配置
 
-![alt jenkins publish插件配置](./images/publish-over-ssh-jenkins.png "publish插件配置")
+![jenkins publish插件配置](./images/publish-over-ssh-jenkins.png "publish插件配置")
 
-![alt jenkins publish插件配置](./images/publish-over-ssh-config-jenkins.png)
+![jenkins publish插件配置](./images/publish-over-ssh-config-jenkins.png)
 
 
 
