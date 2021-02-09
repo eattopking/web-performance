@@ -10,18 +10,18 @@
 
 # 使用docker 构建一个Jenkins前端发布 的过程
 
-1. 首先安装docker
+一. 首先安装docker
 
 [docker安装教程](https://yeasy.gitbook.io/docker_practice/install)
 
-2. 安装 Jenkins镜像
+二. 安装 Jenkins镜像
 ```
 安装镜像默认从dockerHub安装， 就和node的npm是一样的
 ```
 
 [docker安装镜像教程](https://yeasy.gitbook.io/docker_practice/image/pull)
 
-3. 通过镜像创建一个Jenkins容器
+三. 通过镜像创建一个Jenkins容器
 ```
 1. 创建容器的方式可以通过docker命令行  docker run
 2. 创建容器也可以通过， docker-compose， 通过执行配置文件的方式， 创建容器（这是真实场景中比较常见的应用）
@@ -29,7 +29,7 @@
 
 [docker创建容器教程](https://yeasy.gitbook.io/docker_practice/container/run)
 
-4. 对jenkins 进行配置， jenkins的主要功能都是通过插件扩展实现的
+四. 对jenkins 进行配置， jenkins的主要功能都是通过插件扩展实现的
 
 1. 基本配置
 
@@ -37,9 +37,9 @@
 
 2. git插件配置
 
-![alt jenkins git配置](./images/git-plugin-jenkins.jpeg)
+![alt jenkins git配置](./images/git-plugin-jenkins.png)
 
-![alt jenkins git ssh配置](./images/git-plugin-ssh-jenkins.jpeg)
+![alt jenkins git ssh配置](./images/git-plugin-ssh-jenkins.png)
 
 3. node插件配置
 
@@ -47,17 +47,17 @@
 
 4. 构建配置
 
-![alt jenkins 构建配置](./images/build-jenkins.jpeg)
+![alt jenkins 构建配置](./images/build-jenkins.png)
 
 5. node插件引入配置
 
-![alt jenkins node插件引入配置](./images/node-plugin-jenkins-import.jpeg)
+![alt jenkins node插件引入配置](./images/node-plugin-jenkins-import.png)
 
-5. publish插件配置
+6. publish插件配置
 
-![alt jenkins publish插件配置](./images/publish-over-ssh-jenkins.jpeg)
+![alt jenkins publish插件配置](./images/publish-over-ssh-jenkins.png, "publish插件配置")
 
-![alt jenkins publish插件配置](./images/publish-over-ssh-config-jenkins.jpeg)
+![alt jenkins publish插件配置](./images/publish-over-ssh-config-jenkins.png)
 
 
 
