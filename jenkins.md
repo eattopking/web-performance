@@ -55,7 +55,7 @@
 
 6. publish插件配置
 
-![alt jenkins publish插件配置](./images/publish-over-ssh-jenkins.png, "publish插件配置")
+![alt jenkins publish插件配置](./images/publish-over-ssh-jenkins.png "publish插件配置")
 
 ![alt jenkins publish插件配置](./images/publish-over-ssh-config-jenkins.png)
 
