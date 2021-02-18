@@ -65,3 +65,31 @@
 10.
 
 ![network 详情](./images/network-yilai.png)
+
+### 使用Lighthouse 进行网页性能检测
+
+一. 第一种使用lighthouse方式
+```
+npm install -g lighthouse 全局安装
+
+lighthouse 网址地址
+
+这样就可以进入网站检测网站了， 但是这样还需要自己加一些参数
+```
+
+二. 第二种方式
+```
+chrome 开发者工具提供的Lighthouse 核心模块
+```
+1. 使用Lighthouse检测页面性能， performance， 还有其他检测选项， 查看结果和performance相同
+
+![开发者工具提供的Lighthouse 详情](./images/lighthouse1.png)
+
+![开发者工具提供的Lighthouse 详情](./images/lighthouse2.jpeg)
+
+![开发者工具提供的Lighthouse 详情](./images/lighthouse3.png)
+
+![开发者工具提供的Lighthouse 详情](./images/lighthouse4.png)
+
+
+
