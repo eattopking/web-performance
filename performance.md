@@ -20,3 +20,19 @@
 
 10. 使用transfrom:translate实现移动, 避免使用定位, 因为定位会重复触发浏览器布局和之后的绘制的过程,而transfrom:translate直接跳过了, 布局和绘制, 直接执行了绘制之后的合成过程, 这样减小了浏览器的开销,优化了性能
 11. service work 就是离线缓存， 在用户没有网的时候也可以用原来的数据进行操作界面
+
+
+## 浏览器性能调试总结
+
+### network 相关的总结
+
+1. ![network](./images/network-first.png)
+2. ![network](./images/network-block-request.png)
+3. ![network](./images/network-load.png)
+4. ![network](./images/network-p-log.png)
+5. ![network](./images/network-alltime.png)
+6. ![network](./images/network-screen.png)
+7. ![network](./images/network-time-one.png)
+8. ![network](./images/network-time-two.png)
+9. ![network](./images/network-timing.png)
+10. ![network](./images/network-yilai.png)
