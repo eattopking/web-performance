@@ -26,13 +26,23 @@
 
 ### network 相关的总结
 
-1. ![network](./images/network-first.png)
-2. ![network](./images/network-block-request.png)
-3. ![network](./images/network-load.png)
-4. ![network](./images/network-p-log.png)
-5. ![network](./images/network-alltime.png)
-6. ![network](./images/network-screen.png)
-7. ![network](./images/network-time-one.png)
-8. ![network](./images/network-time-two.png)
-9. ![network](./images/network-timing.png)
-10. ![network](./images/network-yilai.png)
+1.
+![network 1](./images/network-first.png)
+2.
+![network 2](./images/network-block-request.jpeg)
+3.
+![network 3](./images/network-load.jpeg)
+4.
+![network 4](./images/network-p-log.png)
+5.
+![network 5](./images/network-alltime.png)
+6.
+![network 6](./images/network-screen.png)
+7.
+![network 7](./images/network-time-one.png)
+8.
+![network 8](./images/network-time-two.png)
+9.
+![network 9](./images/network-timing.png)
+10.
+![network 10](./images/network-yilai.png)
