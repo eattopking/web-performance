@@ -26,23 +26,35 @@
 
 ### network 相关的总结
 
-1.
-![network 1](./images/network-first.png)
-2.
+1. 第一部分
+
+![network](./images/network-first.png)
+
+2. 第一部分
+
 ![network 2](./images/network-block-request.jpeg)
-3.
+
+3. 第一部分
 ![network 3](./images/network-load.jpeg)
-4.
+
+4. 第一部分
 ![network 4](./images/network-p-log.png)
-5.
+
+5. 第一部分
+
 ![network 5](./images/network-alltime.png)
-6.
+6. 第一部分
+
 ![network 6](./images/network-screen.png)
-7.
+7. 第一部分
+
 ![network 7](./images/network-time-one.png)
-8.
+8. 第一部分
+
 ![network 8](./images/network-time-two.png)
-9.
+9. 第一部分
+
 ![network 9](./images/network-timing.png)
-10.
+10. 第一部分
+
 ![network 10](./images/network-yilai.png)
