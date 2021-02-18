@@ -65,3 +65,7 @@
 10. 第一部分
 
 ![network 详情](./images/network-yilai.png)
+
+![jenkins publish插件配置](./images/publish-over-ssh-jenkins.png "publish插件配置")
+
+![jenkins node插件引入配置](./images/node-plugin-jenkins-import.png)
