@@ -26,46 +26,42 @@
 
 ### network 相关的总结
 
-1. 第一部分
+1.
 
 ![network 详情](./images/network-first.png)
 
-2. 第一部分
+2.
 
 ![network 详情](./images/network-block-request.jpeg)
 
-3. 第一部分
+3.
 
 ![network 详情](./images/network-load.jpeg)
 
-4. 第一部分
+4.
 
 ![network 详情](./images/network-p-log.png)
 
-5. 第一部分
+5.
 
 ![network 详情](./images/network-alltime.png)
 
-6. 第一部分
+6.
 
 ![network 详情](./images/network-screen.png)
 
-7. 第一部分
+7.
 
 ![network 详情](./images/network-time-one.png)
 
-8. 第一部分
+8.
 
 ![network 详情](./images/network-time-two.png)
 
-9. 第一部分
+9.
 
 ![network 详情](./images/network-timing.png)
 
-10. 第一部分
+10.
 
 ![network 详情](./images/network-yilai.png)
-
-![jenkins publish插件配置](./images/publish-over-ssh-jenkins.png "publish插件配置")
-
-![jenkins node插件引入配置](./images/node-plugin-jenkins-import.png)
