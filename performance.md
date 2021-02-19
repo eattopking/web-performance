@@ -95,3 +95,6 @@ chrome 开发者工具提供的Lighthouse 核心模块
 ### 使用layers 查看页面的图层
 
 ![使用layers](./images/layers.png)
+
+### 使用performance 查看页面的图层
+
