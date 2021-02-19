@@ -92,4 +92,6 @@ chrome 开发者工具提供的Lighthouse 核心模块
 ![开发者工具提供的Lighthouse 详情](./images/lighthouse4.png)
 
 
+### 使用layers 查看页面的图层
 
+![使用layers](./images/layers.png)
