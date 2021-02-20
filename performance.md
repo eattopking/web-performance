@@ -21,14 +21,25 @@
 10. 使用transfrom:translate实现移动, 避免使用定位, 因为定位会重复触发浏览器布局和之后的绘制的过程,而transfrom:translate直接跳过了, 布局和绘制, 直接执行了绘制之后的合成过程, 这样减小了浏览器的开销,优化了性能
 11. service work 就是离线缓存， 在用户没有网的时候也可以用原来的数据进行操作界面
 
+## 浏览器控制台总结
+### 浏览器性能调试总结
 
-## 浏览器性能调试总结
+### 控制台简介
 
+![控制台简介](./images/browser1.png)
 ### performance全局对象
 
 ```
 在js中通过performance全局对象获取，当前网页的相关性能数据
 ```
+
+### element 相关的总结
+
+![element 相关的总结](./images/element1.png)
+
+### memory 相关的总结
+
+![memory 相关的总结](./images/memory1.png)
 
 ### network 相关的总结
 
@@ -104,3 +115,28 @@ chrome 开发者工具提供的Lighthouse 核心模块
 
 ### 使用performance 查看页面的图层
 
+![performance](./images/performance1.png)
+
+![performance](./images/performance2.png)
+
+![performance](./images/performance3.png)
+
+![performance](./images/performance4.png)
+
+![performance](./images/performance5.png)
+
+![performance](./images/performance6.jpeg)
+
+![performance](./images/performance7.png)
+
+![performance](./images/performance8.png)
+
+![performance](./images/performance9.png)
+
+![performance](./images/performance10.jpeg)
+
+![performance](./images/performance11.png)
+
+![performance](./images/performance12.png)
+
+![performance](./images/performance14.png)
