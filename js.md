@@ -90,7 +90,9 @@ switch当匹配到的case执行后没有break掉， 会继续执行下面没有�
 
 # Promise 总结
 
-所有创建resolve状态Promise的过程， 如果遇到了一个返回，状态返回值就是promise实例的情况， 那就直接展开这个promise实例， 作为需要创建的promise实例的结果
+1. 所有创建resolve状态Promise的过程， 如果遇到了一个返回，状态返回值就是promise实例的情况， 那就直接展开这个promise实例， 作为需要创建的promise实例的结果
+
+2. 使用.catch去捕获异常， 不要使用.then的第二个参数， 因为.then的第二个参数只能捕获.then对应父级实例创建过程中的异常， 不能在捕获.then第一个参数回调执行过程中的异常了， 但是.catch可以
 
 # ts总结
 ```
