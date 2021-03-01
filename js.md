@@ -88,6 +88,10 @@ try 可以和 catch 一起使用， 也可以try .. finally 这样使用
 
 switch当匹配到的case执行后没有break掉， 会继续执行下面没有匹配到的case的代码， 知道出现break之后才结束
 
+# Promise 总结
+
+所有创建resolve状态Promise的过程， 如果遇到了一个返回，状态返回值就是promise实例的情况， 那就直接展开这个promise实例， 作为需要创建的promise实例的结果
+
 # ts总结
 ```
 1. 在一个字符串枚举里，每个成员都必须用字符串字面量，或另外一个字符串枚举成员进行初始化。
