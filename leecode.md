@@ -30,3 +30,25 @@ function fibnc (n) {
     return fib(n, 1, 1);
 }
 ```
+
+2. 截流
+
+
+3. 防抖, 防抖就可以理解为，防止多次点击， 防止多次请求
+```
+function debounce(fun, time) {
+    const obj = {};
+    return (...rest) => {
+        clearTimeout(obj.id);
+        obj.id = setTimeout(() => {
+            fun(...rest);
+        }, time)
+    }
+}
+```
+
+4. 深拷贝
+
+```
+
+```
