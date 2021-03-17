@@ -14,7 +14,7 @@ function fibonacci(n) {
 };
 
 高性能递归版本
-
+思路：就是序号是递减的，但是v1 v2是递增的
 function fibnc (n) {
     function fib(n, v1, v2) {
         if (n === 1) {
@@ -31,16 +31,29 @@ function fibnc (n) {
 }
 ```
 
-2. 截流
+2. 截流, 截流就是第一次操作之后，没有达到效果之前，不让他在点击操作, 也是利用闭包的缓存变量，在初始化的时候不处理， 在次调用的时候处理截流逻辑
+
+```
+function throttle (fun, time) {
+    let delay = null;
+    return (...rest) => {
+        const currentDate = Date.now();
+        if (!delay || currentDate - delay > time) {
+            delay = currentDate;
+            fun(...rest);
+        }
+    }
+}
+```
 
 
-3. 防抖, 防抖就可以理解为，防止多次点击， 防止多次请求
+3. 防抖, 防抖就可以理解为，防止多次点击， 防止多次请求， 就是主要思路利用闭包缓存值， 然后初始化的时候不处理， 在次调用的时候处理防抖逻辑
 ```
 function debounce(fun, time) {
-    const obj = {};
+    let id = null;
     return (...rest) => {
-        clearTimeout(obj.id);
-        obj.id = setTimeout(() => {
+        clearTimeout(id);
+        id = setTimeout(() => {
             fun(...rest);
         }, time)
     }
@@ -52,3 +65,9 @@ function debounce(fun, time) {
 ```
 
 ```
+5. Promise.all
+
+6. 二叉树求和
+
+7. apply实现
+8. call 实现
