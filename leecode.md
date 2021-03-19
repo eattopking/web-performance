@@ -69,5 +69,46 @@ function debounce(fun, time) {
 
 6. 二叉树求和
 
-7. apply实现
-8. call 实现
+7. apply实现  使用的原理就是函数当作为谁属性调用的时候，这个函数的this指向就是谁， 还有只有null 和undefined == null， 内置构造函数创建实例， 用不用new都可以， Object 类似于Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf方法是获取对象的原始值的方法, 对象的toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的
+```
+Function.prototype.apply = function (newThis, arr) {
+    if (newThis == null) {
+         this(...arr);
+         return;
+    }
+
+    const currentThis = Object(newThis);
+
+    currentThis.fun = this;
+    currentThis.fun(...arr);
+    delete currentThis.fun;
+}
+```
+8. call 实现  使用的原理就是函数当作为谁属性调用的时候，这个函数的this指向就是谁， 还有只有null 和undefined == null， 内置构造函数创建实例， 用不用new都可以， Object 类似于Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf方法是获取对象的原始值的方法, 对象的toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的
+```
+Function.prototype.call = function(newThis, ...rest) {
+    if (newThis == null) {
+        this(...rest);
+        return;
+    }
+    const currentThis = Object(newThis);
+    currentThis.fun = this;
+    currentThis.fun(...rest);
+    delete currentThis.fun;
+}
+```
+9. bind 实现  使用的原理就是函数当作为谁属性调用的时候，这个函数的this指向就是谁， 还有只有null 和undefined == null， 内置构造函数创建实例， 用不用new都可以， Object 类似于Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf方法是获取对象的原始值的方法, 对象的toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的, 还是使用了闭包的原理缓存rest
+```
+Function.prototype.bind = function (newThis, ...rest) {
+    return (...params) => {
+        if (newThis == null) {
+            return this(...[...rest, ...params]);
+        }
+        const currentThis = Object(newThis);
+        currentThis.fun = this;
+        currentThis.fun(...[...rest, ...params]);
+        delete currentThis.fun;
+    }
+}
+```
+10. new 过程
