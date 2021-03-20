@@ -65,7 +65,33 @@ function debounce(fun, time) {
 ```
 
 ```
-5. Promise.all
+5. Promise.all 原理就是Promise只能改变一次状态， 然后定义一个变量缓存resolve的次数， 用于和数组的长度比较，
+当全部promise都变成resolve时候就将最外层的promise变为fulfilled状态返回数组， 如果有promise变成reject状态，直接返回这个reject状态的值，设置一个数组的index值， 前面没有值得索引会用空值占位
+```
+Promise.all = function(arr) {
+    if(!Array.isArray(arr)) {
+        throw new Error('params must array');
+    }
+
+    return new Promise((resolve, reject) => {
+        let cont = 0;
+        const result = [];
+        const len = arr.length;
+        arr.forEach((item, index) => {
+            const promise = Promise.resolve(item);
+            promise.then((data) => {
+                ++cont;
+                result[index] = data;
+                if(len === cont) {
+                    resolve(result);
+                }
+            }).catch((err) => {
+                reject(err);
+            });
+        });
+    });
+}
+```
 
 6. 二叉树求和
 
