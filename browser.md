@@ -14,16 +14,40 @@
 
 ### 二、浏览器的渲染过程:
 
-1. Parse html - 首先解析html文件, 生成dom树
-2. 解析css文件生成cssom树
-3. 进行布局, 对渲染上的每个节点, 进行布局, 确定节点在屏幕上的位置, dom树根据cssom树的信息, 生成一个渲染树, \(render tree\)
-4. Layout(布局)
-5. layer tree 生成图层树
-6. 在每个图层上绘制展示内容 - paint过程
-7. update layer - 更新图层
-8. 将多个图层合并, 按照合理的顺序将多个图层合并, 显示到浏览器上 - composite过程
-9. 将最终的图层展示到页面上
-10. 后续会出现, 重排, 重绘, 图层合并的情况,transform:translate就是只进行了update layer tree (更新图层树) 、paint、update layer和图层合并， 没有进行重排，只进行了重绘, 这也是开启了硬件加速
+一. Parse html - 首先解析html文件, 生成dom树，
+dom注意点 ：
+1. html解析是一边加载一边解析， 不需要html文件全部加载再进行解析， html解析会被js执行和同步加载所阻止
+
+二. 解析css文件生成cssom树， 生成cssom
+
+注意点：
+1. 解析css文件，不会阻止解析dom，但是会阻止js执行和render tree生成
+2. User Agent Style是解析浏览器默认样式的, 只有使用link加载css文件的时候才会使用User Agent Style生成cssom，在只有style标签的时候不会使用User Agent Style生成cssom
+3. css解析， 如果是link加载需要css文件全部加载后才进行解析， 如果是style标签就直接进行解析
+4. 所以将css加载放在head中是为了让css快点加载解析成cssom，进一步更快的生成render tree
+
+三. dom树和cssom树, 经过recalculate style（样式计算）, 生成一个渲染树, render tree
+注意点
+1. 只有最后展示在页面上的元素才会被加入到渲染树中， 比如meta 、link、或者display： none的元素就不会放在渲染树中
+2. 如果html没有全部解析完成， css文件加载完的已经都解析成cssom树了， 那么这个时候就开始生成render tree， 不等待html完全解析完，也不等其他没有加载完的css文件
+
+四. Layout(布局) - 这里的布局是指元素相对于viewport（视口）的大小和位置
+
+五. Update Layer Tree 更新图层树
+
+六. 在每个图层上绘制展示内容 - paint过程
+
+七. update layer - 更新图层
+
+八. 将多个图层合并, 按照合理的顺序将多个图层合并, 显示到浏览器上 - composite过程
+
+九. 将最终的图层展示到页面上
+
+十. 后续会出现, 重排, 重绘, 图层合并的情况,transform:translate就是只进行了update layer tree (更新图层树) 、paint、update layer和图层合并， 没有进行重排，只进行了重绘, 这也是开启了硬件加速
+
+11. 重绘就是 5和它之后的步骤， 重排就是4和它之后的步骤
+
+12. 浏览器对于资源请求的优先级分配 css文件 > js文件 > 图片文件
 ### 三、 线程和进程的理解
 
 进程是计算机分配资源的最小单位, 进程就是一个应用, (像浏览器的一个页签, 浏览器的一个插件)
@@ -32,15 +56,13 @@
 
 ### 四 、 html文件, css文件, js文件相互影响关系
 
-1. 谷歌浏览器html 初始化时, 是所有html全部解析完毕后, 在一起渲染, 之后的更新不是全部解析完毕在渲染, 而是解析一定数量之后就就渲染
+2. css文件解析, 不影响html元素的解析, 但是影响render tree 生成, 这也是浏览器自我优化的一部分, 避免多于的重排和重绘,
+css文件解析, 阻止css文件后面的script文件的执行, 等css文件解析完成后, script文件内的代码才继续执行, css加载是并行加载可以多个css同时加载互不影响, css加载不会影响它下面的js文件的加载
 
-2. css文件加载, 不影响html元素的解析, 但是阻止html元素的渲染, 这也是浏览器自我优化的一部分, 避免多于的重排和重绘,
-css文件加载, 阻止css文件后面的script文件的执行, 等css文件加载完成后, script文件内的代码才继续执行, css加载是并行加载可以多个css同时加载互不影响, css加载不会影响它下面的js文件的下载
+3. 正常不加defer 和 async的script标签, 会同步加载和执行js代码, 所以在加载和执行的时候就会阻止html元素的解析,
+当添加defer属性时, script标签异步下载js文件, 不会阻塞html元素的解析, 当html元素全部解析完成后, DOMContentLoaded事件触发之前, 按照加载顺序, 执行js文件, DOMContentLoaded事件就是html全部元素都加载和解析完成后, 就会执行, DOMContentLoaded是document上的事件, 当添加async属性时, 会异步下载和执行js代码, 不会阻塞html元素解析, js代码会异步下载完成后立即异步执行, defer和async都是只在外部引用js文件时生效, 正常不加defer 和 async的script标签会阻塞link元素的解析, 所以会阻塞css的加载
 
-3. 正常不加defer 和 async的script标签, 会同步下载和执行js代码, 所以在下载和执行的时候就会阻止html元素的解析,
-当添加defer属性时, script标签异步下载js文件, 不会阻塞html元素的解析, 当html元素全部解析完成后, DOMCContentLoaded事件触发之前, 按照加载顺序, 执行js文件, DOMContentLoaded事件就是html全部元素都解析完成后, 就会执行, DOMContentLoaded是document上的事件, 当添加async属性时, 会异步下载和执行js代码, 不会阻塞html元素解析, js代码会异步下载完成后立即异步执行, defer和async都是只在外部引用js文件时生效, 正常不加defer 和 async的script标签会阻塞link元素的解析, 所以会阻塞css的加载
-
-4. load事件 是在window上的事件, 是在整个页面的资源加载完成后执行, 就是页面所有资源都下载并且解析完成之后, 如果没有外部资源, 和DOMContentLoaded一样, 都是在html元素解析完成后执行, 在DOMContentLoaded之后执行, 这里经过实验的结论是对的
+4. load事件 是在window上的事件, 是在整个页面的资源加载完成后执行, 就是页面所有资源都下载完成后
 
 5. html元素的解析, 是包括html标签在内的所以元素的解析, 当</html>解析完成后, 才是所有html元素解析完成
 
