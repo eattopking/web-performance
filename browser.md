@@ -14,8 +14,8 @@
 
 ### 二、浏览器的渲染过程:
 
-1. 首先解析html文件, 生成dom树
-2. 解析css文件生成cssom树
+1. Parse html - 首先解析html文件, 生成dom树
+2. Recalculate style - 解析css文件生成cssom树, css样式计算
 3. 进行布局, 对渲染上的每个节点, 进行布局, 确定节点在屏幕上的位置, dom树根据cssom树的信息, 生成一个渲染树, \(render tree\) - Layout 过程
 4. update layer tree 更新图层树的过程
 5. 在每个图层上绘制展示内容 - paint过程
