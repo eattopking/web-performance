@@ -15,14 +15,15 @@
 ### 二、浏览器的渲染过程:
 
 1. Parse html - 首先解析html文件, 生成dom树
-2. Recalculate style - 解析css文件生成cssom树, css样式计算
-3. 进行布局, 对渲染上的每个节点, 进行布局, 确定节点在屏幕上的位置, dom树根据cssom树的信息, 生成一个渲染树, \(render tree\) - Layout 过程
-4. update layer tree 更新图层树的过程
-5. 在每个图层上绘制展示内容 - paint过程
-6. update layer - 更新图层
-7. 将多个图层合并, 按照合理的顺序将多个图层合并, 显示到浏览器上 - composite过程
-8. 将最终的图层展示到页面上
-9. 后续会出现, 重排, 重绘, 图层合并的情况,transform:translate就是只进行了update layer tree (更新图层树) 、paint、update layer和图层合并， 没有进行重排，只进行了重绘
+2. 解析css文件生成cssom树
+3. 进行布局, 对渲染上的每个节点, 进行布局, 确定节点在屏幕上的位置, dom树根据cssom树的信息, 生成一个渲染树, \(render tree\)
+4. Layout(布局)
+5. layer tree 生成图层树
+6. 在每个图层上绘制展示内容 - paint过程
+7. update layer - 更新图层
+8. 将多个图层合并, 按照合理的顺序将多个图层合并, 显示到浏览器上 - composite过程
+9. 将最终的图层展示到页面上
+10. 后续会出现, 重排, 重绘, 图层合并的情况,transform:translate就是只进行了update layer tree (更新图层树) 、paint、update layer和图层合并， 没有进行重排，只进行了重绘, 这也是开启了硬件加速
 ### 三、 线程和进程的理解
 
 进程是计算机分配资源的最小单位, 进程就是一个应用, (像浏览器的一个页签, 浏览器的一个插件)
