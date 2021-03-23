@@ -45,7 +45,7 @@ dom注意点 ：
 
 九. 将最终的图层展示到页面上
 
-十. 后续会出现, 重排, 重绘, 图层合并的情况,transform:translate就是只进行了update layer tree (更新图层树) 、paint、update layer和图层合并， 没有进行重排，只进行了重绘, 这也是开启了硬件加速
+十. 后续会出现, 重排, 重绘, 图层合并的情况,transform:translate就是只进行了update layer tree (更新图层树) 和图层合并， 没有进行重排，也没有进行重绘, 这也是开启了硬件加速
 
 11. 重绘就是 5和它之后的步骤， 重排就是4和它之后的步骤
 
