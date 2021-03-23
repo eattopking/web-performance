@@ -22,9 +22,11 @@ dom注意点 ：
 
 注意点：
 1. 解析css文件，不会阻止解析dom，但是会阻止js执行和render tree生成
-2. User Agent Style是解析浏览器默认样式的, 只有使用link加载css文件的时候才会使用User Agent Style生成cssom，在只有style标签的时候不会使用User Agent Style生成cssom
-3. css解析， 如果是link加载需要css文件全部加载后才进行解析， 如果是style标签就直接进行解析
-4. 所以将css加载放在head中是为了让css快点加载解析成cssom，进一步更快的生成render tree
+2. User Agent Style是解析浏览器默认样式为cssom的, 只有在没有设置样式的时候才将浏览器默认样式解析成cssom，这个过程是在parse html 过程中的
+3. 如果有内联样式那么解析css生成cssom的过程也是在parse html过程中的
+4. 如果是外联的css文件， 解析成cssom是在parse Stylesheet这个过程中进行的
+5. css解析， 如果是link加载需要css文件全部加载后才进行解析， 如果是style标签就直接进行解析
+6. 所以将css加载放在head中是为了让css快点加载解析成cssom，进一步更快的生成render tree
 
 三. dom树和cssom树, 经过recalculate style（样式计算）, 生成一个渲染树, render tree
 注意点
