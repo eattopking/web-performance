@@ -98,3 +98,48 @@ switch当匹配到的case执行后没有break掉， 会继续执行下面没有�
 ```
 1. 在一个字符串枚举里，每个成员都必须用字符串字面量，或另外一个字符串枚举成员进行初始化。
 ```
+
+# 元素位置和宽高的获取总结
+
+scrollHeight : 元素不包括border，只有padding 和 内容的高度（如果有y轴滚动条， 那内容的高度就是y轴滚动条包含的内容高度）
+
+scrollWidth: 和scrollHeight同理
+
+scrollTop: 没有y轴滚动条时是0，有y轴滚动条时，等于滚动条向上滚动的高度
+
+scrollLeft: 和scrollTop同理
+
+clientHeight: 元素不包括border， 只有padding 和内容的高度， 如果有x轴滚动条，整体高度要减去x轴滚动条的宽度
+
+clientWidth: 和clientHeight同理
+
+clientTop: 元素上边框的宽度， 没有上边框就是0
+
+clientLeft: 元素左边框的宽度， 没有左边框就是0
+
+offsetHeight: 元素包括border在内的高度
+
+offsetWidth: 元素包括border在内的宽度
+
+offsetTop: 元素如果上边有相邻的兄弟元素， 那offsetTop就是元素的上边和上边兄弟元素下边的距离，如果没有，那就是元素上边距离元素父元素上边的距离
+
+offsetLeft: 元素如果左边有相邻的兄弟元素， 那offsetLeft就是元素左边和左边兄弟元素右边的距离，如果没有，那就是元素左边距离元素父元素左边的距离
+
+window.getComputedStyle(元素， null): 获取元素在页面上展示出的真实css属性值， 和css文件设置还是行内样式设置样式无关
+
+element.getBoundingClientRect(): 获取元素相对于视口的位置
+```
+返回值
+{
+    top: 元素上边距离视口上边的距离
+    bottom: 元素下边距离视口上边的距离
+    left: 元素左边距离视口左边的距离
+    right: 元素右边距离视口左边的距离
+    width: 元素的offsetWidth
+    height: 元素的offsetHeight
+    x: 元素左边距离视口左边的距离
+    y: 元素上边距离视口上边的距离
+}
+```
+
+
