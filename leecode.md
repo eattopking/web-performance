@@ -188,3 +188,37 @@ Function.prototype.bind = function (newThis, ...rest) {
 }
 ```
 10. new 过程
+
+11. 获得二叉树的最小深度
+
+解题思路，定义一个数组用于手机深度的值， 还有有标志用于告诉最小深度已经找到， 不需要在递归了，设置一个函数接收tree， 然后在内部写一个递归函数， 然后在内部调用， 将初始化的参数传给递归函数， 在函数内部判断如果没有left或者right直接将上一层深度返回，这就是最小深度，并将最小深度标识设置为false， 否则继续递归执行， 如果判断最小深度标识为false，就直接返回了避免无用的计算， 最后调用Math.min返回最小深度， 传入的是空的就返回0
+
+核心思想就是在外层准备收集深度的数组， 然后传入递归函数， 递归执行，在得到结果后用Math.min比较返回最小值
+```
+function minDepth (tree) {
+    if (!tree) {
+        return 0;
+    }
+
+    let depthList = [];
+    let flagObj = {
+        isNext: true
+    };
+    function depth (tree, list, currentDepth, flagObj) {
+        if (!flagObj.isNext) {
+            return;
+        }
+
+        if (!tree.left || !tree.right) {
+            list.push(currentDepth);
+            flagObj.isNext = false;
+        } else {
+            depth(tree.left, list, currentDepth + 1, flagObj);
+            depth(tree.right, list, currentDepth + 1, flagObj);
+        }
+    }
+
+    depth(tree, depthList, 1, flagObj);
+    return Math.min(...depthList);
+}
+```
