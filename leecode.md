@@ -189,6 +189,20 @@ Function.prototype.bind = function (newThis, ...rest) {
 ```
 10. new 过程
 
+new 实现的原理： 就是自定义一个new 函数， 然后参数是我们的构造函数和构造函数的参数， 创建一个最后返回的实例， 并将构造函数的原型对象设置给实例的原型，然后使用call调用new函数， 并将this指向设置为我们创建的实例， 函数的参数也设置为我们传入的参数，
+再有就是判断一下构造函数是否返回对象， 如果返回对象new函数直接返回这个对象， 我们没有返回对象， new函数就返回我们创建的那个实例
+
+function newFun(fun, ...rest) {
+    const currentThis = Object.create(fun.prototype);
+
+    const res = fun.call(currentThis, ...rest);
+
+    if ((typeof res === 'object' || typeof res === 'function') && Object.prototype.toString.call(res).slice(8, -1) !== 'Null') {
+        return res;
+    }
+    return currentThis;
+}
+
 11. 获得二叉树的最小深度
 
 解题思路，定义一个数组用于手机深度的值， 还有有标志用于告诉最小深度已经找到， 不需要在递归了，设置一个函数接收tree， 然后在内部写一个递归函数， 然后在内部调用， 将初始化的参数传给递归函数， 在函数内部判断如果没有left或者right直接将上一层深度返回，这就是最小深度，并将最小深度标识设置为false， 否则继续递归执行， 如果判断最小深度标识为false，就直接返回了避免无用的计算， 最后调用Math.min返回最小深度， 传入的是空的就返回0
