@@ -47,6 +47,8 @@ include 是用来引入其他nginx配置的
 
 使用include 将nginx配置引入到一个总的配置中， 然后一起执行nginx配置
 
+nginx -t 获取正在启动的nginx 服务器， 这样可以比较方便的获取到nginx的配置文件路径
+
 
 
 

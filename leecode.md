@@ -236,3 +236,37 @@ function minDepth (tree) {
     return Math.min(...depthList);
 }
 ```
+
+12. 判断 字符串是否如 {[()]} , [()]、{()} 等结构, 如果是就返回true， 不是就返回false
+
+这题的解题思路就是：正确的结构都是对称的， 当遍历完全部左侧部分的时候， 就会按照栈的特性遍历全部的右侧部分（后进先出），所以我们在遍历全部左侧部分的时候要要在一个数组中，从前边插入对应的右边部分， 等到全部左侧遍历完成，按照栈的原理遍历右侧的时候就从这个数组中一次获取值对比， 如果没有比上那就是结构不符合就是false， 一直到最后都比上了就是true
+```
+function isTrueString(str) {
+    if(!str.length) {
+        return false;
+    }
+
+    let stack = [];
+    for (let i = 0; i < str.length; i++) {
+        const item = str[i];
+        if (item === '[') {
+            stack.push(']');
+            continue;
+        }
+        if (item === '{') {
+            stack.push('}');
+            continue;
+        }
+        if (item === '(') {
+            stack.push(')');
+            continue;
+        }
+
+        const last = stack.pop();
+        if (last !== item) {
+            return false;
+        }
+    }
+    return !stack.length
+}
+```
