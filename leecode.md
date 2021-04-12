@@ -296,11 +296,12 @@ const eventEmitter = {
             })
         }
     },
-    publish(type) {
+    // 这里rest是触发事件的时候可以向下传自定义的参数给回调
+    publish(type, ...rest) {
         const eventList = this.eventList[type];
         if (eventList && eventList.length) {
             eventList.forEach((item) => {
-                item();
+                item(...rest);
             });
         }
     }
