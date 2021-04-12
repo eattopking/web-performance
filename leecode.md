@@ -275,6 +275,41 @@ function isTrueString(str) {
 
 解题思路： 观察者模式就是发布订阅模式, 就是我们js中事件的实现原理， 我们要自己实现发布订阅模式就是先定义一个实例对象， 这个对象类似于dom对象， 拥有注册、移除、发布订阅的api，以为每个实例上可以注册多种观察类型， 所以特殊的在这个实例中需要有一个存储各种类型观察回调（事件回调）的字段， 因为每个被观察者（dom对象）的每种观察类型（类型）可以被订阅多次， 所以存储每种观察类型的观察回调（事件回调）的应该是数组， 然后发布订阅（触发事件）的时候循环执行对应类型的观察回调, 移除事件就是移除对象类型的一个回调， 因为相同类型的事件可能注册多个回调
 ```
+// 写算法就是写这个类， 然后在创建实例在去演示， 不直接写下边的实例
+class EventEmitter {
+    constructor() {
+        this.eventList = {}
+    };
+    subscribe(type, callback) {
+        const eventList = this.eventList[type];
+        if (eventList) {
+            eventList.push(callback)
+        } else {
+            this.eventList[type] = [callback];
+        }
+    };
+    unSubscribe(type, fn) {
+        const eventList = this.eventList[type];
+        if (eventList && eventList.length) {
+            this.eventList[type] = eventList.filter((item) => {
+                if(item !== fn) {
+                    return true;
+                }
+                return false;
+            })
+        }
+    };
+    // 这里rest是触发事件的时候可以向下传自定义的参数给回调
+    publish(type, ...rest) {
+        const eventList = this.eventList[type];
+        if (eventList && eventList.length) {
+            eventList.forEach((item) => {
+                item(...rest);
+            });
+        }
+    }
+}
+
 const eventEmitter = {
     eventList: {},
     subscribe(type, callback) {
