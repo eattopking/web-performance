@@ -15,9 +15,17 @@ react 中提交（commit）的含义： 提交就是根据渲染得出的render�
 [profiler代码在生产模式构建后依然可以使用的配置](https://gist.github.com/bvaughn/25e6233aeb1b4f0cdb8d8366e54a3977)
 
 
-在生产模式构建后被禁用的Profiler， 是指代码中的Profiler组件代码， 而不是chrome的react插件中的profiler录制
+1. 在生产模式构建后被禁用的Profiler， 是指代码中的Profiler组件代码和chrome的react插件中的profiler录制都禁用
 
-在代码中加入Profiler组件本身就会影响性能
+2. 在代码中加入Profiler组件本身就会影响性能
+
+3. 在开发模式构建代码，通过亲身测试不能直接使用Profiler和profiler录制， 然后引入resolve: {
+    alias: {
+      'react-dom': 'react-dom/profiling',
+      'scheduler/tracing': 'scheduler/tracing-profiling',
+    }
+  }
+  还报错，不知道啥原因， 先记录到这里， 等要使用的时候在研究把
 
 #### 在chrome浏览器中分析react组件性能
 
