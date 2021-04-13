@@ -17,6 +17,8 @@ react 中提交（commit）的含义： 提交就是根据渲染得出的render�
 
 在生产模式构建后被禁用的Profiler， 是指代码中的Profiler组件代码， 而不是chrome的react插件中的profiler录制
 
+在代码中加入Profiler组件本身就会影响性能
+
 #### 在chrome浏览器中分析react组件性能
 
 1. chrome中通过安装react插件，通过其中profiler（类似于chrome中的performance的录制）进行页面操作时的，组件提交的性能录制来分析react的性能
