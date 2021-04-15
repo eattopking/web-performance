@@ -277,6 +277,54 @@ function isTrueString(str) {
 左括号必须以正确的顺序闭合。
 ```
 
+题目要求的是紧挨着或者对称的位置有配对的才是对的
+
+所以就是循环将对称或者挨着的配对项消掉， 如果最后的数组不是空的就不对， 返回false
+
+function isTrueString(string) {
+    let stack = [];
+
+    for(let i = 0; i < string.length; i++) {
+        const item = string[i];
+
+        if (item === '(') {
+            stack.push(')')
+        }
+
+        if (item === '[') {
+            stack.push(']')
+        }
+
+        if (item === '{') {
+            stack.push('}')
+        }
+
+        if (item === ')') {
+            const popItem = stack.pop();
+            if (popItem !== ')') {
+                return false;
+            }
+        }
+
+        if (item === ']') {
+            const popItem = stack.pop();
+            if (popItem !== ']') {
+                return false;
+            }
+        }
+
+        if (item === '}') {
+            const popItem = stack.pop();
+            if (popItem !== '}') {
+                return false;
+            }
+        }
+
+    }
+
+    return !stack.length;
+}
+
 ```
 
 13. 12题的进阶，给定一个只包含三种字符的字符串：（ ，） 和 * ，写一个函数来检验这个字符串是否为有效字符串。有效字符串具有如下规则
@@ -299,6 +347,8 @@ function isTrueString(str) {
 因为 *还可以充当其他的还可以充当空， 括号这种需求用栈十分的合理， 和括号的行为非常的符合
 最后的思路， 就是遇到（ 和*就装进两个栈的 数组中，遇到）就优先从（（数组中去（的索引去和）消掉， 就像开心消消乐一样， 如果（数组空了，在去从 *数组取值去消）， 如果 （和 * 的数组都是空的，没有去消）的， 那就直接return false, 当）都消没有了，
 这个时候 （ 和*还剩的话， 那就比较 如果（的数量比 *的多那就直接return false因为肯定不够消了，如果是 *的数量多于(的数量那就在依次比较是不是所有的配对的（和 *， *都是在（后面的，如果不在后边就直接导致无法配对消除了直接返回false， 因为是用栈的所有后进先出， 越往后获取的是索引越靠前的，如果这些都过了, (数组也空了， 这个时候，就说明要么没有 *， 要么就剩 *了， 这个时候， 就说明字符串符合要求了 直接返回true
+
+这里的题目要求也是对称或者挨着配对的符合要求， 我们这要把符合的消掉， 最后处理* 就可以了， *是可以充当任何的， 随意最后 * 只要是在 （ 后边， 那就是可以保证全部挨着或者对称消掉
 
 function isTrueString(string) {
     const stack = [];
