@@ -3,6 +3,9 @@
 1. 斐波那契数列
 
 ```
+规律就是 n - 1 + n - 2 = n, 并且前两个是1， 背诵的诀窍
+
+
 递归思路， 确定好退出条件， 第一个和第二个都是为 1， 然后就是构造出前两个加前一个数的这种规律， 然后就让他自己算
 // 低性能递归版本
 function fibonacci(n) {
@@ -67,6 +70,8 @@ function debounce(fun, time) {
 
 5. Promise.all 原理就是Promise只能改变一次状态， 然后定义一个变量缓存resolve的次数， 用于和数组的长度比较，
 当全部promise都变成resolve时候就将最外层的promise变为fulfilled状态返回数组， 如果有promise变成reject状态，直接返回这个reject状态的值，设置一个数组的index值， 前面没有值得索引会用空值占位
+
+Promise.all 的诀窍，最后就返回一个promise实例的状态
 ```
 Promise.all = function(arr) {
     if(!Array.isArray(arr)) {
@@ -95,6 +100,7 @@ Promise.all = function(arr) {
 
 6. 二叉树求和, 就是使用递归，规定好第一层的逻辑， 其他深层的left和right， 都是调用递归函数，按照相同的逻辑让他自己执行，然后在递归函数中使用一个变量缓存和的数据， 最后返回这个变量， 得到总和的值
 
+诀窍背诵： 二叉树的结构就是val， left， right
 ```
 function treeSum(tree) {
     let sum = 0;
@@ -146,6 +152,8 @@ const tree = {
 ```
 
 7. apply实现  使用的原理就是函数当作为谁属性调用的时候，这个函数的this指向就是谁， 还有只有null 和undefined == null， 内置构造函数创建实例， 用不用new都可以， Object 类似于Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf方法是获取对象的原始值的方法, 对象的toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的
+
+诀窍： 就是函数作为一个对象的方法调用时，函数内部this指向就是这个对象
 ```
 Function.prototype.apply = function (newThis, arr) {
     if (newThis == null) {
@@ -161,6 +169,8 @@ Function.prototype.apply = function (newThis, arr) {
 }
 ```
 8. call 实现  使用的原理就是函数当作为谁属性调用的时候，这个函数的this指向就是谁， 还有只有null 和undefined == null， 内置构造函数创建实例， 用不用new都可以， Object 类似于Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf方法是获取对象的原始值的方法, 对象的toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的
+
+诀窍： 就是函数作为一个对象的方法调用时，函数内部this指向就是这个对象
 ```
 Function.prototype.call = function(newThis, ...rest) {
     if (newThis == null) {
@@ -174,6 +184,8 @@ Function.prototype.call = function(newThis, ...rest) {
 }
 ```
 9. bind 实现  使用的原理就是函数当作为谁属性调用的时候，这个函数的this指向就是谁， 还有只有null 和undefined == null， 内置构造函数创建实例， 用不用new都可以， Object 类似于Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf方法是获取对象的原始值的方法, 对象的toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的, 还是使用了闭包的原理缓存rest
+
+诀窍： 就是函数作为一个对象的方法调用时，函数内部this指向就是这个对象
 ```
 Function.prototype.bind = function (newThis, ...rest) {
     return (...params) => {
@@ -191,6 +203,8 @@ Function.prototype.bind = function (newThis, ...rest) {
 
 new 实现的原理： 就是自定义一个new 函数， 然后参数是我们的构造函数和构造函数的参数， 创建一个最后返回的实例， 并将构造函数的原型对象设置给实例的原型，然后使用call调用new函数， 并将this指向设置为我们创建的实例， 函数的参数也设置为我们传入的参数，
 再有就是判断一下构造函数是否返回对象， 如果返回对象new函数直接返回这个对象， 我们没有返回对象， new函数就返回我们创建的那个实例
+
+诀窍： new就是先创建一个空对象，然后被这个对象添加属性
 
 function newFun(fun, ...rest) {
     const currentThis = Object.create(fun.prototype);
@@ -240,6 +254,8 @@ function minDepth (tree) {
 12. 判断 字符串是否如 {[()]} , [()]、{()} 等结构, 如果是就返回true， 不是就返回false, 这里栈中存的是对应括号的右侧部分 ， 不是右侧的索引
 
 这题的解题思路就是：正确的结构都是对称的， 当遍历完全部左侧部分的时候， 就会按照栈的特性遍历全部的右侧部分（后进先出），所以我们在遍历全部左侧部分的时候要要在一个数组中，从前边插入对应的右边部分， 等到全部左侧遍历完成，按照栈的原理遍历右侧的时候就从这个数组中一次获取值对比， 如果没有比上那就是结构不符合就是false， 一直到最后都比上了就是true
+
+诀窍就是要括号需要是挨着配对或者对称配对， 整好符合栈的特性
 ```
 function isTrueString(str) {
     if(!str.length) {
@@ -275,6 +291,8 @@ function isTrueString(str) {
 
 左括号必须用相同类型的右括号闭合。
 左括号必须以正确的顺序闭合。
+
+诀窍就是要括号需要是挨着配对或者对称配对， 整好符合栈的特性
 ```
 
 题目要求的是紧挨着或者对称的位置有配对的才是对的
@@ -350,6 +368,8 @@ function isTrueString(string) {
 
 这里的题目要求也是对称或者挨着配对的符合要求， 我们这要把符合的消掉， 最后处理* 就可以了， *是可以充当任何的， 随意最后 * 只要是在 （ 后边， 那就是可以保证全部挨着或者对称消掉
 
+诀窍就是要括号需要是挨着配对或者对称配对， 整好符合栈的特性
+
 function isTrueString(string) {
     const stack = [];
     const star = [];
@@ -403,6 +423,8 @@ function isTrueString(string) {
 14. 实现一个观察者模式
 
 解题思路： 观察者模式就是发布订阅模式, 就是我们js中事件的实现原理， 我们要自己实现发布订阅模式就是先定义一个实例对象， 这个对象类似于dom对象， 拥有注册、移除、发布订阅的api，以为每个实例上可以注册多种观察类型， 所以特殊的在这个实例中需要有一个存储各种类型观察回调（事件回调）的字段， 因为每个被观察者（dom对象）的每种观察类型（类型）可以被订阅多次， 所以存储每种观察类型的观察回调（事件回调）的应该是数组， 然后发布订阅（触发事件）的时候循环执行对应类型的观察回调, 移除事件就是移除对象类型的一个回调， 因为相同类型的事件可能注册多个回调
+
+诀窍就是就是实现nodeEventEmitter 类
 ```
 // 写算法就是写这个类， 然后在创建实例在去演示， 不直接写下边的实例
 class EventEmitter {
@@ -486,9 +508,33 @@ const eventEmitter = {
 
 21. 冒泡排序
 
-冒泡排序的时间复杂度是n2，就是两层循环嵌套
+冒泡排序的时间复杂度是n2，就是两层循环嵌套, 就是用外层循环当前的值，然后和数组中剩余的项循环比较更新原数组， 这样每个都和之后的比较了， 就得到我们想要的结果了
+
+
+
+
 
 22. 快速排序
 
-23.
+23. JavaScript 把数组里的0放到后面
+
+function lastZero(arr) {s
+    for(let i = 0; i < arr.length; i++) {
+        const item = arr[i];
+        if (item === 0 || item === '0') {
+            arr.splice(i, 1);
+            arr.push(0);
+        }
+    }
+
+    return arr;
+}
+
+function lastZero(arr) {
+
+}
+
+
+
+
 
