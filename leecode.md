@@ -508,7 +508,7 @@ const eventEmitter = {
 
 21. 冒泡排序
 
-冒泡排序的时间复杂度是n2，就是两层循环嵌套, 就是用外层循环当前的值，然后和数组中剩余的项循环比较更新原数组， 这样每个都和之后的比较了， 就得到我们想要的结果了
+冒泡排序的时间复杂度是n2，就是两层循环嵌套
 
 
 
@@ -518,6 +518,7 @@ const eventEmitter = {
 
 23. JavaScript 把数组里的0放到后面
 
+// 直接把0push到最后，然后把原位置上的0删除了， 最简单粗暴的方法, 没有引入第二个数字
 function lastZero(arr) {s
     for(let i = 0; i < arr.length; i++) {
         const item = arr[i];
@@ -530,8 +531,25 @@ function lastZero(arr) {s
     return arr;
 }
 
-function lastZero(arr) {
+口诀： 使用一个变量缓存0项的索引， 然后当循环遇到非0项时，在才自增， 时间复杂度n
 
+// 用一个标识表示为0项的索引，0项的时候 tmp不自增，遇到非0项， 通过tmp取到0项和非0项换位置，然后tmp 自增，寻找下一个可能实0项, 当item为0 tmp不自增， 这是为了遇到不为0的item0，可以通过tmp取到为0的item进行替换, 直到最后一个非0项， 都被替换为0， 结束。
+
+function lastZero(arr) {
+    let tmp = 0
+    for(let i = 0; i < arr.length; i++) {
+        const item = arr[i];
+        if (item !== 0) {
+            if (arr[tmp] === 0) {
+                arr[tmp] = arr[i];
+                arr[i] = 0;
+            }
+
+            tmp++;
+        }
+    }
+
+    return arr;
 }
 
 
