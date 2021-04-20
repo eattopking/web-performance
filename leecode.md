@@ -508,10 +508,26 @@ const eventEmitter = {
 
 21. 冒泡排序
 
-冒泡排序的时间复杂度是n2，就是两层循环嵌套
+记忆口诀： 两成for循环， 每一层都是从索引0 开始， 在第二层中比较调换位置，arr.length - 1, arr.length - 1 - i;
 
+function sort (arr) {
+    for(let i = 0; i < arr.length - 1; i++) {
+        for(let j = 0; j < arr.length - 1 - i; j++) {
+            const tmp = arr[j];
+            if (tmp > arr[j + 1]) {
+                arr[j] = arr[j + 1]
+                arr[j + 1] = tmp;
+            }
+        }
+    }
 
+    return arr;
+}
 
+冒泡排序的时间复杂度是n2，就是两层循环嵌套, 原理就是两边循环都从0 开始这样才能将所有项排序正确
+
+## 数组中调换项的位置，并且不新增数组总结口诀
+要么第一个标识变量，一层for循环 就是给数组两个位置相互设值， 要么就是两层for循环，然后在第二层循环中将数组中两个位置相互设值
 
 
 22. 快速排序
