@@ -14,6 +14,58 @@ nginx是一个可以跨平台的， web服务器程序(提供了nginx服务执�
 6. 支持热部署， 就是在nginx服务不停的情况下，支持更新配置文件等， 更改完了应该就是不用重启服务就生效了
 7. 支持BSD协议， 用户可以免费使用，还可以使用和改nginx源码并提交
 
+###  运行nginx 的linux 版本要求
+1. linux 版本大于等于2.6， 这是因为linux版本大于等于2.6时，才支持epoll，nginx在linux系统就是依靠epoll实现多路复用的， 进而通过多路复用实现解决高并发的问题
+2. 可以对linux的内核参数进行修改， 来提高nginx的性能, linux的内核参数在/etc/sysctl.conf中, 然后在这/etc 目录下执行 sysctl -p 使sysctl.conf 修改生效
+3. 使用uname -a 查询 linux 内核版本
+
+### linux 上 nginx的 安装方式
+
+#### 第一种 简单无脑安装
+
+```
+yum install nginx
+```
+这样安装的问题的效果
+1. nginx 配置路径: /etc/nginx
+2. pid路径: /var/run/nginx.pid
+3. 错误日志路径: /var/log/nginx/error.log
+4. 访问日志路径: /var/log/nginx/access.log
+5. nginx默认展示的页面文件路径: /usr/share/nginx/html
+
+这样安装的缺点
+1. 不能自定义安装的版本
+2. 不能自定义选择编译的模块
+3. 扩展不方便， 需要重新编译
+4. 重启服务和修改配置都需要root权限
+5. 性能差
+
+#### 第二种
+
+```
+1. 在安装nginx 之前， 安装nginx依赖的代码包， 帮助nginx实现一些功能， 比如支持https请求、压缩响应文件等
+2. 将nginx源码包安装在指定的目录下
+3. 在放置nginx 源码包的目录下， 解压nginx源码包
+4. 进入解压后的源码包目录
+5. 依次执行 ./configure 、make、 make install 指令 完成nginx的安装
+6. nginx 默认 配置文件和 二进制文件路径（二进制文件路径 就是可以充当指令用的文件的路径） 默认都在 /usr/local/nginx 中， 默认二进制文件是 /usr/local/nginx/sbin/nginx, 默认配置路径是 /usr/local/nginx/conf/nginx.conf
+7. /usr/local/nginx/sbin/nginx 我们可以设置成全局别名 nginx ， 直接使用nginx 指令就可以执行了，
+只执行nginx指令， 就是执行nginx的默认配置文件
+
+```
+
+这种安装的优点就是 自定义程度大， 但是需要比较多的linux知识
+
+### nginx 常用 指令
+
+1. whereis nginx : 查询nginx的默认路径， 包括nginx的配置文件默认路径、错误日志默认路径等
+2. nginx -c <文件路径> : 执行自定义的nginx配置文件
+3. nginx -t : 在nginx 不启动时， 检查nginx的配置文件是否有错误，并返回信息， 在nginx启动时可以帮助我们找到nginx的配置文件路径
+4. nginx -s reload: 重启nginx
+5. nginx -v : 展示nginx的版本信息
+6. nginx -s stop: 快速停止nginx 服务， 全停啥也不等，没干完就没干完
+7. nginx -s quit: 优雅的停止nginx服务，会等没干完的干完才停止
+
 
 ### Nginx机制规则总结
 ```
