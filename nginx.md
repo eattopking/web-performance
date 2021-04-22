@@ -47,7 +47,8 @@ yum install nginx
 2. 将nginx源码包安装在指定的目录下
 3. 在放置nginx 源码包的目录下， 解压nginx源码包
 4. 进入解压后的源码包目录
-5. 依次执行 ./configure 、make、 make install 指令 完成nginx的安装
+5. 依次执行 ./configure 、make、 make install 指令 完成nginx的安装,
+6. ./configure主要就是生成Makefile文件、make就是根据Makefile文件编译Nginx工程，生成二进制文件，make install 就是完成nginx的安装, 文件都安装完成
 6. nginx 默认 配置文件和 二进制文件路径（二进制文件路径 就是可以充当指令用的文件的路径） 默认都在 /usr/local/nginx 中， 默认二进制文件是 /usr/local/nginx/sbin/nginx, 默认配置路径是 /usr/local/nginx/conf/nginx.conf
 7. /usr/local/nginx/sbin/nginx 我们可以设置成全局别名 nginx ， 直接使用nginx 指令就可以执行了，
 只执行nginx指令， 就是执行nginx的默认配置文件
