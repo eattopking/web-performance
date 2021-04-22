@@ -67,6 +67,12 @@ yum install nginx
 6. nginx -s stop: 快速停止nginx 服务， 全停啥也不等，没干完就没干完
 7. nginx -s quit: 优雅的停止nginx服务，会等没干完的干完才停止
 
+### nginx 执行指令问题
+
+1. 使用第一种安装的方式，可以直接使用nginx 作为指令
+2. 当不能够使用nginx 作为指令时， 直接将nginx的二进制文件， 也就是可执行文件当做 nginx 指令使用
+3. 如果遇到权限不够的时候可以使用sudo临时提升权限
+4. nginx的二进制文件，可以有多份，sbin目录下的和whereis nginx 找的二进制文件可能不是一个路径下的文件
 
 ### Nginx机制规则总结
 ```
