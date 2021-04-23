@@ -143,6 +143,40 @@ $request_uri: 就是返回就是请求的不包含域名和端口的请求路径
 $arg_XXX: arg 内建变量群，可以有很多种变量，就获取请求参数中arg_后面对应值的参数的值， 并且不限定路径中参数的大小写 例如 $arg_name 可以获取到路径中name参数的值也可以获取路径中Name参数的值
 ```
 
+### location 中的设置
+
+1. 请求返回 状态码和响应的内容，这个内容会被浏览器当做文件下载
+
+location /test/ {
+    return 301 1111
+}
+
+2. 设置响应头
+
+add_header ，多个响应头要调用多次add_header
+
+3. 设置代理
+
+proxy_pass https://test-m.weishi100.com443; 设置代理路径，要代理到哪里
+
+proxy_set_header 设置代理响应头， 多个响应头要调用多次proxy_set_header
+
+proxy_read_timeout 90; 代理超时时间， 代理请求超过这个时间才报错
+
+
+### server
+
+1. 起一个端口的服务就是一个server 模块
+
+2. 在server模块中设置 压缩配置, gzip 压缩， 常用配置，这里有些必须都得配， 要不然nginx起服务报错
+
+gzip    on; 开启压缩
+gzip_min_length 1024; // 返回资源默认情况允许的最大大小， 超过这个大小就开启gzip压缩对资源
+gzip_proxied    expired no-cache no-store private auth; 是否开启对代理结果数据的压缩，off就是不开启， 开启就是写入那种请情况进行压缩
+gzip_types      text/plain text/css application/xml application/json application/javascript application/xhtml+xml; 进行压缩的资源类型
+gzip_comp_level 9; 压缩比例， 比例1-9， 比例越大压缩的越小，压缩的时间越长
+
+
 
 
 
