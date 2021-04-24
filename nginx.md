@@ -83,7 +83,12 @@ yum install nginx
 
 ### nginx 基础
 
-nginx 分为多个块包括全局块， http块， event块等
+1. nginx 分为多个块包括全局块， http块， event块等,
+
+2. nginx的各种功能都是依赖于其他软件包的，例如
+
+3. location、http、server 虽然是包裹关系， 但是它们都是一个类型配置项， 都是块配置项， 还有 配置属性设置 在各个层级都是可以的，比如 gzip: on ，在http 、location、server 下都可以设置，只是在父级设置可以被子级继承，子级设置相同属性可以覆盖父级设置的属性值
+
 
 ### server_name
 
