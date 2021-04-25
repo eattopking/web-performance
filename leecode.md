@@ -420,7 +420,7 @@ function isTrueString(string) {
 
 
 
-14. 实现一个观察者模式
+#### 实现一个观察者模式
 
 解题思路： 观察者模式就是发布订阅模式, 就是我们js中事件的实现原理， 我们要自己实现发布订阅模式就是先定义一个实例对象， 这个对象类似于dom对象， 拥有注册、移除、发布订阅的api，以为每个实例上可以注册多种观察类型， 所以特殊的在这个实例中需要有一个存储各种类型观察回调（事件回调）的字段， 因为每个被观察者（dom对象）的每种观察类型（类型）可以被订阅多次， 所以存储每种观察类型的观察回调（事件回调）的应该是数组， 然后发布订阅（触发事件）的时候循环执行对应类型的观察回调, 移除事件就是移除对象类型的一个回调， 因为相同类型的事件可能注册多个回调
 
@@ -493,20 +493,26 @@ const eventEmitter = {
     }
 }
 ```
+#### 链表
+1. 链表相关题简单
 
-15. 链表相关题简单
+2. 链表相关题中等
 
-16. 链表相关题中等
+#### 队列
 
-17. 队列相关题简单
+1. 队列相关题简单
 
-18. 队列相关题中等
+2. 队列相关题中等
 
-19. 栈相关题简单
+#### 栈
 
-20. 栈相关题中等
+1. 栈相关题简单
 
-21. 冒泡排序
+2. 栈相关题中等
+
+#### 排序
+
+1. 冒泡排序
 
 记忆口诀： 两成for循环， 每一层都是从索引0 开始， 在第二层中比较调换位置，arr.length - 1, arr.length - 1 - i;
 
@@ -530,43 +536,8 @@ function sort (arr) {
 要么第一个标识变量，一层for循环 就是给数组两个位置相互设值， 要么就是两层for循环，然后在第二层循环中将数组中两个位置相互设值
 
 
-22. 快速排序
+2. 快速排序
 
-23. JavaScript 把数组里的0放到后面
-
-// 直接把0push到最后，然后把原位置上的0删除了， 最简单粗暴的方法, 没有引入第二个数字
-function lastZero(arr) {s
-    for(let i = 0; i < arr.length; i++) {
-        const item = arr[i];
-        if (item === 0 || item === '0') {
-            arr.splice(i, 1);
-            arr.push(0);
-        }
-    }
-
-    return arr;
-}
-
-口诀： 使用一个变量缓存0项的索引， 然后当循环遇到非0项时，在才自增， 时间复杂度n
-
-// 用一个标识表示为0项的索引，0项的时候 tmp不自增，遇到非0项， 通过tmp取到0项和非0项换位置，然后tmp 自增，寻找下一个可能实0项, 当item为0 tmp不自增， 这是为了遇到不为0的item0，可以通过tmp取到为0的item进行替换, 直到最后一个非0项， 都被替换为0， 结束。
-
-function lastZero(arr) {
-    let tmp = 0
-    for(let i = 0; i < arr.length; i++) {
-        const item = arr[i];
-        if (item !== 0) {
-            if (arr[tmp] === 0) {
-                arr[tmp] = arr[i];
-                arr[i] = 0;
-            }
-
-            tmp++;
-        }
-    }
-
-    return arr;
-}
 
 #### 数组
 
@@ -633,6 +604,44 @@ const searchRange = function(nums, target) {
         return [arr[0], arr[arr.length - 1]];
     }
 };
+
+3. JavaScript 把数组里的0放到后面
+
+// 直接把0push到最后，然后把原位置上的0删除了， 最简单粗暴的方法, 没有引入第二个数字
+function lastZero(arr) {s
+    for(let i = 0; i < arr.length; i++) {
+        const item = arr[i];
+        if (item === 0 || item === '0') {
+            arr.splice(i, 1);
+            arr.push(0);
+        }
+    }
+
+    return arr;
+}
+
+口诀： 使用一个变量缓存0项的索引， 然后当循环遇到非0项时，在才自增， 时间复杂度n
+
+// 用一个标识表示为0项的索引，0项的时候 tmp不自增，遇到非0项， 通过tmp取到0项和非0项换位置，然后tmp 自增，寻找下一个可能实0项, 当item为0 tmp不自增， 这是为了遇到不为0的item0，可以通过tmp取到为0的item进行替换, 直到最后一个非0项， 都被替换为0， 结束。
+
+function lastZero(arr) {
+    let tmp = 0
+    for(let i = 0; i < arr.length; i++) {
+        const item = arr[i];
+        if (item !== 0) {
+            if (arr[tmp] === 0) {
+                arr[tmp] = arr[i];
+                arr[i] = 0;
+            }
+
+            tmp++;
+        }
+    }
+
+    return arr;
+}
+
+
 
 
 
