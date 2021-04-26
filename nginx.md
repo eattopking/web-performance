@@ -18,17 +18,24 @@ nginx是一个可以跨平台的， web服务器程序(提供了nginx服务执�
 
 ### nginx的工作方式
 
-1. nginx 可以是一个进程工作， 也可以是多个进程工作， 生产环境是多个进程工作， 一个master主进程， 控制多个worker进程， 所有nginx是分进程工作的， 因为各个进程是相互独立的， 一个进程崩了不会影响其他进程，一个进程中的一个线程崩了会导致其他线程也崩了， master进程就进行worker进程调度工作， 不干其他的，worker进程才是进行具体的工作处理的进程， worker进程都是master进程的子进程
+1. nginx 可以是一个进程工作(就是一个master进程处理所有的事)， 也可以是多个进程工作， 生产环境是多个进程工作 （就是一个master主进程， 控制多个worker进程， 所有nginx是分进程工作的， 因为各个进程是相互独立的， 一个进程崩了不会影响其他进程，一个进程中的一个线程崩了会导致其他线程也崩了， master进程就进行worker进程调度工作和fork出worker进程，worker进程才是进行具体的工作处理的进程， worker进程都是master进程的子进程）
 
-2. 正常就是将worker_processes 工作的进程的数量设置成和内核数相同， 使用多内核工作
+2. nginx 默认是使用守护进程的方式工作的， 就是进程都在后台执行， 不在任何的终端上执行，不在任何终端上打印信息，
+默认配置是 daemon: on 开启守护进程，也可以off 关闭守护进程用于调试
 
-3. 在 events {
+
+3. nginx 默认配置 master_process: on, 就是设置nginx 是以一个master进程和多个worker进程的方式工作的，
+也可以设置 master_process: off, 将nginx的工作方式设置为一个master进程处理所有的事， 用于调试和测试
+
+4. 正常就是将worker_processes 工作的进程的数量设置成和内核数相同， 使用多内核工作
+
+5. 在 events {
     worker_connections: 100000; // 一个工作进程中可以建立的http请求的连接数， 只要服务器的内存够用， 连接数越大nginx 性能越高
 }
 
-4. 进程之间是通过信号进行通信的， 我们的很多nginx指令就是给master进程发动信号
+6. 进程之间是通过信号进行通信的， 我们的很多nginx指令就是给master进程发动信号
 
-5. 一个服务器可以有很多个进程， 不一定和内核数相同，nginx的worker进程数和内核数相同是因为这样性能更高
+7. 一个服务器可以有很多个进程， 不一定和内核数相同，nginx的worker进程数和内核数相同是因为这样性能更高
 
 ###  运行nginx 的linux 版本要求
 1. linux 版本大于等于2.6， 这是因为linux版本大于等于2.6时，才支持epoll，nginx在linux系统就是依靠epoll实现多路复用的， 进而通过多路复用实现解决高并发的问题
@@ -97,7 +104,7 @@ yum install nginx
 3. 在请求的pathname， 不会被location匹配到的时候， 这个时候才会去匹配root， 去查找文件
 ```
 
-### nginx 基础
+### nginx 配置
 
 1. nginx 的配置项分为块配置项， 和非块配置项, 非块配置项就如：gzip: on; 后面没有大括号，
 
@@ -108,6 +115,29 @@ yum install nginx
 模块就是一个软件包
 
 3. location、http、server 虽然是包裹关系， 但是它们都是一个类型配置项， 都是块配置项， 非块配置项可以设置在块配置项中，比如 gzip: on ，在http 、location、server 下都可以设置，只是在父级设置可以被子级继承，子级设置相同配置项可以覆盖父级设置的配置项
+### 调试相关的配置
+1. error_log 、 master_process 、daemon 、debug_points、
+debug_connection 、worker_rlimit_core、coredump
+
+### nginx 正常运行必备的配置项
+
+### nginx 性能优化的配置项
+
+### 事件类配置项
+### error_log
+1. 设置错误日志的输出路径和日志级别
+```
+error_log /path/error.log level
+```
+2. level就是错误日志的级别，设置错误级别后， 错误日志就会输出大于等于这级别的日志， 默认的level是error
+
+3. 默认error_log 是有默认的输出路径的
+
+4. 将错误日志的文件的位置放在磁盘空间比较大的位置
+
+5. 将错误日志输出路径设置为 /dev/null 就可以关闭各种级别错误日志的输出, 这是关闭错误日志输出的唯一方式
+
+6. 输出debug 级别的日志的时候， 需要在执行configure的时候, 加上--with-debug的配置参数
 
 
 ### server_name
