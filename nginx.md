@@ -121,6 +121,14 @@ debug_connection 、worker_rlimit_core、coredump
 
 ### nginx 正常运行必备的配置项
 
+1. user 用户名 用户组名 : 如果只设置用户名， 那nginx 运行的用户和用户组名字相同
+
+2. pid /test/nginx.pid :设置存储master进程id的文件路径
+
+3. worker_rlimit_nofile 10000: worker进程可以打开文件的最大数量， 设置的越高nginx打开文件数量就没有限制了，就不会有 to many open files的问题了
+
+4. worker_rlimit_sigpendding 100; 每个用户可以发往nginx的信号数量，如果一个用户的发送nginx的信号数量到数了，那么这本用户就不能在往nginx发信号了， 所以要设置大点避免这种情况
+
 ### nginx 性能优化的配置项
 
 ### 事件类配置项
