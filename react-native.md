@@ -18,3 +18,31 @@
 10. ![react-native ios 起项目 步骤](./images/react-native5.png)
 11. ![react-native ios 起项目 步骤](./images/react-native6.png)
 12. ![react-native ios 起项目 步骤](./images/react-native7.png)
+
+```
+搭建环境
+
+1. 需要react-native link  在安卓和ios项目中全局安装
+
+2. ios项目pods的安装可能有问题， 需要在ios目录下手动pod install 重新安装
+
+
+3. [!] No podspec found for `RNVectorIcons` in `../node_modules/react-native-vector-icons`  缺少图标依赖  ， 解决方式 yarn add react-native-vector-icons
+
+4. 要先启动安卓模拟器， 才能启动安卓项目， 如果模拟器不自动启动的话
+
+5. 安卓除了编译器还有很多jdk的版本需要符合
+
+6. java 版本需要是11
+
+7. 安卓启动报错 Error:Execution failed for task ':app:validateSigningDebug'. > Keystore file D:\Android_keystore\deb  解决方式： 把安卓staio里面把Store File里指定的Keystore文件的路径删除就可以了
+```
+
+
+### react native 调试
+
+1. ![react-native ios 调试](./images/react-native8.png)
+
+2. 审查元素时需要在模拟器上审查元素，然后查找对应的组件， 看看最后面的那个元素选中可以选中全部哪个就是我们要找的组件
+
+3. debug 只能在console 中打印， 或者给react-native源码打断点， 不能查看网络请求
