@@ -130,6 +130,15 @@ debug_connection 、worker_rlimit_core、coredump
 4. worker_rlimit_sigpendding 100; 每个用户可以发往nginx的信号数量，如果一个用户的发送nginx的信号数量到数了，那么这本用户就不能在往nginx发信号了， 所以要设置大点避免这种情况, 这个配置目前还不好使， 所以应该是配置的层级不对还是咋回事，先放在这里
 
 ### nginx 性能优化的配置项
+1. worker_processes 10: 表示在master/worker 模式下开启多少worker进程， 正常如果没有像读取磁盘中的数据这种阻塞操作的情况下， 开启worker进程的数量和cpu内核数同最好， 每个内核处理一个worker进程， 如果要是有阻塞操作那就要开启比cup内核多的worker进程了，用于处理这个阻塞操作, worker进程过多，会加大切换进程时的消耗， （因为linux时抢占式内核）
+
+2. worker_cpu_affinity 0001, 0010, 0100, 1000: 表示进程和第几个cup内核绑定， 这个内核就处理绑定的worker进程， 避免内核利用分配不均, 0001这个数有四位表示cpu有四个内核， 1在第一位表示使用四个内核中的第一个内核，在worker_cpu_affinity 后面写几组数，就表示处理多少个worker进程， 这个配置只有在linux系统才好使
+
+3. ssl_engine device: 开始ssl 加速， 提高ssl协议的处理速度
+
+4. time_resolution 100s : 表示至少每100毫秒才调用一次gettimeofday(用内核时钟更新nginx的缓存时钟)， 默认执行一次事件都会去调用一次gettimeofday， 但是这样会有性能损耗， 所以设置gettimeofday的执行频率提高性能，如果想日志中的时间打印更准确也可以设置这个频率， 使时间打印更准确
+
+5. worker_priority 0: 设置worker进程的处理优先级， 范围是 -19 ~ 20， 数值越大优先级越小， 但是worker进程的优先级不能小于 -5， 优先级越高worker获取的时间片段就越大， 就是处理这个进程的时间就越多
 
 ### 事件类配置项
 ### error_log
