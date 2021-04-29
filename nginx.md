@@ -143,7 +143,7 @@ debug_connection 、worker_rlimit_core、coredump
 5. worker_priority 0: 设置worker进程的处理优先级， 范围是 -19 ~ 20， 数值越大优先级越小， 但是worker进程的优先级不能小于 -5， 优先级越高worker获取的时间片段就越大， 就是处理这个进程的时间就越多
 
 ### 事件类配置项
-这些都是配置在events {} 块中的配置项
+这些都是配置在events {} 块中的配置项, 只有lock_file不是
 
 1. accept_mutex on: nginx 的负载均衡锁， 开启这个锁后， 会调度worker进程合理的处理tcp连接，使各个worker的工作均衡， 达到负载均衡的作用，当每个worker进程处理的连接数达到最大值的7/8, 那accept_mutex 负载均衡锁， 就将减少这个worker的连接处理了
 
