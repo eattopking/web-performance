@@ -4,6 +4,8 @@
 
 nginx是一个可以跨平台的， web服务器程序(提供了nginx服务执行环境，可以执行nginx配置文件起nginx服务), 起nginx服务就是起一个后端服务的程序（就和我们用node写一个http服务监听，然后node 执行这个服务，服务起来后， 然后客户端去访问这个服务一样的， 写nginx配置文件， 就是我们写node服务的代码， 使用nginx指令 起nginx服务， 就和我们使用node 指令执行node 脚本起服务一样）
 
+nginx 负载均衡的实质：nginx 起一个或者多个服务， 其中nginx中有很多帮手， 帮助客户端和nginx的各个服务进行tcp连接，并持续监听关注， 这样就避免了所有的活都一个人干，导致效率降低，这个很多帮手就是nginx的多个worker进程， nginx 默认会选择性能最好的事件模型处理负载均衡，性能最好的事件模型时epoll
+
 
 
 ### Nginx 的特点
@@ -141,6 +143,19 @@ debug_connection 、worker_rlimit_core、coredump
 5. worker_priority 0: 设置worker进程的处理优先级， 范围是 -19 ~ 20， 数值越大优先级越小， 但是worker进程的优先级不能小于 -5， 优先级越高worker获取的时间片段就越大， 就是处理这个进程的时间就越多
 
 ### 事件类配置项
+这些都是配置在events {} 块中的配置项
+
+1. accept_mutex on: nginx 的负载均衡锁， 开启这个锁后， 会调度worker进程合理的处理tcp连接，使各个worker的工作均衡， 达到负载均衡的作用，当每个worker进程处理的连接数达到最大值的7/8, 那accept_mutex 负载均衡锁， 就将减少这个worker的连接处理了
+
+2. lock_file /path/nginx.log : 产生lock.log的文件地址，accept 锁可能需要这个文件
+
+3. accept_mutex_delay 100ms： accept 锁给worker 进程分配任务后， 多久后还能去尝试给worker进程分配任务
+
+4. use epoll: 处理负载均衡所选用的事件模型， 默认nginx 会选用最适合的事件模型
+
+5. worker_connections 8: 每个worker进程能同时处理的最大的tcp连接数
+
+6. multi_accept off: 尽可能将本次调度中，发起的tcp连接都连接上，默认是关闭的，没必要不好用开，影响性能
 ### error_log
 1. 设置错误日志的输出路径和日志级别
 ```
