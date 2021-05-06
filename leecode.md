@@ -494,7 +494,46 @@ const eventEmitter = {
 }
 ```
 #### 链表
+使用js 实现一个链表的数据结构，是这样的
+
+const header = {
+    val: 1,
+    next: {
+        val: 2
+        next: null
+    }
+}
+
+这个header 对象是整体的单链表也是，链表的头, 也就是链表的开始
+
 1. 链表相关题简单
+206. 反转链表
+
+解题思路：返回空的链表就是返回空就是返回null 在js中，解题思路就是递归，然后每一次都定义一个新的对象将每次递归的val赋值给新的对象的val， 将上一次存储的对象赋值给新对象的next属性，然后将新对象赋值给外部变量obj，最后将obj 返回就是最后的反转链表了， 注意需要判断输入空链表的情况，
+将obj初始化设置为null， 可以一举两得， 一是反转链表第一个是空可以直接用， 二是在空链表判断时直接返回空可以用
+
+var reverseList = function(head) {
+    let obj = null;
+
+    function deepHead (head) {
+        if (!head) {
+            return;
+        }
+
+        obj = {
+            val: head.val,
+            next: obj
+        }
+
+        if(head.next) {
+            deepHead(head.next)
+        }
+    }
+
+    deepHead(head);
+
+    return obj;
+};
 
 2. 链表相关题中等
 
