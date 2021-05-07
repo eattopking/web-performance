@@ -535,7 +535,51 @@ var reverseList = function(head) {
     return obj;
 };
 
-2. 链表相关题中等
+2. 删除链表项
+解题思路， 设置两个变量， 分别存储整个链表， 和最新的next对象, 这是正向操作， 正向操作需要存储最后的next
+
+var deleteNode = function(head, val) {
+    let obj = null;
+    let next = null;
+
+    function deep(head) {
+        if(!head) {
+            return;
+        }
+
+        if (val !== head.val) {
+            if (obj) {
+                if (obj.next) {
+                    next.next = {
+                        val: head.val,
+                        next: null
+                    };
+                    next = next.next;
+                } else {
+                    obj.next =  {
+                        val: head.val,
+                        next: null
+                    }
+                    next = obj.next;
+                }
+            } else {
+                obj = {
+                    val: head.val,
+                    next: null
+                }
+            }
+        }
+
+        if(head.next) {
+            deep(head.next);
+        }
+    }
+
+    deep(head);
+    return obj;
+};
+
+3. 链表相关题中等
 
 #### 队列
 
