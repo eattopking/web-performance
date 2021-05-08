@@ -631,10 +631,32 @@ var detectCycle = function(head) {
     return null;
 };
 
-//第二种快慢指针法
+//第二种标记方法 ,就是使用特殊标记, 标识前面的值， 如果后面的next有值是这个特殊值的， 那肯定有环，因为如果next没有取到前面的对象的话，那就是不能取到特殊的val的值
 
-就是初始化定义两个变量，分别存储后面的指针对象，和前面的指针对象，然后后面的指针每次增加一个， 前面的指针每次增加两个，如果两个指针不相同那就继续循环， 如果相等说明有环， 直接返回这个指针对象，注意判断，前面的前面的指针为是不是空，还有前面指针的next是不是空， 如果有一个是空说明我们的指针空了， 就不会有环了， 直接返回null，快指针每次走两步，慢指针每次走一步， 初始化快指针是head.next，
-慢指针是head就是头
+var detectCycle = function(head) {
+
+    if (!head) {
+        return null;
+    }
+
+    let tmp = head;
+
+    while(tmp) {
+        tmp.val = 'dssddd';
+        tmp = tmp.next;
+        if (!tmp) {
+            return null;
+        }
+
+        if (tmp.val === 'dssddd') {
+            return tmp;
+        }
+    }
+};
+
+
+
+
 
 
 
