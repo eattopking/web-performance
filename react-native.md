@@ -81,7 +81,12 @@ open -a /Applications/Android\ Studio.app ./android/weishi-app-android
 [react-native ios 调试](./images/react-native13.png)
 [react-native ios 调试](./images/react-native14.png)
 
+9. ReactNative报'event2/event-config.h' file not found解决方案
 
+查阅是因为Flipper-Folly版本导致的，将iOS文件下的 Podfile 文件做如下修改
+use_flipper! 修改为 use_flipper!({ 'Flipper-Folly' => '2.3.0' })
+改完后保存，将Podfile.lock文件删除，然后重新 pod install
+installed完成后，返回上层目录执行 yarn ios (或react-native run-ios)就可以启动了
 
 ### ios 发布流程
 
