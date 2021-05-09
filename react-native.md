@@ -85,6 +85,10 @@ open -a /Applications/Android\ Studio.app ./android/weishi-app-android
 
 ### ios 发布流程
 
+xcode 构建注意
+[react-native ios 调试](./images/react-native15.png)
+
+
 ### react-native 热更新
 
 只有是用react-native 写的代码，不包括新增和更新npm包， 并且不是针对之前的版本更新， 不是发新的版本， 那就可以使用热更新, 热更新需要有一个热更新的平台
