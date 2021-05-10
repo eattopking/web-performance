@@ -22,4 +22,11 @@ dffff() {
 
 dffff 1 1 3 4 5 6 6 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7
 
+ffff=555555
+
+# if test -z $ffff
+# then
+# echo 77777
+# fi
+
 
