@@ -176,6 +176,16 @@ error_log /path/error.log level
 
 server_name是nginx的虚拟域名， 根据虚拟域名，可以将相同端口服务， 分为多个部分，根据请求头的host不同， 可以匹配到相同端口的不同server块中处理
 
+ server {
+        listen       80;
+        server_name  baidu.com;
+ }
+
+ server {
+        listen       80;
+        server_name  taobao.com;
+ }
+
 ### root
 
 例如：
