@@ -674,6 +674,31 @@ var detectCycle = function(head) {
 
 2. 栈相关题中等
 
+leecode 316. 去除重复字母 就是去除重复字母的同时，在将能排序的元素从小到大排序就是这个意思
+
+var removeDuplicateLetters = function(s) {
+    let arr = [];
+    // 字典序最小就是字符串直接比较的从小到大的顺序，将能排序的元素
+    for(let i = 0; i < s.length; i++) {
+        const item = s[i];
+
+        // 这里主要是处理挨着的重复的元素， 和普通的重复元素， 因为下面已经排序完成了， 所有只要重复
+        // 直接就过滤掉就完事了
+        if(arr.includes(item)) {
+            continue;
+        }
+
+        // 这里关键， 只要不符合从小到大的顺序的， 并且是字符串后面还有的字符， 那就直接在数组中删除掉， 循环这个操作， 得到最符合条件的数组内容
+        while(arr.length > 0 && arr[arr.length - 1] > item && s.indexOf(arr[arr.length - 1], i + 1) !== -1) {
+           arr.pop();
+        }
+
+        arr.push(item);
+    }
+
+    return arr.join('');
+};
+
 #### 排序
 
 1. 冒泡排序
