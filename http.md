@@ -42,7 +42,17 @@ AJAX请求
 
 1. 使用浏览器默认支持跨域的标签, 和后端配合实现跨域, (script标签实现的jsonp就是这个原理), 其他支持跨域的标签还有(img, link);
 
-2. 纯后端处理, 在请求中添加标识字段, 然后后端识别， 在后端进行代理转发， 就是后端当做代理服务器， 然后直接请求真正的数据服务器， 因为后端是没有同源策略限制的，然后代理服务器在把数据返回给浏览器
+// 简单jsonp实现
+const jsonp(url, callback) {
+    const script = document.createElement('script);
+    const id = Date.now();
+    const callbackName = id + 'callback';
+    script.src = `${url}?callback=${callbackName}`;
+    window[callbackName] = callback;
+    document.body.appendChild(script);
+}
+
+2. Nginx处理, 在请求中添加标识字段, 然后Nginx识别， 进行代理转发，代理到目标服务器， 然后目标服务器返回数据， 最后浏览器获取到的数据是目标服务器的数据
 
 3. 使用cors(跨域资源共享， 这里浏览器自身提供的一种跨域的机制)实现跨域, 使用cors不仅表示了客户端的权限，也表示了服务端的权限， 服务端允许访问（到这可以实现简单请求）， 并且客户端正式请求的请求头， 服务端都允许， 这样才能发送复杂请求
 
