@@ -654,20 +654,6 @@ var detectCycle = function(head) {
     }
 };
 
-
-
-
-
-
-
-
-
-#### 队列
-
-1. 队列相关题简单
-
-2. 队列相关题中等
-
 #### 栈
 
 1. 栈相关题简单
@@ -688,7 +674,7 @@ var removeDuplicateLetters = function(s) {
             continue;
         }
 
-        // 这里关键， 只要不符合从小到大的顺序的， 并且是字符串后面还有的字符， 那就直接在数组中删除掉， 循环这个操作， 得到最符合条件的数组内容
+        // 这里关键， 只要不符合从小到大的顺序的， 并且是字符串后面还有的字符， 那就直接在数组中删除掉， 循环这个操作， 得到最符合条件的1. 数组内容
         while(arr.length > 0 && arr[arr.length - 1] > item && s.indexOf(arr[arr.length - 1], i + 1) !== -1) {
            arr.pop();
         }
@@ -698,6 +684,31 @@ var removeDuplicateLetters = function(s) {
 
     return arr.join('');
 };
+
+#### 哈希表
+
+哈希表在js中就是说的是map 数据结构
+
+1. 简单
+leecode 两数之和
+
+这个解法更简单， 关键点， 从后面取这个值的index 和从前面取另一个值的index只要是不相等， 说明两个数不是同一个数
+var twoSum = function(nums, target) {
+    let result = [];
+    for(let i = 0; i < nums.length; i++) {
+        const item = nums[i];
+        const flag = target - item;
+
+        if (nums.includes(flag)) {
+            const flagIndex = nums.indexOf(flag);
+            if (flagIndex !== i) {
+                return [i, flagIndex];
+            }
+        }
+    }
+};
+
+2. 中等
 
 #### 排序
 
