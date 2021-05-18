@@ -708,7 +708,42 @@ var twoSum = function(nums, target) {
     }
 };
 
+获取到数组中唯一的值
+function onlyOne(arr) {
+    console.time('testForEach')
+    let result = null;
+
+    for(let i = 0; i < arr.length; i++) {
+        const item = arr[i];
+        const index = arr.indexOf(item);
+        const lastIndex = arr.lastIndexOf(item);
+
+        if (lastIndex === index) {
+            console.timeEnd('testForEach')
+            return item
+        }
+    }
+}
+
 2. 中等
+哈希表就是对象或者map， 就是使用键值对存储值， 然后根据存储值比较变化
+
+leecode 1679. K 和数对的最大数目
+
+// 这里的逻辑就是在对象中存储这个对应值的出现次数， 没有配对的就保留，配对的就将对应的key的次数减/// 1，并且不将配对的值存入对象中， 起到过滤不重复的作用，得到结果
+var maxOperations = function(nums, k) {
+    let ans = 0;
+    let map = {};
+    for(let item of nums) {
+        if (map[k-item]) {
+            map[k-item]--;
+            ans++;
+        } else {
+            map[item] = (map[item] || 0) + 1;
+        }
+    }
+    return ans;
+};
 
 #### 排序
 
