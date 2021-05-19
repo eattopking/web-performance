@@ -887,26 +887,20 @@ leecode 169. 多数元素
 
 你可以假设数组是非空的，并且给定的数组总是存在多数元素。
 
-// 这是哈希表的解法解决的
+// 这是哈希表的解法解决的, 肯定会发生不需要判断直接前置， 然后后面在判断需要判断的情况
 var majorityElement = function(nums) {
     const map = {}
     for(let num of nums) {
-        if (map[num]) {
-            ++map[num];
-            const flag = nums.length / 2;
-            if(map[num] > flag) {
-                return num;
-            }
-        } else {
-            map[num] = (map[num] || 0) + 1;
-            // 注意这里的特殊边界值，只有一项的时候不会在上边的return 返回， 因为不会进入到上边
-            // 的判断条件中， 边界情况要注意
-            if (nums.length === 1) {
-                return num;
-            }
+        map[num] = (map[num] || 0) + 1;
+        const flag = nums.length / 2;
+        if(map[num] > flag) {
+            return num;
         }
     }
 };
+
+2. 中等
+
 
 
 
