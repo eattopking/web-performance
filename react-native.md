@@ -50,6 +50,7 @@
 [react-native ios 调试](./images/react-native16.jpeg)
 [react-native ios 调试](./images/react-native17.png)
 
+5. react-native 摇一摇那个调试页面，只有在rn构建后， 在xcode 和 安卓构建工具上只有构建debug包，才会展示rn内代码才会判断这个调试界面能展示出来，如果是正式包rn判断这个调试界面不会出来
 
 ### 安卓发包流程
 
