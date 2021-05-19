@@ -46,6 +46,10 @@
 
 3. debug 只能在console 中打印， 或者给react-native源码打断点， 不能查看网络请求
 
+4. 在安卓和ios上都可以使用 yarn start 构建rn服务后， 在测试包的调试模式下配置起服务的电脑和端口（8081）， 这样测试包上就可以执行本地的业务代码了
+[react-native ios 调试](./images/react-native16.jpeg)
+[react-native ios 调试](./images/react-native17.png)
+
 
 ### 安卓发包流程
 
@@ -97,6 +101,14 @@ xcode 构建注意
 ### react-native 热更新
 
 只有是用react-native 写的代码，不包括新增和更新npm包， 并且不是针对之前的版本更新， 不是发新的版本， 那就可以使用热更新, 热更新需要有一个热更新的平台
+
+### 手机上的抓包工具
+
+ios 手机、pad 上使用 stream 软件抓包
+
+安卓手机上一般还是时候用charles
+
+###
 
 
 
