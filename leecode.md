@@ -843,7 +843,7 @@ const searchRange = function(nums, target) {
 3. JavaScript 把数组里的0放到后面
 
 // 直接把0push到最后，然后把原位置上的0删除了， 最简单粗暴的方法, 没有引入第二个数字
-function lastZero(arr) {s
+function lastZero(arr) {
     for(let i = 0; i < arr.length; i++) {
         const item = arr[i];
         if (item === 0 || item === '0') {
@@ -875,6 +875,40 @@ function lastZero(arr) {
 
     return arr;
 }
+
+
+#### 位运算   这是一个题型， 不是解法，可以有多种解法，比较简单好懂的就是哈希表或者叫字典， 就是使用一个对象存储， 或者使用一个map存储
+
+这道题注意边界情况，在有多个判断的情况下， 考虑一下数组只有一项的特殊情况边界
+1. 简单
+
+leecode 169. 多数元素
+给定一个大小为 n 的数组，找到其中的多数元素。多数元素是指在数组中出现次数 大于 ⌊ n/2 ⌋ 的元素。
+
+你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+
+// 这是哈希表的解法解决的
+var majorityElement = function(nums) {
+    const map = {}
+    for(let num of nums) {
+        if (map[num]) {
+            ++map[num];
+            const flag = nums.length / 2;
+            if(map[num] > flag) {
+                return num;
+            }
+        } else {
+            map[num] = (map[num] || 0) + 1;
+            // 注意这里的特殊边界值，只有一项的时候不会在上边的return 返回， 因为不会进入到上边
+            // 的判断条件中， 边界情况要注意
+            if (nums.length === 1) {
+                return num;
+            }
+        }
+    }
+};
+
+
 
 
 
