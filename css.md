@@ -16,3 +16,6 @@ dpr （设备像素比）=  设备像素/css像素 （任意一个方向上的�
 width 100%, 表示子元素的内容宽度（content的宽度）等于父元素的内容宽度（content的宽度）
 
 width auto 表示子元素的整体宽度（包括padding， 边框等），等于父元素的内容宽度（content的宽度）
+
+3. css的一个规律， top 和left 是相对于父级的， bottom和right是相对于自己的
+
