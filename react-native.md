@@ -101,7 +101,34 @@ xcode 构建注意
 
 ### react-native 热更新
 
-只有是用react-native 写的代码，不包括新增和更新npm包， 并且不是针对之前的版本更新， 不是发新的版本， 那就可以使用热更新, 热更新需要有一个热更新的平台
+1. 只有是用react-native 写的代码，不包括新增和更新npm包， 并且不是针对之前的版本更新， 不是发新的版本， 那就可以使用热更新, 热更新需要有一个热更新的平台
+
+2. react-native的热更新需要 在rn代码里引入react-native-code-push这个npm包， 并且配置， 安卓和ios的native端也需要进行配置
+
+3. 然后在rn端编写shell 热更新脚本， 将热更新通过code-push将更新内容传到公司的热更新平台， 然后App杀死进程,重新进入app，就可以查看更新内容了
+
+```
+rn 配置如下
+
+import CodePush from 'react-native-code-push';
+
+const codePushOptions = {
+  //设置检查更新的频率
+  //ON_APP_RESUME APP恢复到前台的时候
+  //ON_APP_START APP开启的时候
+  //MANUAL 手动检查
+  checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
+  //安装模式
+  //ON_NEXT_RESUME 下次恢复到前台时
+  //ON_NEXT_RESTART 下一次重启时
+  //IMMEDIATE 马上更新
+  installMode: CodePush.InstallMode.ON_NEXT_RESTART,
+  minimumBackgroundDuration: 60 * 10,
+};
+
+//App 是我们的rn，入口组件
+export default CodePush(codePushOptions)(App);
+```
 
 ### 手机上的抓包工具
 
