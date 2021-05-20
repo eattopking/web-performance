@@ -19,3 +19,6 @@ width auto 表示子元素的整体宽度（包括padding， 边框等），等�
 
 3. css的一个规律， top 和left 是相对于父级的， bottom和right是相对于自己的
 
+
+4. 解决安卓手机按钮文案不垂直居中， 设置这个属性 line-height: normal;
+
