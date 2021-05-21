@@ -273,6 +273,24 @@ gzip_proxied    expired no-cache no-store private auth; 是否开启对代理结
 gzip_types      text/plain text/css application/xml application/json application/javascript application/xhtml+xml; 进行压缩的资源类型
 gzip_comp_level 9; 压缩比例， 比例1-9， 比例越大压缩的越小，压缩的时间越长
 
+## 配置一个完整的web服务器
+
+1. 虚拟主机设置和请求的分发
+
+
+2. 文件路径的定义
+
+3. 内存与磁盘资源的分配
+
+4. 网络连接的设置
+
+5. MIME类型的设置
+
+6. 对客户端请求的限制
+
+7. 文件操作的优化
+
+8. 对客户端请求的特殊处理
 
 
 
