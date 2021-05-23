@@ -914,6 +914,23 @@ var missingNumber = function(nums) {
 
 2. 中等
 
+面试题 16.01. 交换数字
+编写一个函数，不用临时变量，直接交换numbers = [a, b]中a与b的值。
+
+// 主要思路就是一个es6的知识点， 就是数组结构赋值，如果接收值不是变量， 而是一个数字的索引取值的形式， 实际就是在给这个数组设置对应位置的值
+
+var swapNumbers = function(numbers) {
+    [numbers[1], numbers[0]] = [numbers[0], numbers[1]]
+    return numbers;
+};
+
+#### 二分查找
+
+1. 简单
+
+
+
+2. 中等
 
 
 
