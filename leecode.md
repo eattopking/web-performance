@@ -927,10 +927,41 @@ var swapNumbers = function(numbers) {
 #### 二分查找
 
 1. 简单
-
-
+这种是除了二分查找最快的方式
+var search = function(nums, target) {
+    let num = 0;
+    for(let item of nums) {
+        if (item === target) {
+            num++;
+        }
+    }
+    return num;
+};
 
 2. 中等
+矩阵在js中就是每一个子数组都排过序的二维数组
+
+// 查看矩阵的规则,根据规则判断做判断， 解决矩阵的问题
+var searchMatrix = function(matrix, target) {
+    for (let item of matrix) {
+        if (item[0] > target) {
+            return false;
+        }
+
+        if (item[item.length - 1] < target) {
+            continue;
+        }
+
+        if (item.includes(target)) {
+            return true;
+        }
+
+    }
+
+    return false;
+}
+
+
 
 
 
