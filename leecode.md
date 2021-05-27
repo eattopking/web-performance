@@ -961,6 +961,32 @@ var searchMatrix = function(matrix, target) {
     return false;
 }
 
+### 队列
+
+中等
+
+面试题 17.09. 第 k 个数
+有些数的素因子只有 3，5，7，请设计一个算法找出第 k 个数。注意，不是必须有这些素因子，而是必须不包含其他的素因子。例如，前几个数按顺序应该是 1，3，5，7，9，15，21, 就是找出和例子一样规律的数中的一个
+
+队列就是数据js中， 这个题就是利用队列就是数组存值， 然后就是将3、5、7分别定义一个所以变量，然后队列默认第一项是1，因为规律就是第一项从1开始，然后就循环从1开始， 找到队列中对应的3，5，7索引的值，和3，5，7相乘得到的结果中最小的值，赋值给遍历的当前项为索引的队列值，然后在用这个值和队列中3，5，7，索引变量值乘3，5，7，比较是否相等， 相等的那个所以变量就是加1，按这个规律遍历，
+最后取到数组中的我们要找的个数减1项， 就是我们要找的值
+
+var getKthMagicNumber = function(k) {
+let result = [];
+let p3 = 0;
+let p5=0;
+let p7=0;
+result[0]=1;
+for(let i= 1; i<k; i++) {
+   result[i]=Math.min(result[p3]*3, Math.min(result[p5]*5, result[p7]*7));
+   if(result[i] === result[p3]*3) {p3++};
+   if(result[i] === result[p5]*5) {p5++};
+   if(result[i] === result[p7]*7) {p7++};
+}
+
+return result[k-1];
+};
+
 
 
 
