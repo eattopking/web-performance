@@ -274,8 +274,22 @@ gzip_types      text/plain text/css application/xml application/json application
 gzip_comp_level 9; 压缩比例， 比例1-9， 比例越大压缩的越小，压缩的时间越长
 
 ## 配置一个完整的web服务器
+web服务器这里主要依赖于http核心模块， http块的功能主要依赖于ngx_http_core_module模块(这个模块不仅可以提供配置项也可以提供特殊的变量)
+
 
 1. 虚拟主机设置和请求的分发
+nginx 配置https 请求:  首先要安装http_ssl_module模块, 支持ssl加密， 然后需要在nginx的指定目录下， 放置下载好的证书，
+然后在server块中配置  listen: 443 ssl; 这样就支持浏览器进行https请求了
+
+1. listen: localhost: 443 ssl deferred(建立tcp连接的时候worker进程先不去处理这个连接, 真正发送请求的时候worker进程才去处理连接) default或者default_server 都是设置默认的虚拟主机（）就是当请求的host虚拟主机名称和所有的server块的server_name设置的虚拟主机名称都不相同时， 这个时候如果server块的listen设置了default或者default_server值， 那就用这个server块处理这个请求， 如果所有的server块都没有设置default， 那就用listen端口符合的第一个server块处理这个请求
+
+listen: 127.0.0.1:80 listen就是设置允许如何访问这个服务，这样设置就是只能监听到本地请求80端口，listen 80, 就是 0.0.0.0:80的简写， 表示可以监听本地请求80端口， 也可以监听其他客户端通过访问ip+80端口的形式请求80端口， 所以listen的设置是一个域名，和webpackdevServer中的host + port的设置结果是相同的
+
+2. server_name: test.com test1.com (可以设置多个值server_name), 并且当多个server 块有用相同的值时， host的匹配规则的优先级是 ：全匹配 > 前面使用通配符匹配 > 后面使用通配符匹配 > 正则匹配， 当server_name "",表明server块匹配listen符合，但是没有设置host字段的请求
+
+3. 负载均衡设置的多个主机是具体真实的主机， 是用于nginx代理的，和server_name的设置无关， server_name的值只对应请求头上host的值
+
+4. location块 匹配到 请求的路径 进行处理
 
 
 2. 文件路径的定义
