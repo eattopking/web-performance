@@ -988,6 +988,42 @@ return result[k-1];
 };
 
 
+### 深度遍历和广度遍历
+#### 简单
+
+leecode 面试题 04.02. 最小高度树
+1. 给定一个有序整数数组，元素各不相同且按升序排列，编写一个算法，创建一棵高度最小的二叉搜索树。
+
+首先理解二叉搜索树是啥，而是所有搜索树就是左边永远比根节点小，右边永远比根结点大，包括子节点也是这个规则的二叉树, 这个搜索二叉树的原理就是，写好一个每次分一半的逻辑，然后递归操作，left和right
+
+二叉树的本质就是left和right和根节点也是一样的， 也是有val和left和right的, 因为是最小高度， 所以要尽可能做到平分, 所以在取中间值的index的时候需要向下取整才尽可能做到平分和兼容特殊情况， 如数组中只有一个值的时候取中间值, 但是实现的时候没有用到
+
+var sortedArrayToBST = function(nums) {
+    if (!nums || !nums.length) {
+        return null;
+    }
+
+    if (nums.length === 1) {
+        return {
+            val: nums[0],
+            left: null,
+            right: null
+        };
+    }
+
+    let result = nums.sort((a,b) => a - b);
+    const rootIndex = Math.floor(result.length/2);
+
+    return {
+        val: nums[rootIndex],
+        left: sortedArrayToBST(nums.slice(0, rootIndex)),
+        right: sortedArrayToBST(nums.slice(rootIndex + 1))
+    }
+};
+
+2.
+
+
 
 
 
