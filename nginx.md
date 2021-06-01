@@ -201,12 +201,16 @@ alias 用来表示nginx服务的静态资源获取目录
 
 这个只能配置在location的配置中
 
+所有alias是和root是同级的作用
+
 ### index
 
 index 用来表示nginx服务的静态资源获取默认文件
 
  例如：
  index index.html /m/index.html;
+
+ root 和alias都是资源的路径，配置在location中时， 就是匹配到对应的路径，就返回对应的资源，当不配置在location中时，比如配置在server或者http中， 这个时候，只有当请求路径匹配不到location的配置，root才会尝试和请求路径组合去查找是否有对应的文件可以返回
 
 1. （root或alias）和请求的pathname组合，如果组合后的结果是访问一个文件， 那就直接在服务器查找这个文件， 没有这个文件就报错
 
