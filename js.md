@@ -175,3 +175,5 @@ element.getBoundingClientRect(): 获取元素相对于视口的位置
 说到原型链不得不说的就是函数了，因为原型链的起源就在函数, 首先每个函数都有一个prototype属性, 当我们将这个函数当做构造函数通过new 调用创建一个实例时, 创建的这个实例的__proto__属性就指向构造函数的prototype属性, 而构造函数的prototype属性本身也是一个对象实例，所以它也有__proto__属性，它的__proto__属性指向Object.prototype，Object.prototype也是一个对象实例，所以它也有__proto__属性， 不过它的__proto__属性，指向的是null，这就是原型链的基本链，
 还有一些特殊的情况，比如所有的函数都是Function 的实例， 所有Function也是自己的实例， 所以Function.__proto__ === Function.prototype, Object也是Function的实例，原型链不止是__proto__和prototype这样的指向关系，最主要的是对象实例可以通过原型链获取到自己本身没有，但是原型链上有的属性，这才是原型链的本质作用, 我们常说的原型继承就是通过这个原理实现的
 
+2. 说一下对作用域链的理解
+
