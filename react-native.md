@@ -146,6 +146,93 @@ ios 手机、pad 上使用 stream 软件抓包
 2. react-native App.js这个组件只有app启动初始化的时候才初始化一次, 其他的时候不会有任何的更新
 
 
+常用依赖
+
+    "@ant-design/react-native": "^4.0.5",
+    解压缩的包
+    "@自己要改/react-native-gzip": "^2.0.0",
+    "@自己要改/react-native-smart-tip": "^2.2.6",
+    下载资源的包
+    "@自己要改/rn-fetch-blob": "^0.12.2",
+    rn提供的组件
+    "@react-native-community/art": "^1.2.0",
+    "@react-native-community/async-storage": "^1.11.0",
+    "@react-native-community/cameraroll": "^4.0.0",
+    "@react-native-community/clipboard": "^1.5.1",
+    "@react-native-community/cookies": "^4.0.1",
+    "@react-native-community/image-editor": "^2.3.0",
+    "@react-native-community/netinfo": "^5.9.5",
+    "@react-native-community/picker": "^1.6.6",
+    "@react-native-community/segmented-control": "^2.1.1",
+    "@react-native-community/slider": "^3.0.3",
+    "@react-native-community/viewpager": "^4.1.6",
+    "@yz1311/react-native-http-cache": "^0.3.1",
+    "axios": "^0.19.2",
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "moment": "^2.27.0",
+    "ramda": "^0.27.1",
+    "rc-form": "^2.4.12",
+    "react": "16.13.1",
+    "react-native": "0.63.2",
+    // 热更新codepush、包
+    "react-native-code-push": "^6.3.0",
+    获取设备信息的包
+    "react-native-device-info": "^8.1.2",
+    // 快速渲染图片组件
+    "react-native-fast-image": "^8.3.2",
+    提供监听用户手机切换组件的组件
+    "react-native-gesture-handler": "^1.8.0",
+    // 渲染html标签字符串的的组件
+    "react-native-htmlview": "^0.15.0",
+    // 调起原生的拍照和图片选择组件
+    "react-native-image-picker": "^3.2.1",
+    过渡效果展示组件
+    "react-native-linear-gradient": "^2.5.6",
+    rn的md5加密
+    "react-native-md5": "^1.0.0",
+    rn的modal组件
+    "react-native-modal": "^11.5.6",
+    rn展示的进度条组件
+    "react-native-progress": "^4.1.2",
+    有用要安装上
+    "react-native-reanimated": "^1.10.1",
+    用于rn 在在兄弟元素外层添加元素， 类似于react-protals
+    "react-native-root-siblings": "^4.1.0",
+    用于rn路由跳转
+    "react-native-router-flux": "^4.2.0",
+    用于原生层释放未展示的页面，改善 app 内存使用
+    "react-native-screens": "^2.9.0",
+    rn sentry上报组件
+    "react-native-sentry": "^0.43.2",
+    rn 全局toast提醒组件
+    "react-native-smart-tip": "^2.2.1",
+    rn 轮播图组件
+    "react-native-snap-carousel": "^3.9.1",
+    rn播放音频组件
+    "react-native-sound": "^0.11.0",
+    rn使用tab切换组件
+    "react-native-tab-view": "^2.15.0",
+    rn 展示图标组件
+    "react-native-vector-icons": "^7.0.0",
+    // rn 播放视频组件
+    "react-native-video": "^5.1.1",
+    // rn 使用webview引入h5页面等
+    "react-native-webview": "^11.0.3",
+    // rn 调微信功能
+    "react-native-wechat-lib": "^1.1.25",
+    "react-redux": "^7.2.1",
+    "redux": "^4.0.5",
+    // redux 设置异步action，就是设置action可以使用函数
+    "redux-thunk": "^2.3.0"
+
+
+### rn中应用原生的方法
+
+安卓中   在原生代码中使用package com.app_rn; 暴露这个文件出去， rn中就可以引用这个模块了
+
+ios中 在原生代码中使用 @implementation SSSSPayModule 暴露模块名称，然后在rn中就可以获取原生的API方法了
+
+
 
 问题：
 
