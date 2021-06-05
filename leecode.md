@@ -1024,7 +1024,97 @@ var sortedArrayToBST = function(nums) {
     }
 };
 
-2.
+#### 中等
+求和路径
+给定一棵二叉树，其中每个节点都含有一个整数数值(该值或正或负)。设计一个算法，打印节点数值总和等于某个给定值的所有路径的数量。注意，路径不一定非得从二叉树的根节点或叶节点开始或结束，但是其方向必须向下(只能从父节点指向子节点方向)。
+
+这道题我没有理解，完全是背下来的，还需要理解
+
+示例:
+给定如下二叉树，以及目标和 sum = 22，
+
+var pathSum = function(root, sum) {
+    if(!root) {
+        return 0;
+    }
+    return helper(root, sum) + pathSum(root.left, sum) + pathSum(root.right, sum)
+
+    function helper(root, sum) {
+       if(!root) {
+           return 0;
+       }
+       if (root.val === sum) {
+           return 1 + helper(root.left, sum - root.val) + helper(root.right, sum - root.val)
+       }
+
+       return helper(root.left, sum - root.val) + helper(root.right, sum - root.val);
+    }
+};
+
+
+深度遍历就是 就是递归处理的就是深度遍历，循环加递归处理的就是深度遍历， 只要后递归的就是深度遍历 先执行完一个路径的最深， 在执行另一个路径的最深， for循环内部执行递归，就是纵向处理，
+就是用时间换空间
+
+广度遍历就是二叉树每一层每一层的处理， 就是横向处理， 用空间换时间
+广度遍历， 就是 设置 一个结果数组， 设置一个中间暂存值的数组， 然后从暂存值的数组中取值处理后，在放进结果数组中， 广度运算用for 和 while 循环完成， 如果复杂度高， 那就是在一维循环里边在加一层循环， 然后内部在定义一个内部的临时结果数组和一个临时中间暂存数组，就可以解决广度遍历的问题了, 先进行while 循环， 判断这个中间存值这个数组，还有内容就循环， 然后在里边的for循环遍历这个中间存值的数组，每一先有值就存起来， 有left和right也存在里边的暂存数组中, 最后本次for循环完， 就将本地的结果push进 中的结果数组， 将本次存储的待处理数组， 直接赋值给总的待处理数组， 在开始新的一次while循环
+
+广度优先的算法总结就是 先在while循环判断暂存数组有没有值， 有值在while循环内部在循环这个数组， 不管是用while还是for循环
+
+同一道题可以使用深度优先也可以使用广度优先解， 深度优先适合结果是纵向，用深度优先比较合适， 如果结果是横向的用广度优先合适
+
+广度遍历解的题
+剑指 Offer 32 - II. 从上到下打印二叉树 II
+
+const levelOrder = (root) => {
+  // 狗不理
+  if (!root) {
+    return [];
+  }
+
+  // 1. 设置结果集
+  const result = [];
+
+  // 2. 设置当前层
+  let nowRoot = [root];
+
+  // 3. 广度优先搜索（BFS）
+  while (nowRoot.length) {
+    // 3.1 设置下一层
+    const nextRoot = [];
+
+    // 3.2 设置当前层的值
+    const nowResult = [];
+
+    // 3.3 遍历当前层，取值以及添加下一层
+    for (let i = 0; i < nowRoot.length; i++) {
+      // 3.3.1 添加值
+      nowResult.push(nowRoot[i].val);
+
+      // 3.3.2 如果存在左子树
+      if (nowRoot[i].left) {
+        nextRoot.push(nowRoot[i].left);
+      }
+
+      // 3.3.3 如果存在右子树
+      if (nowRoot[i].right) {
+        nextRoot.push(nowRoot[i].right);
+      }
+    }
+
+    // 3.4 收集完毕，开始交接
+    nowRoot = nextRoot;
+    result.push(nowResult);
+  }
+
+  // 4. 返回结果
+  return result;
+};
+
+看看用递归能不实现，就不会用深度遍历， 就直接用两层循环广度遍历，广度遍历的定义的几个数组也都是差不多的
+
+
+
+
 
 
 
