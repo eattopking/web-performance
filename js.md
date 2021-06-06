@@ -245,6 +245,42 @@ element.getBoundingClientRect(): 获取元素相对于视口的位置
 
 
 
+### typeof
+
+typeof的原理就是，判断变量机器码的前三位，object前三位是000，因为null的机器码所有位数都是0，所以null使用typeof检查类型的时候返回object
+
+
+### 如果给apply bind call 传递改变this指向 的值是undefined 或者是null，这个时候不会改变函数执行时候的this指向
+
+
+### instanceof 检验数据类型的原理
+
+instanceof 检验数据类型的原理， 就是看左边的实例的原型链上有没有， 右边构造函数的原型，有的话，左边实例就属于这个这个类型，没有就不属于这个类型， 还是通过原型继承的原理来判断数据类型的
+
+// 基本实现， right这边没有做判断
+const newInstanceof (left, right) {
+ if (left == null) {
+     return false;
+ }
+ let new__proto__ = left.__proto__;
+ while(new__proto__) {
+     if (new__proto__ === right.prototype) {
+         return true;
+     }
+
+     new__proto__ = new__proto__.__proto__;
+ }
+
+ return false;
+}
+
+### 0.1 加上0.2 为啥等于0.3
+
+因为js 中的number类型是通过IEEE754标准表示的， 0.1 + 0.2 计算的时候会先转化成二进制然后在计算， 最后转换为10进制， 这个过程中会发生精度丢失, 导致计算出来的结果比0.3大， 导致0.1+0.2不等于0.3
+
+#### promise 创建resolve 状态的promise的过程，如果遇到resolve的返回值是一个promise实例的（不管是resolve状态还是reject状态），本次创建promise的实例就是这个返回值了， 创建reject状态的Promise就没有这个规则， 它就是正常的规则
+
+
 
 
 
