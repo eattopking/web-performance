@@ -1144,6 +1144,30 @@ var maxSubArray = function(nums) {
    return max;
 };
 
+将数组中的0都移动到后面
+flag 不是0 加， 是0停
+function toAfterZero(arr) {
+
+    if (!arr) {
+        return null;
+    }
+
+    let flag = 0;
+
+    for(let i = 0; i < arr.length; i++) {
+        if (arr[i] !== 0) {
+            if (arr[flag] === 0) {
+                arr[flag] = arr[i];
+                arr[i] = 0;
+            }
+            flag++;
+        }
+    }
+
+    return arr;
+
+}
+
 
 
 
