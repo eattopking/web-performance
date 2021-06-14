@@ -101,6 +101,30 @@ Promise.all = function(arr) {
 }
 ```
 
+```
+实现一个错误重连
+
+const wrongConnect = (callback, times, delay) => {
+    return new Promise((resolve, reject) => {
+        const fn = () => {
+            Promise.resolve(callback()).then(resolve).catch((err) => {
+                if(times === 0) {
+                    reject(err);
+                } else {
+                    setTimeout(fn, delay);
+                    times--;
+                }
+            })
+        };
+
+        fn();
+    });
+}
+
+错误重连的原理就是返回一个promise实例，创建一个递归函数，然后初始化调用， fulfilled状态直接resolve状态返回，如果rejected状态直接setTimeout递归延时执行， 然后减去一个次数， 如果次数到0，
+直接还是rejected，直接就reject 返回状态 返回err值
+```
+
 6. 二叉树求和, 就是使用递归，规定好第一层的逻辑， 其他深层的left和right， 都是调用递归函数，按照相同的逻辑让他自己执行，然后在递归函数中使用一个变量缓存和的数据， 最后返回这个变量， 得到总和的值
 
 诀窍背诵： 二叉树的结构就是val， left， right
