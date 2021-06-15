@@ -143,7 +143,9 @@ ios 手机、pad 上使用 stream 软件抓包
 1. 在做手机中， 如果元素绝对定位超出了父元素的范围， 超出的子元素的点击事件就失效了，
 解决方案就是给父元素写固定高度， 不让定位的元素超出父元素的范围
 
-2. react-native App.js这个组件只有app启动初始化的时候才初始化一次, 其他的时候不会有任何的更新
+2. react-native App.js这个组件只有app启动初始化的时候才初始化一次, 其他的时候不会有任何的更新\
+
+3. 安卓打包勾选v1，V2导致打的报出现bug， 只勾选v2就没问题
 
 
 常用依赖
@@ -240,7 +242,18 @@ ios中 在原生代码中使用 @implementation SSSSPayModule 暴露模块名称
 
 当时在调研的时候也看过flutter，了解到flutter确实在开发复杂的app的时候，比rn开发性能要好， 但是结合但是我们情况， 首先是当时项目要求能快速完成app的重构，并且团队中也没有熟悉flutter的伙伴，再有我们和其他团队的伙伴交流，其他团队有比较成熟的开发rn经验可以借鉴， 而且开发rn主要使用react， 比较好上手，在有就是rn的社区支持比较好，解决问题比较容易，所以结合这几点情况我们选择了rn
 
-2.
+2. rn 如何实现的热更新
+1. 全局安装code-push-cli,  编写shell 脚本代码， 测试环境和线上环境的热更新推送
+
+首先通过 code-push login 登录code-push 管理后台获取到登录code-push平台的token，然后输入在终端输入token 登录code-push平台， 然后构建js bandle  推动代码到codepush 用于热更， 然后APP杀掉进程重启， 热更完成
+
+2. 项目中安装react-native-code-push
+
+3. 通过react-native-code-push，获取到的这个高阶组件包裹app.js这个这个入口组件，在代码上初始化热更新
+
+3. rn 如何引用native的方法
+
+nativeModules
 
 
 
