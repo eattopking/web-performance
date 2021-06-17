@@ -1192,6 +1192,48 @@ function toAfterZero(arr) {
 
 }
 
+中等难度
+
+面试题 01.05. 一次编辑
+字符串有三种编辑操作:插入一个字符、删除一个字符或者替换一个字符。 给定两个字符串，编写一个函数判定它们是否只需要一次(或者零次)编辑。
+
+比较两个东西是否相等，那就把两个东西搞成一样标准的比较， 就可以了
+
+
+var oneEditAway = function (first, second) {
+    if (first == null && second == null) {
+        return false;
+    }
+
+    const diff = first.length - second.length;
+
+    if (Math.abs(diff) > 1) {
+        return false;
+    }
+
+    let farr = Array.from(first)
+    let sarr = Array.from(second)
+
+    const maxLenth = diff > 0 ? first.length : second.length;
+
+    for(let i = 0; i < maxLenth; i++) {
+        if (farr[i] !== sarr[i]) {
+            if (diff === 0) {
+                farr.splice(i, 1, sarr[i]);
+            } else if (diff > 0) {
+                sarr.splice(i, 0, farr[i]);
+            } else {
+                farr.splice(i, 0, sarr[i]);
+            }
+            break;
+        }
+    }
+
+    return farr.join('') === sarr.join('')
+};
+
+
+
 
 
 
