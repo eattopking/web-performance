@@ -149,6 +149,8 @@ ios 手机、pad 上使用 stream 软件抓包
 
 4. 安卓加固后会把签名弄掉， 需要重新签名
 
+5. 安卓包， 需要加固和签名才能用
+
 
 常用依赖
 
@@ -245,13 +247,31 @@ ios中 在原生代码中使用 @implementation SSSSPayModule 暴露模块名称
 当时在调研的时候也看过flutter，了解到flutter确实在开发复杂的app的时候，比rn开发性能要好， 但是结合但是我们情况， 首先是当时项目要求能快速完成app的重构，并且团队中也没有熟悉flutter的伙伴，再有我们和其他团队的伙伴交流，其他团队有比较成熟的开发rn经验可以借鉴， 而且开发rn主要使用react， 比较好上手，在有就是rn的社区支持比较好，解决问题比较容易，所以结合这几点情况我们选择了rn
 
 2. rn 如何实现的热更新
-1. 全局安装code-push-cli,  编写shell 脚本代码， 测试环境和线上环境的热更新推送
+1. 全局安装code-push-cli,  注册code-push 账号
 
+通过 code-push register 注册 code-push 账号, 注册账号的时候，会弹出一个页面, 选择github 进行授权注册, 关联github 的信息注册， 然后就注册成功了， 注册成功会返回一个key ，用这个key就可以登录code-push了，直接执行 code-push register 或者 code-push login 会直接弹出一个获取key的页面， 如果没有登录获取key页面或者是没有注册code-push直接弹出注册页面， 如果在code-push login 或者 code-push register 后面如果加上自定义链接 就是直接打开这个自定义链接的页面
+内部实现是通过 childProcess.exec('start 自定义网页链接') 实现的打开浏览器页面
+
+2. 在code-push中app,iso app 和 安卓app要分别添加，每个app添加完成后，都会有一个staging key （测试环境的key），还有一个production key （正式环境的key）
+
+3. 在native端，将安卓app对应的测试环境的key和正式环境的key，配置到安卓的代码中，将ios app对应的测试环境的key和正式环境的key，配置到ios的代码中
+
+<!-- ios就是在info.plist 文件中将codepushdeploymentkey的值根据环境设置为staging或者是production的热更新key， 安卓就是在mainapplocation.java文件中在new codepush创建实例时， 将deploymentkey的值根据环境设置为staging或者是production的热更新key -->
+
+4. 在rn端， 安装react-native-code-push npm包， 然后在app.js文件中初始化热更新
+
+可以在初始化的配置中设置什么时候检查更新，加载完更新代码之后，什么时候进行更新， 还可以手动检查检查更新， 并且热更新的时候还可以弹窗提示， 具体可以可以看看文档， 这些功能都是react-native-code-push 引用后的这个高阶组件提供的
+
+5. 然后编写shell 脚本， 通过code-push release 上传热更新代码
+
+
+
+<!--
 首先通过 code-push login 登录code-push 管理后台获取到登录code-push平台的token，然后输入在终端输入token 登录code-push平台， 然后构建js bandle  推动代码到codepush 用于热更， 然后APP杀掉进程重启， 热更完成
 
 2. 项目中安装react-native-code-push
 
-3. 通过react-native-code-push，获取到的这个高阶组件包裹app.js这个这个入口组件，在代码上初始化热更新
+3. 通过react-native-code-push，获取到的这个高阶组件包裹app.js这个这个入口组件，在代码上初始化热更新 -->
 
 3. rn 如何引用native的方法
 
