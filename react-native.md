@@ -231,15 +231,6 @@ ios 手机、pad 上使用 stream 软件抓包
     // redux 设置异步action，就是设置action可以使用函数
     "redux-thunk": "^2.3.0"
 
-
-### rn中应用原生的方法
-
-安卓中   在原生代码中使用package com.app_rn; 暴露这个文件出去， rn中就可以引用这个模块了
-
-ios中 在原生代码中使用 @implementation SSSSPayModule 暴露模块名称，然后在rn中就可以获取原生的API方法了
-
-
-
 问题：
 
 1. 为什么选择Rn
@@ -273,9 +264,74 @@ ios中 在原生代码中使用 @implementation SSSSPayModule 暴露模块名称
 
 3. 通过react-native-code-push，获取到的这个高阶组件包裹app.js这个这个入口组件，在代码上初始化热更新 -->
 
-3. rn 如何引用native的方法
+三. rn 如何引用native的方法, native端如何设置
 
-nativeModules
+ios端
+
+1. 首先建立一个目录放我们的模块文件
+
+2. 在目录中创建模块文件
+
+3. 然后创建objective-c 类，然后  通过 RCT_EXPORT_MODULE 导出类
+
+4. 然后通过 RCT_EXPORT_METHOD 导出 类中的方法
+
+5. 通过constantsToExport 导出 类的常量属性
+
+6. 最后在rn 代码通过 NativeModules 引入 原生代码中导出的模块 使用模块中的api和常量
+
+.m 文件是定义的类的属性和方法是私有的，不能被外部访问的 .h文件定义的类的属性和方法是共有的， 可以被外部访问的
+
+
+@interface 是声明 objective-c 类的
+
+@implementation 是实现 objective-c类的
+
+@interface 和 @implementation可以同时使用也可以单独使用
+
+我们都是需要在xcode的参数配置文件 project.pbxproj 中从和node_modules平级的这个目录中的目录开始注册，最后将native端提供给rn的模块都注册，这样我们才能通过 rn 的NativeModules 获取 native提供模块， 然后在获取模块上的方法使用
+
+安卓端
+
+1. 首先在安卓项目的app/src/main/java/com 目录下新建一个目录专门放native端提供给rn 的模块，然后创建一个对应模块的java文件， 文件中创建一个 继承reactcontextbasejavaModule 的 java 类， 然后类中创建提供给rn的api
+
+2. 创建好原生模块后需要将原生模块注册，否则js中无法引用到这个模块，需要再建立一个java 文件， 然后创建一个package类通过
+这个package类的createnativeModules方法 添加原生模块， 实现注册
+
+3. 然后我们在rn端还是通过 nativemodules 引用原生模块。
+
+
+我们线上的安卓项目也是要有package.json 和 node_modules的， 真正的安卓工程不一定和package.json在相同目录，可以在比package.json所在目录深的目录 中
+
+原生模块目录 com/aaa/bbb/原生模块.java
+原生模块也是通过 模块中的 package com.aaa.bbb 导出模块的
+
+在安卓studio中打开安卓项目直接打开真正的安卓工程所在的目录就行
+
+安卓和ios 提供给rn的api 都是不能有具体的返回值的，返回值可以是promise， 其余的我理解就是void， 所以rn可以给原生api传回调函数来获取原生模块的返回值
+
+四. react-native如何通过webview 和h5进行通信的呢
+
+
+五. native 如何获取使用 rn的方法
+
+
+六. 看那篇文章了解rn 原理
+
+
+七. rn 特有的东西， 比如 需要用 StyleSheet 设置样式， 需要用TouchableHighlight 包裹才能添加添加onPress 点击事件
+
+等和web 不一样的开始要求
+
+八. 我项目中有代表性的功能亮点， 说明白
+
+目前就想到这么多， 想到接着看， 肯定有， 看完这些在查查
+
+
+
+
+
+
 
 
 
