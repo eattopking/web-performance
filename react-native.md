@@ -315,6 +315,11 @@ ios端
 
 五. native 如何获取使用 rn的方法
 
+1. 在rn 端通过DeviceEventEmitter 注册事件和回调
+
+2. 然后在native端触发这个事件，并给事件回调传递参数， 达到native 端调用rn方法的目的
+
+在安卓端通过reactContext.getJsModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit('事件名称', 回调参数)  触发事件
 
 六. 看那篇文章了解rn 原理
 

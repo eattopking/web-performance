@@ -1,5 +1,7 @@
 ### taro微信小程总结经验
 
+运行时就是在代码允许被运行的时候， 不是正在执行
+
 1. 使用taro自定义开发小程序的tarbar， 更改选中状态的时候， 不能够通过重新tabbar初始话的router的来判断，而是必须在组件里面写死，
 并且切换下一个的时候， 用类组件的时候需要获取自定义tabbar实例更新内部selected， 而使用hooks的时候， 需要使用redux控制， 否则一直会慢半拍，一直选中的都是上一个的, 不能再组件内部控制, 最好不要使用自定义tabbar性能会有问题
 
@@ -90,9 +92,59 @@
 
 1. 为什么选择taro
 
-首先当时计划开发一个小程序，
+1. 小程序的逻辑层是运行在jscore中的，没有提供浏览器中的dom api 和bom api， 所以原生小程出开发中无法使用 相关的api和相关的一些包，还有原生小程序的开发和我们正常前端开发方式也有不同， 也需要一定的上手时间， 原生的开发效率也不高
+
+2. taro 是使用react 语法的，符合前端的开发习惯， 上手快，开发效率快， taro还实现了浏览器的bom 和dom api， 所有原生小程序不能用的包，taro基本都可以使用
+
+3. 还有这个项目之前， 我就了解过taro， 因为是使用react 语法开发小程序， 所以我也写过demo， 把整个开发流程也都跑通了, 也算是有一些经验
+
+4. taro 和其他框架之间，选择taro的原因是因为我们整体的技术栈就是react，我们想要保证技术栈的统一
+
+5. 所以结合这些原因我们选择了taro
+
 
 2. taro 的原理和实现
+
+1. 使用react-reconciler 根据不同的宿主环境创建了react 渲染器, 构建出不同宿主环境支持的
+元素
+
+react-reconciler是负责将react 转换到小程序的视图层
+
+
+2. 通过taro/runtime taro 运行时， 提供 createReactApp， createPageConfig ， 以小程序为例， 将react的生命周期转换为小程序的生命周期， 完成小程序的注册， 和小程序页面的注册
+
+taro/runtime是负责将react 转换到小程序的逻辑层
+
+react-reconciler 的使用
+
+import ReactReconciler from "react-reconciler";
+
+let reconciler = ReactReconciler({
+  /* configuration for how to talk to the host environment */
+  /* aka "host config" */
+
+  supportsMutation: true,
+  这个函数是通过判断虚拟的type 转换对应宿主环境的元素的
+  createInstance(
+    type,
+    props,
+    rootContainerInstance,
+    hostContext,
+    internalInstanceHandle
+  ) {}
+})
+
+whatToRender 表示虚拟dom
+
+div表示对应宿主环境的容器
+
+export default {
+  render(whatToRender, div) {
+    let container = reconciler.createContainer(div, false, false);
+    reconciler.updateContainer(whatToRender, container, null, null);
+}
+
+
 
 3. 小程序 的通信原理， 如何渲染分层, 如何native 端通信的
 
