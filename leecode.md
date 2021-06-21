@@ -19,25 +19,19 @@ function fibonacci(n) {
     return fibonacci(n - 1) + fibonacci(n - 2);
 };
 
-高性能递归版本
-思路：就是序号是递减的，但是v1 v2是递增的
-function fibnc (n) {
-    function fib(n, v1, v2) {
-        if (n === 1) {
-            return v1;
-        }
+斐波那契数，指的是这样一个数列：1、1、2、3、5、8、13、21 ,求第n个返回啥
 
-        if (n === 2) {
-            return v2;
-        }
+function fib(n) {
 
-        return fib(n -1, v2, v1 + v2);
+    if (n < 3) {
+        return 1;
     }
-    return fib(n, 1, 1);
+
+    return fib(n-1) + fib(n-2);
 }
 ```
 
-2. 截流, 截流就是第一次操作之后，没有达到效果之前，不让他在点击操作, 也是利用闭包的缓存变量，在初始化的时候不处理， 在次调用的时候处理截流逻辑
+2. 截流, 在外层函数缓存旧的时间，在内层函数实时获取当前时间， 取差值比较是否允许函数执行
 
 ```
 function throttle (fun, time) {
@@ -46,13 +40,25 @@ function throttle (fun, time) {
         const currentDate = Date.now();
         if (!delay || currentDate - delay > time) {
             delay = currentDate;
-            fun(...rest);
+            return fun(...rest);
         }
     }
 }
+
+截流第二遍
+function throttle(callback, time) {
+    let oldDate = null;
+
+    return (...rest) => {
+        let currentDate = Date.now();
+        if (!oldDate || currentDate - oldDate > time) {
+            oldDate = currentDate;
+            return callback(...rest);
+        }
+    }
+}
+
 ```
-
-
 3. 防抖, 防抖就可以理解为，防止多次点击， 防止多次请求， 就是主要思路利用闭包缓存值， 然后初始化的时候不处理， 在次调用的时候处理防抖逻辑
 ```
 function debounce(fun, time) {

@@ -323,6 +323,14 @@ ios端
 
 六. 看那篇文章了解rn 原理
 
+react-native 和native相比的优点
+
+1. react-native 开发一套代码， 通过构建就可以构建成安卓代码和ios代码，提高了开发效率，降低了维护的成本
+
+2. react-native 开发就是使用js 和 react 进行开发，对前端开发人员非常友好， 上手很快
+
+3. react-native 内部引用的是原生的Api和原生的UI，确保了体验和性能。
+
 
 七. rn 特有的东西， 比如 需要用 StyleSheet 设置样式， 需要用TouchableHighlight 包裹才能添加添加onPress 点击事件
 
