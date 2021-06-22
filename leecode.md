@@ -31,7 +31,9 @@ function fib(n) {
 }
 ```
 
-2. 截流, 在外层函数缓存旧的时间，在内层函数实时获取当前时间， 取差值比较是否允许函数执行
+2. 截流, 截流就是第一次操作之后，没有达到效果之前，不让他在点击操作
+
+实现要点: 在外层函数缓存旧的时间，在内层函数实时获取当前时间， 取差值比较是否允许函数执行
 
 ```
 function throttle (fun, time) {
@@ -59,7 +61,9 @@ function throttle(callback, time) {
 }
 
 ```
-3. 防抖, 防抖就可以理解为，防止多次点击， 防止多次请求， 就是主要思路利用闭包缓存值， 然后初始化的时候不处理， 在次调用的时候处理防抖逻辑
+3. 防抖, 防抖就可以理解为，防止多次点击， 防止多次请求
+
+主要思路： 就是在外层函数中缓存一个存储timerid的变量， 然后在返回的函数中刚开始就是clearInterval(timerid), 确保调用时就把没有执行的定时器清除掉
 ```
 function debounce(fun, time) {
     let id = null;
@@ -68,6 +72,17 @@ function debounce(fun, time) {
         id = setTimeout(() => {
             fun(...rest);
         }, time)
+    }
+}
+
+防抖的第二遍
+function test(callback, time) {
+    let timer = null;
+    return (...rest) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+                callback(...rest);
+        }, time);
     }
 }
 ```
@@ -129,6 +144,27 @@ const wrongConnect = (callback, times, delay) => {
 
 错误重连的原理就是返回一个promise实例，创建一个递归函数，然后初始化调用， fulfilled状态直接resolve状态返回，如果rejected状态直接setTimeout递归延时执行， 然后减去一个次数， 如果次数到0，
 直接还是rejected，直接就reject 返回状态 返回err值
+
+失败重连第二遍
+
+function wrongConnect(fun, times, delay) {
+    return new Promise((resolve, reject) => {
+        function callback() {
+           Promise.resolve(fun()).then(resolve).catch((err) => {
+               if (times > 0) {
+                   times--;
+                   setTimeout(callback, delay);
+                   return;
+               }
+               reject(err);
+           })
+        }
+
+        callback();
+    });
+}
+
+promise.resolve 将函数执行结果统一转换一下， 写一个函数， 在下面执行， 然后在catch 中进行settimeout 递归调用定义的函数， 在catch 中判断次数， 然后没有次数了返回失败状态
 ```
 
 6. 二叉树求和, 就是使用递归，规定好第一层的逻辑， 其他深层的left和right， 都是调用递归函数，按照相同的逻辑让他自己执行，然后在递归函数中使用一个变量缓存和的数据， 最后返回这个变量， 得到总和的值
