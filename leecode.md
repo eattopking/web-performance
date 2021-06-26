@@ -166,60 +166,6 @@ function wrongConnect(fun, times, delay) {
 
 promise.resolve 将函数执行结果统一转换一下， 写一个函数， 在下面执行， 然后在catch 中进行settimeout 递归调用定义的函数， 在catch 中判断次数， 然后没有次数了返回失败状态
 ```
-
-6. 二叉树求和, 就是使用递归，规定好第一层的逻辑， 其他深层的left和right， 都是调用递归函数，按照相同的逻辑让他自己执行，然后在递归函数中使用一个变量缓存和的数据， 最后返回这个变量， 得到总和的值
-
-诀窍背诵： 二叉树的结构就是val， left， right
-```
-function treeSum(tree) {
-    let sum = 0;
-    if (tree.val) {
-        sum += tree.val;
-    }
-
-    if (tree.left) {
-        sum += treeSum(tree.left)
-    }
-
-    if (tree.right) {
-        sum += treeSum(tree.right);
-    }
-
-    return sum;
-}
-
-const tree = {
-    val: 0,
-    left: {
-        val: 0,
-        left: {
-            val: 2,
-            left: null,
-            right: {
-                val: 2,
-                left: null,
-                right: null,
-            },
-        },
-        right: null,
-    },
-    right: {
-        val: 2,
-        right: {
-            val: 2,
-            left: null,
-            right: null,
-
-        },
-        left: {
-            val: 2,
-            left: null,
-            right: null,
-        }
-    }
-}
-```
-
 7. apply实现  使用的原理就是函数当作为谁属性调用的时候，这个函数的this指向就是谁， 还有只有null 和undefined == null， 内置构造函数创建实例， 用不用new都可以， Object 类似于Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf方法是获取对象的原始值的方法, 对象的toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的
 
 诀窍： 就是函数作为一个对象的方法调用时，函数内部this指向就是这个对象
@@ -263,10 +209,28 @@ Function.prototype.bind = function (newThis, ...rest) {
         }
         const currentThis = Object(newThis);
         currentThis.fun = this;
-        currentThis.fun(...[...rest, ...params]);
+        const result = currentThis.fun(...[...rest, ...params]);
         delete currentThis.fun;
+        return result;
     }
 }
+
+// bind实现第二遍
+
+Function.prototype.bind = function(self, ...params) {
+    return function(...rest) {
+        if (self == null) {
+            return this(...[...params, ...rest]);
+        }
+
+        self = Object(self);
+        self.fn = this;
+        const result = self.fn(...[...params, ...rest]);
+        delete self.fn;
+        return result;
+    }
+}
+
 ```
 10. new 过程
 
@@ -275,15 +239,31 @@ new 实现的原理： 就是自定义一个new 函数， 然后参数是我们�
 
 诀窍： new就是先创建一个空对象，然后被这个对象添加属性
 
-function newFun(fun, ...rest) {
-    const currentThis = Object.create(fun.prototype);
+function customNew(fun, ...rest) {
+    const that = Object.create(fun.prototype);
 
-    const res = fun.call(currentThis, ...rest);
+    const result = fun.apply(that, rest);
 
-    if ((typeof res === 'object' || typeof res === 'function') && Object.prototype.toString.call(res).slice(8, -1) !== 'Null') {
-        return res;
+    const type = typeof result;
+
+    if ((type === 'object' && result !== null) || type === 'function') {
+        return result
     }
-    return currentThis;
+    return that;
+}
+
+new 第二遍
+function customNew(fun, ...rest) {
+    const that = Object.create(fun.prototype);
+
+    const result = fun.apply(that, rest);
+
+    const type = typeof result;
+
+    if ((type === 'object' && result !== null) || type === 'function') {
+        return result
+    }
+    return that;
 }
 
 11. 获得二叉树的最小深度
@@ -1059,6 +1039,87 @@ return result[k-1];
 
 ### 深度遍历和广度遍历
 #### 简单
+
+6. 二叉树求和, 就是求二叉树中所有值的和,就是使用递归，规定好第一层的逻辑， 其他深层的left和right， 都是调用递归函数，按照相同的逻辑让他自己执行，然后在递归函数中使用一个变量缓存和的数据， 最后返回这个变量， 得到总和的值
+
+诀窍背诵： 二叉树的结构就是val， left， right
+```
+function treeSum(tree) {
+    let sum = 0;
+    if (tree.val) {
+        sum += tree.val;
+    }
+
+    if (tree.left) {
+        sum += treeSum(tree.left)
+    }
+
+    if (tree.right) {
+        sum += treeSum(tree.right);
+    }
+
+    return sum;
+}
+
+const tree = {
+    val: 0,
+    left: {
+        val: 0,
+        left: {
+            val: 2,
+            left: null,
+            right: {
+                val: 2,
+                left: null,
+                right: null,
+            },
+        },
+        right: null,
+    },
+    right: {
+        val: 2,
+        right: {
+            val: 2,
+            left: null,
+            right: null,
+
+        },
+        left: {
+            val: 2,
+            left: null,
+            right: null,
+        }
+    }
+}
+
+求二叉树中所有值的和第二遍
+
+function treeSum(tree) {
+    if (!tree) {
+        return null;
+    }
+
+    let sum = 0;
+
+    function deep(tree) {
+        if (tree.val) {
+            sum+=tree.val;
+        }
+
+        if (tree.left) {
+            deep(tree.left);
+        }
+
+        if (tree.right) {
+            deep(tree.right);
+        }
+    }
+
+    deep(tree);
+
+    return sum ? sum : null;
+}
+```
 
 leecode 面试题 04.02. 最小高度树
 1. 给定一个有序整数数组，元素各不相同且按升序排列，编写一个算法，创建一棵高度最小的二叉搜索树。
