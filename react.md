@@ -51,6 +51,19 @@ react 中提交（commit）的含义： 提交就是根据渲染得出的render�
 
 ### redux的源码实现
 
+首先redux有几个概念， store， reducer， action， store就是通过createStore 传入reducer创建出来的，
+store 包含存放数据的state， 还有用于发送action的 dispatch， reducer 使用用于在dispatch 发送action的时候调用更新state 的， reducer是一个函数， 它的参数是action 和 当前的state
+
+redux 还有中间件机制， 用于增强store的功能的， 主要是通过函数柯理化的原理实现的
+
+react中要运用redux 要redux 和react-redux配合使用，react-redux提供两个组件一个是provider 组件用于包裹入口组件， 将redux的store 传给provider props上的store，用于从顶层传递数据， 还提供了connect 高阶组件，
+用于组件注册redux数据的更新，然后返回一个新的组件， 然后在这新组件内部调用我们传入进去的组件， 然后将我们redux的数据通过props 传递给我们原有的组件实现在我们自己组件的内部接收redux数据的目的
+
+connect和provider可以通信的原因是，react-redux内部是通过context传递数据的， connect和provider共用一个context实例， 所以它们两个数据是一个， 所以就可以将通过provider传递的数据，传递给被connect包裹的组件了
+
+
+redux的使用还需要在看一遍
+
 
 ### react 事件机制的实现
 
