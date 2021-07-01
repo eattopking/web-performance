@@ -266,40 +266,9 @@ function customNew(fun, ...rest) {
     return that;
 }
 
-11. 获得二叉树的最小深度
 
-解题思路，定义一个数组用于手机深度的值， 还有有标志用于告诉最小深度已经找到， 不需要在递归了，设置一个函数接收tree， 然后在内部写一个递归函数， 然后在内部调用， 将初始化的参数传给递归函数， 在函数内部判断如果没有left或者right直接将上一层深度返回，这就是最小深度，并将最小深度标识设置为false， 否则继续递归执行， 如果判断最小深度标识为false，就直接返回了避免无用的计算， 最后调用Math.min返回最小深度， 传入的是空的就返回0
 
-核心思想就是在外层准备收集深度的数组， 然后传入递归函数， 递归执行，在得到结果后用Math.min比较返回最小值
 ```
-function minDepth (tree) {
-    if (!tree) {
-        return 0;
-    }
-
-    let depthList = [];
-    let flagObj = {
-        isNext: true
-    };
-    function depth (tree, list, currentDepth, flagObj) {
-        if (!flagObj.isNext) {
-            return;
-        }
-
-        if (!tree.left || !tree.right) {
-            list.push(currentDepth);
-            flagObj.isNext = false;
-        } else {
-            depth(tree.left, list, currentDepth + 1, flagObj);
-            depth(tree.right, list, currentDepth + 1, flagObj);
-        }
-    }
-
-    depth(tree, depthList, 1, flagObj);
-    return Math.min(...depthList);
-}
-```
-
 12. 判断 字符串是否如 {[()]} , [()]、{()} 等结构, 如果是就返回true， 不是就返回false, 这里栈中存的是对应括号的右侧部分 ， 不是右侧的索引
 
 这题的解题思路就是：正确的结构都是对称的， 当遍历完全部左侧部分的时候， 就会按照栈的特性遍历全部的右侧部分（后进先出），所以我们在遍历全部左侧部分的时候要要在一个数组中，从前边插入对应的右边部分， 等到全部左侧遍历完成，按照栈的原理遍历右侧的时候就从这个数组中一次获取值对比， 如果没有比上那就是结构不符合就是false， 一直到最后都比上了就是true
@@ -335,7 +304,6 @@ function isTrueString(str) {
     return !stack.length
 }
 ```
-
 12.1 有效字符串需满足：
 
 左括号必须用相同类型的右括号闭合。
@@ -541,6 +509,33 @@ const eventEmitter = {
         }
     }
 }
+
+
+
+//观察者模式实现第二遍
+class EventEmitter {
+    eventList = {}
+
+    addEvent = (eventName, callback) => {
+        if (this.eventList[eventName]) {
+            this.eventList[eventName].push(callback);
+            return;
+        }
+        this.eventList[eventName] = [callback];
+    }
+
+    removeEvent = (eventName, callback) => {
+        if (this.eventList[eventName]) {
+            this.eventList[eventName] = this.eventList[eventName].filter((item) => item !== callback);
+        }
+    }
+
+    emit = (eventName, ...rest) => {
+        if (this.eventList[eventName]) {
+            this.eventList[eventName].forEach((item) => item(...rest));
+        }
+    }
+}
 ```
 #### 链表
 使用js 实现一个链表的数据结构，是这样的
@@ -583,6 +578,33 @@ var reverseList = function(head) {
 
     return obj;
 };
+
+
+
+// 反转量表第二遍
+
+function remove(list) {
+    if (!list) {
+        return null;
+    }
+
+    let current = list;
+    let result = null;
+    while(true) {
+        result = {
+            val: current.val,
+            next: result
+        }
+
+        if (!current.next) {
+            return result;
+        }
+
+        current = current.next;
+    }
+}
+
+链表就是使用while循环， 然后循环一次存储上次循环项的next， 用于下次循环
 
 2. 删除链表项
 解题思路， 设置两个变量， 分别存储整个链表， 和最新的next对象, 这是正向操作， 正向操作需要存储最后的next
@@ -1120,6 +1142,40 @@ function treeSum(tree) {
     return sum ? sum : null;
 }
 ```
+11. 获得二叉树的最小深度
+
+给定一个二叉树，找出其最小深度。
+
+最小深度是从根节点到最近叶子节点的最短路径上的节点数量。
+
+说明：叶子节点是指没有子节点的节点。
+
+思路写一个递归函数， 初始化出入节点数，然后在root没有left和right的时候将节点数push进外层存储数组， 由left和right， 就将当前节点数加1， 递归调用left和right， 最后通过Math.min,获取数组中最小值，返回
+
+var minDepth = function(root) {
+    if (!root) {
+        return null;
+    }
+    const result = [];
+    const deepCallback = (root, num) => {
+        if (!root.left && !root.right) {
+            result.push(num);
+            return;
+        }
+
+        if (root.left) {
+            deepCallback(root.left, num + 1);
+        }
+
+        if (root.right) {
+            deepCallback(root.right, num + 1);
+        }
+    }
+
+    deepCallback(root, 1);
+
+    return Math.min.apply(null, result);
+};
 
 leecode 面试题 04.02. 最小高度树
 1. 给定一个有序整数数组，元素各不相同且按升序排列，编写一个算法，创建一棵高度最小的二叉搜索树。

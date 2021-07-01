@@ -65,6 +65,98 @@ ln -s ./test test2
 
 如果#!/usr/bin/node， 这样设置就是表示直接使用/usr/bin/node 这个可执行文件执行脚本
 
+21. npm link 将本地开发包进行全局安装
+
+22. 开发脚手架分包， 就是一个脚手架的功能分成多个包，然后最后统一引用
+
+23. 在脚手架的根目录下 执行npm link 可以在node的安装目录下的lib目录的node_modules中生成一个名字为package.json 中name字段的软链， 还有接着识别package.json中的bin配置， 在node的安装目录下的bin目录下生成一个bin中key名称的，value为脚手架可执行文件的软链，可以本地调试, 如果想删除npm link创建的这个两个软链， 直接在脚手架项目目录下执行npm unlink就可以了, 通过npm unlink将本地项目中通过npm link安装的包移除调的同时还会将对应包在package.json中的依赖删除调， 通过npm link安装不会将package.json的依赖中添加对应的包
+
+24. 然后可以被其他项目在其项目的根目录下执行（npm link node的安装目录下的lib目录的node_modules中的包名），将node的安装目录下的lib目录的node_modules中包，安装到这个项目的node_modules中， 如果想从node_modules中卸载安装的这个包，直接执行 （npm unlink node的安装目录下的lib目录的node_modules中的包名），可以本地调试
+
+25. 如果在普通库的项目根目录下执行npm link，那么就是只会在node的安装目录下的lib目录的node_modules中生成一个名字为package.json 中name字段的软链
+
+26. 软链就是指向对应可执行文件，就是可以通过软链访问这个文件，啥时候想用这个软链访问就可以用它
+
+27. process.argv （vue -v） 获取到的值的一个数组， 第一个值是解释器的可执行文件路径（node的可执行文件）， 第二个是解释器执行的脚本的文件路径（vue-vli的可执行文件）， 第三个是option -v， 这个就是 process.argv获取值的规则
+
+28. 全局安装cli的过程是， 想通过项目名称 将项目下载到node的安装目录下的lib目录的node_modules中， 然后解析这个项目中的package.json中的bin配置， 然后在node的安装目录下的bin目录下，生成一个bin中key为名称， value为可执行文件的软链， 然后就可以在全局中使用key对应的这个命令了
+
+29. 把脚手架安装在本地node_modules中，我们在代码中引用这个脚手架当做一个包， 我们引用的代码是脚手架项目中的package.json中main字段暴露的代码，作为脚手架在终端执行命令时， 对应的代码是package.json中bin的key对应的可执行文件
+
+30. 把一个包发布到npm上， 然后在这个包项目所在目录中下执行npm i -g 这个包， 这时不会在node的安装目录下的lib目录中的node_modules中安装远程的包，而是因为在当前执行（npm i -g 包名） 这个命令的目录下可以找到这个包， 所以直接会在node的安装目录下的lib目录中的node_modules中创建一个指向本地项目路径的软链， 软链名称是报包名， 所以我们就可以通过这种方式进行本地调试，然后如果这个包是一个cli那么在node的安装目录下的bin目录还会根据这个包的package.json中的配置， 生成一个value 指向cli可执行文件的软链， 这个软链的获取路径都是从node安装目录下lib目录的node_modules目录为基准的，如果node安装目录下lib目录的node_modules目录中的包为软链， 那么再找包的可执行文件的时候， 就以这个软链为基准接着往下找, 这个软链就表示软链指向的路径
+
+### lerna 源码解析学习
+
+1. lerna 是一个项目管理工具， 它也是一个脚手架, 可以多个项目代码git提交， 多个项目npm包发布， 基于npm+git实现， 实现重复操作， 版本一致性
+
+2. 统一管理多个项目
+
+3. lerna使用的配置文件
+package.json
+
+{
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "lerna": "^3.22.1"
+  }
+}
+
+lerna.json
+
+{
+  "packages": [
+    "packages/*"
+  ],
+  // lerna
+  "version": "independent",
+  "useWorkspaces": true,
+  "npmClient": "yarn"
+}
+#### lerna使用流程
+1. lerna init 初始化创建git初始化, 创建packages目录
+
+2. lerna create 目录名称  在packages目录中创建一个项目
+
+3. @test/babel @test这个名字需要在npm注册，然后才能用，才能将我们这个名字的包发布到npm成功
+
+4. 常用lerna执行命令
+
+lerna add 默认给所有的package（项目）安装依赖， 也可以给单个项目安装依赖（lerna add + 包名 + packages/项目目录）
+
+lerna clean 删除所有项目的node_modules 目录
+
+lerna link 就是lerna 项目中相互依赖，可以通过lerna link 将所有项目中相互依赖设置为本地的软链接
+
+lerna exec 默认在所有项目下执行linux 执行 例如  lerna exec -- rm -rf node_modules 删除所有项目中node_modules， 也可以在单个项目下执行命令(lerna exec --scope + 包名 + -- + 要执行的命令)
+
+lerna run 默认执行所有项目下的 npm 指令， 也可以执行单个项目的npm指令(lerna run --scope + 包名 + npm指令)
+
+lerna version 默认给所有项目添加版本号，也可以给单个项目添加版本号
+
+lerna publish 默认将所有项目发布到npm， 也可以将单个项目发布到npm
+
+lerna bootstrap 删除项目的node_modules 目录之后， 根据项目中的package.json重新安装依赖， 默认重新安装所有项目的依赖
+
+
+npm发布流程
+
+1. npm login 登录npm
+
+2. npm publish 发布npm包
+
+3. 需要给包加前缀名， 要先去npm网站上注册
+
+
+
+
+
+
+
+
 
 
 

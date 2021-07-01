@@ -312,6 +312,8 @@ ios端
 
 四. react-native如何通过webview 和h5进行通信的呢
 
+webView和h5通信就是以js的全局变量为媒介， 然后原生和h5的通过这个全局变量相互添加方法相互调用
+
 
 五. native 如何获取使用 rn的方法
 
@@ -331,6 +333,23 @@ react-native 和native相比的优点
 
 3. react-native 内部引用的是原生的Api和原生的UI，确保了体验和性能。
 
+
+react-native 通过内部实现的bridge实现rn和native的通信，react-native在Appregistry.registerComponent初始化的时候通过jsBridge获得原生内容,实现rn和native端的通信， 例如ios端就是使用RCTBridge 创建实例
+
+正常的native和js的相互通信就是以js的全局对象为媒介， 在native端例如ios使用JSContext 创建一个js的全局上下文,这个全局上下文就是和js中的全局变量指向相同，native端在js全局上下文上添加原生方法， js就可以通过全局变量获取并调用， js在全局变量中添加方法， 然后native端就可以通过创建的js全局上下文获取到js添加的方法并调用,但是这样会导致js全局变量的污染
+
+rn通过 nativeModules获取native传递给rn的模块，ios底层使用nativeFlushQueueImmediate 获取native的模块， js获取native的模块逻辑, ios 是通过JSIExecuter将原生方法指向global.batchedBridge上边的js方法， 实现ios引用js方法
+
+
+4. react-native使用虚拟dom 将react组件转换称为native原生组件
+
+5. react-native 通过jsCore 引擎执行 main.jsbandle文件
+
+6. react-native内部通过jsBrige实现js 和 native 的互相通信, jsbridge的作用就是js引擎提供原生的扩展， 让js代码可以引用原生方法, 就是在初始化的时候将原生的方法和模块打包成json格式给js引擎，准确的说是给messagequeue;
+
+7. react-native 0.64版本使用了最新的hermes 引擎，提升了安卓端的性能， 缩短了启动时间， 减小了内存使用， 由于appstore的一些限制， 所以hermes没有应用在ios端
+
+8. react-native 和 native 的通信的异步的， 所以在进行大量实时交互的时候，会有一些性能问题， 比如大量的动画等， 但是我们的app不涉及大量的实时交互问题， 所以用起来没问题
 
 七. rn 特有的东西， 比如 需要用 StyleSheet 设置样式， 需要用TouchableHighlight 包裹才能添加添加onPress 点击事件
 
