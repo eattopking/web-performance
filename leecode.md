@@ -579,31 +579,6 @@ var reverseList = function(head) {
     return obj;
 };
 
-
-
-// 反转量表第二遍
-
-function remove(list) {
-    if (!list) {
-        return null;
-    }
-
-    let current = list;
-    let result = null;
-    while(true) {
-        result = {
-            val: current.val,
-            next: result
-        }
-
-        if (!current.next) {
-            return result;
-        }
-
-        current = current.next;
-    }
-}
-
 链表就是使用while循环， 然后循环一次存储上次循环项的next， 用于下次循环
 
 2. 删除链表项
@@ -648,6 +623,40 @@ var deleteNode = function(head, val) {
 
     deep(head);
     return obj;
+};
+
+
+// 删除链表第二遍
+
+var deleteNode = function(head, val) {
+    let current = head;
+    let currentNext = null;
+    let result = null;
+    while(current) {
+        if(current.val === val) {
+            if (!result) {
+                result = current.next;
+            } else {
+                currentNext.next = current.next;
+            }
+            return result;
+        }
+
+        const item = {
+            val: current.val,
+            next: null,
+        }
+
+        if (result) {
+            currentNext.next = item;
+            currentNext = item;
+        } else {
+            result = item;
+            currentNext = item;
+        }
+
+        current = current.next;
+    }
 };
 
 3. 链表相关题中等

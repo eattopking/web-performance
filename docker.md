@@ -10,6 +10,11 @@
 
 7. docker run --name testname 是创建容器时设置容器的名称
 8. docker run -d  在后台启动容器
+8. docker run -v  将本地文件和容器中的文件相互共享， 哪一方没有对应目录， 会自动创建
+
+linux 系统下容器通过访问docker0网桥中的第一个ip，来请求宿主环境的ip， 进而请求宿主环境的服务
+
+mac 系统中通过docker.for.mac.host.internal获得宿主环境ip
 
 ### docker 常用指令
 
