@@ -104,6 +104,7 @@ package.json
 
 {
   "name": "root",
+  //明确这个包是私有的不会被发布到npm上去
   "private": true,
   "workspaces": [
     "packages/*"
@@ -121,9 +122,35 @@ lerna 需要处理的目录
   ],
   // 独立模式的版本不一定所有版本都一致
   "version": "independent",
+  // 使用yarn 的Workspaces， 默认使用npm 需要在每一个项目中都下载node_modules, 这样设置之后所有项目的依赖都在一个顶层的node_modules中
   "useWorkspaces": true,
-  // 使用什么npm安装工具
+  // 使用yarn 的Workspaces 必须使用yarn
   "npmClient": "yarn"
+}
+
+{
+  "npmClient": "yarn", // 执行命令所用的客户端，默认为npm —— 配置后会强制使用最佳实践：能用yarn的用yarn——如lerna bootstap --hoist不再可用
+  "command": { // 命令相关配置
+    "publish": { // 发布时配置
+       "allowBranch": "master", // 只在master分支执行publish
+      "conventionalCommits": true, // 生成changelog文件
+      "exact": true, // 准确的依赖项
+      "ignoreChanges": ["ignored-file", "*.md"], // 发布时忽略的文件
+      "message": "chore(release): publish" // 发布时的自定义提示消息
+    },
+    "bootstrap": { // 安装依赖配置
+      "ignore": "component-*", // 忽略项
+      "npmClientArgs": ["--no-package-lock"], // 执行 lerna bootstrap命令时传的参数
+      "hoist": true
+    },
+    "version": {
+      "conventionalCommits": true //开启日志：自动生成changLog.md
+    }
+  },
+  "packages": [ // 指定存放包的位置
+    "packages/*"
+  ],
+  "version": "0.0.0" // 当前版本号
 }
 #### lerna使用流程
 1. lerna init 初始化创建git初始化, 创建packages目录
@@ -144,10 +171,10 @@ lerna exec 默认在所有项目下执行linux 执行 例如  lerna exec -- rm -
 
 lerna run 默认执行所有项目下的 npm 指令， 也可以执行单个项目的npm指令(lerna run --scope + 包名 + npm指令)
 
-lerna version 默认给所有项目添加版本号，也可以给单个项目添加版本号
+lerna version 给项目指定版本号
 
 lerna publish 只有项目git commit 了之后， 才可以执行，git commit 之后l执行过lerna publish， lerna publish后选择项目的版本号， 渲染版本号之后，lerna 会修改项目的版本号，
-然后将修改的部分自动add + commit，然后在这次的commit上加一个以项目名称和版本号组成的tag， 然后将所有commit 和tag 全都push到线上
+然后将修改的部分自动add + commit，然后在这次的commit上加一个以项目名称和版本号组成的tag， 然后将所有commit 和tag 分别都push到线上， tag 和commit 不能过通过一个git push 都发布到线上
 
 lerna bootstrap 删除项目的node_modules 目录之后， 根据项目中的package.json重新安装依赖， 默认重新安装所有项目的依赖
 
