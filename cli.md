@@ -185,7 +185,7 @@ npm发布流程
 
 1. npm login 登录npm
 
-2. npm publish 发布npm包
+2. 可以通过指令，也可以通过手动改版本号，npm publish 发布npm包
 
 3. 需要给包加前缀名， 要先去npm网站上注册
 
