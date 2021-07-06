@@ -85,6 +85,14 @@ ln -s ./test test2
 
 30. 把一个包发布到npm上， 然后在这个包项目所在目录中下执行npm i -g 这个包， 这时不会在node的安装目录下的lib目录中的node_modules中安装远程的包，而是因为在当前执行（npm i -g 包名） 这个命令的目录下可以找到这个包， 所以直接会在node的安装目录下的lib目录中的node_modules中创建一个指向本地项目路径的软链， 软链名称是报包名， 所以我们就可以通过这种方式进行本地调试，然后如果这个包是一个cli那么在node的安装目录下的bin目录还会根据这个包的package.json中的配置， 生成一个value 指向cli可执行文件的软链， 这个软链的获取路径都是从node安装目录下lib目录的node_modules目录为基准的，如果node安装目录下lib目录的node_modules目录中的包为软链， 那么再找包的可执行文件的时候， 就以这个软链为基准接着往下找, 这个软链就表示软链指向的路径
 
+31. 更好的本质依赖调试  在package.json的依赖中将依赖的版本号， 修改为 'file:// ../utils'(本地项目的文件地址)， 然后在全局安装这个包，然后就在node 安装目录下就
+
+32. yargs npm 包可以帮助创建脚手架，就是接收命令， 作用和commomd相同， 但是这个更好用
+
+33.
+
+
+
 ### lerna 源码解析学习
 
 1. lerna 是一个项目管理工具， 它也是一个脚手架, 可以多个项目代码git提交， 多个项目npm包发布， 基于npm+git实现， 实现重复操作， 版本一致性
@@ -106,14 +114,15 @@ package.json
 }
 
 lerna.json
-
+lerna 需要处理的目录
 {
   "packages": [
     "packages/*"
   ],
-  // lerna
+  // 独立模式的版本不一定所有版本都一致
   "version": "independent",
   "useWorkspaces": true,
+  // 使用什么npm安装工具
   "npmClient": "yarn"
 }
 #### lerna使用流程
@@ -137,9 +146,12 @@ lerna run 默认执行所有项目下的 npm 指令， 也可以执行单个项�
 
 lerna version 默认给所有项目添加版本号，也可以给单个项目添加版本号
 
-lerna publish 默认将所有项目发布到npm， 也可以将单个项目发布到npm
+lerna publish 只有项目git commit 了之后， 才可以执行，git commit 之后l执行过lerna publish， lerna publish后选择项目的版本号， 渲染版本号之后，lerna 会修改项目的版本号，
+然后将修改的部分自动add + commit，然后在这次的commit上加一个以项目名称和版本号组成的tag， 然后将所有commit 和tag 全都push到线上
 
 lerna bootstrap 删除项目的node_modules 目录之后， 根据项目中的package.json重新安装依赖， 默认重新安装所有项目的依赖
+
+lerna 是和git 配合使用的，lerna不能完全替代git
 
 
 npm发布流程
@@ -149,6 +161,22 @@ npm发布流程
 2. npm publish 发布npm包
 
 3. 需要给包加前缀名， 要先去npm网站上注册
+
+4. npm 发布 想发布到哪个npm服务就 在npm镜像 通过nrm 切换到对应的npm镜像， 然后npm login 登录，
+就是登录的对应镜像的npm 服务， 然后npm publish 就可以将npm包发布到对应的镜像的npm服务了
+
+
+lerna源码分析
+
+找到入口文件可以调试
+
+打断点调试我们源码执行
+
+使用import-local npm包  lerna 的实现
+
+
+
+
 
 
 
