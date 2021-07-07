@@ -360,6 +360,50 @@ function isTrueString(string) {
     return !stack.length;
 }
 
+
+有效数字第二遍
+
+var isValid = function(string) {
+    if (!string) {
+        return false;
+    }
+
+    const stack = [];
+    for(let i = 0; i < string.length; i++) {
+        const item = string[i];
+        if (item === '(') {
+            stack.push(')');
+        }
+        if (item === '[') {
+            stack.push(']');
+        }
+        if (item === '{') {
+            stack.push('}');
+        }
+
+        if (item === ')') {
+            const popitem = stack.pop();
+            if (popitem !== ')') {
+                return false;
+            }
+        }
+        if (item === ']') {
+            const popitem = stack.pop();
+            if (popitem !== ']') {
+                return false;
+            }
+        }
+        if (item === '}') {
+            const popitem = stack.pop();
+            if (popitem !== '}') {
+                return false;
+            }
+        }
+    }
+
+    return !stack.length;
+};
+
 ```
 
 13. 12题的进阶，给定一个只包含三种字符的字符串：（ ，） 和 * ，写一个函数来检验这个字符串是否为有效字符串。有效字符串具有如下规则
@@ -434,7 +478,49 @@ function isTrueString(string) {
     return true;
 }
 
+第二遍进阶字符串
+var checkValidString = function(string) {
+    if (!string) {
+        return false;
+    }
 
+    const stack = [];
+    const star = [];
+
+    for(let i = 0; i < string.length; i++) {
+        const item = string[i];
+
+        if (item === '(') {
+            stack.push(i);
+        }
+        if (item === '*') {
+            star.push(i);
+        }
+
+        if (item === ')') {
+            if (!stack.length && !star.length) {
+                return false;
+            }
+            if (stack.length) {
+                stack.pop();
+            } else {
+                star.pop();
+            }
+        }
+    }
+
+    if (stack.length > star.length) {
+        return false;
+    } else {
+        while(stack.length) {
+           if (stack.pop() > star.pop()) {
+               return false;
+           }
+        }
+    }
+
+    return true;
+};
 
 
 #### 实现一个观察者模式
@@ -1335,6 +1421,24 @@ var maxSubArray = function(nums) {
 
    return max;
 };
+
+
+function maxSum(arr) {
+    if (!arr) {
+        return null;
+    }
+
+    let max = arr[0];
+    let sum = arr[0];
+
+    for(let i = 1; i < arr.length; i++) {
+        sum = Math.max(sum + arr[i], arr[i]);
+        max = Math.max(sum, max);
+    }
+
+    return max;
+}
+
 
 将数组中的0都移动到后面
 flag 不是0 加， 是0停
