@@ -1336,6 +1336,24 @@ var maxSubArray = function(nums) {
    return max;
 };
 
+
+function maxSum(arr) {
+    if (!arr) {
+        return null;
+    }
+
+    let max = arr[0];
+    let sum = arr[0];
+
+    for(let i = 1; i < arr.length; i++) {
+        sum = Math.max(sum + arr[i], arr[i]);
+        max = Math.max(sum, max);
+    }
+
+    return max;
+}
+
+
 将数组中的0都移动到后面
 flag 不是0 加， 是0停
 function toAfterZero(arr) {

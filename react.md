@@ -95,5 +95,61 @@ react 根据事件名称判断事件触发的时机， 带有capture的事件就
 如果在父元素上注册了相同事件， 捕获和冒泡执行的两种情况， 这个时候事件收集阶段只会把和作为目标元素的子元素的相同触发阶段的事件收集
 
 
+### createElement 源码理解
+
+createElement接受三个或更多参数 createElement(type, config, children ,children),
+除了前两个参数以外都是children, createElement内部会通过arguments 获取所有的children到一个数组， 然后把这个数组设置给传给这个组件的props.children属性
+
+type 表示当前createElement创建的是什么react元素， 是类组件，函数组件，react 原生元素， react提供的例如Suspends这样的组件
+
+config 就是父组件传给这个组件的props,然后组件内部筛选出这四个属性 __self, __source, key, ref, 然后其余属性作为props传给组件内部
+
+
+createElement最后返回的就是一个对象
+
+这个对象包括 {
+  // 这是表示这个元素是什么react 类型， 只要是jsx 都是REACT_ELEMENT_TYPE类型的
+  $$typeof: REACT_ELEMENT_TYPE,
+  // 我们给元素传的key
+  key: key,
+  // 我们给元素传的ref
+  ref: ref,
+  // 这个元素是什么类型的react元素
+  type: type,
+  // 筛选过后可以传给组件内部的props
+  props: props
+  //这个之后在了解
+  __owner: owner
+}
+
+
+### Fiber 架构的理解
+reactDom.render执行之后， 生成一个FiberRoot 对象，
+这个对象 包括很多属性{
+ containerInfo: rootDOM 这个属性存放的值， 就是reactDOM.render的第二个参数， 就是项目要挂载的根节点
+
+ current: Fiber 这个属性存放的值就是整个项目最后生成这个fiber
+}
+
+fiber是一个对象，主要结构就是
+
+{
+  return: 父节点
+
+  child: 第一个子接点
+
+  sibling: 右侧的兄弟节点
+}
+
+fiber 查找节点的规则就是， 先找到自己的第一个子节点，如果还有直接点就通过第一个子节点的sibling获取，如果还是子节点就通过sibling的sibling获取获取， 以此类推，直到没有子节点了， 也没有兄弟节点了，然后返回父节点， return就表示父节点， return就是为了子节点返回父节点，所以才设置的值
+
+
+fiber 架构 就是根据fiber这个数据结构实现的，这个优化的架构, fiber 整体是一个树形结构
+
+
+
+
+
+
 
 
