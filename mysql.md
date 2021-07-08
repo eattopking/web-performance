@@ -21,3 +21,6 @@ docker run -p 3306:3306 --name mysql -v /mydocker/mysql/conf:/etc/mysql/conf.d -
 
 mydocker 就是我们自己创建的存储容器数据的主机目录
 ```
+
+3. 这就是数据链接成功的意思
+Executing (default): SELECT 1+1 AS result

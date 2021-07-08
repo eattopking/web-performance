@@ -231,6 +231,20 @@ ios 手机、pad 上使用 stream 软件抓包
     // redux 设置异步action，就是设置action可以使用函数
     "redux-thunk": "^2.3.0"
 
+
+### rn 获取异常日志的方式
+
+安卓的底层原理
+Android 提供了一个异常捕获接口 Thread.UncaughtExceptionHandler 用于捕获未被处理的异常。
+
+ios的底层原理
+iOS 通常利用 NSSetUncaughtExceptionHandler 设置全部的异常处理器，当异常情况发生时，会执行其设置的异常处理器
+
+然后基于安卓和Ios的原理实现的rn获取异常的npm包是 react-native-exception-handler,
+就可以在rn设置对于多端的错误异常监听了
+
+
+
 问题：
 
 1. 为什么选择Rn
@@ -358,6 +372,9 @@ rn通过 nativeModules获取native传递给rn的模块，ios底层使用nativeFl
 八. 我项目中有代表性的功能亮点， 说明白
 
 目前就想到这么多， 想到接着看， 肯定有， 看完这些在查查
+
+
+
 
 
 
