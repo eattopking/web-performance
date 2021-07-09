@@ -45,6 +45,9 @@ ssh-keygen -f test -t rsa
 
 2. git插件配置
 
+需要将jenkins所在服务器的公钥配置到github上，
+然后在把jenkins所在服务器的私钥配置到jenkins中
+
 ![jenkins git配置](./images/git-plugin-jenkins.png)
 
 ![jenkins git ssh配置](./images/git-plugin-ssh-jenkins.png)
