@@ -105,7 +105,7 @@ type 表示当前createElement创建的是什么react元素， 是类组件，�
 config 就是父组件传给这个组件的props,然后组件内部筛选出这四个属性 __self, __source, key, ref, 然后其余属性作为props传给组件内部
 
 
-createElement最后返回的就是一个对象
+createElement最后返回的就是一个对象， 返回的对象就是虚拟dom
 
 这个对象包括 {
   // 这是表示这个元素是什么react 类型， 只要是jsx 都是REACT_ELEMENT_TYPE类型的
@@ -124,6 +124,8 @@ createElement最后返回的就是一个对象
 
 
 ### Fiber 架构的理解
+
+#### FiberRoot对象
 reactDom.render执行之后， 生成一个FiberRoot 对象，
 这个对象 包括很多属性{
  containerInfo: rootDOM 这个属性存放的值， 就是reactDOM.render的第二个参数， 就是项目要挂载的根节点
@@ -131,6 +133,7 @@ reactDom.render执行之后， 生成一个FiberRoot 对象，
  current: Fiber 这个属性存放的值就是整个项目最后生成这个fiber
 }
 
+#### fiber对象
 fiber是一个对象，主要结构就是
 
 {
@@ -145,6 +148,21 @@ fiber 查找节点的规则就是， 先找到自己的第一个子节点，如�
 
 
 fiber 架构 就是根据fiber这个数据结构实现的，这个优化的架构, fiber 整体是一个树形结构
+
+### reactDOM.render 执行过程
+
+1. reactDom.render, 执行之后会调用一个方法创建FiberRoot
+
+2. 计算出一个expirationTime ， 用于react, 进行优先级任务的更新
+
+3. 创建一个update 用来标记react应用中需要更新的地点，然后给这个update对象添加一些属性
+
+4. 然后将创建的update， 调用enqueueUpdate, 将update这个更新， 添加react应用对应的Fiber的
+updateQueue中， 一个react引用中的更新都会先将这些更新收集到updateQueue中， 然后在进行统一的更新，这就是react的批量更新的原理
+
+5. 然后调用scheduleWork方法， 告诉react， 出现了更新， 让react去调度更新， 这就是fiber架构的一部分， 任务优先级， 优先级高的任务先执行，提高性能， 避免浏览器主线程被优先级低的任务占用事件过长，导致页面性能下降
+
+从react16 开始有任务优先级的
 
 
 
