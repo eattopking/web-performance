@@ -65,6 +65,10 @@ connect和provider可以通信的原因是，react-redux内部是通过context�
 redux的使用还需要在看一遍
 
 
+### create-react-app
+创建的项目配置文件， webpack 配置会隐藏起来默认， 可以通过npm run eject 将隐藏的配置目录显示出来
+
+
 ### react 事件机制的实现
 
 1. 首先我们react元素上注册的不是原生事件， 是合成事件， 因为我们react是虚拟dom， 我们注册事件的时候只是往fiber的props上加了属性， 还有不同浏览器之间在事件处理上有一些差异， 所以使用合成事件还有合成事件对象可以磨平不同浏览器的差异，通过react内部的判断
