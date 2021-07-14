@@ -1422,48 +1422,6 @@ var maxSubArray = function(nums) {
    return max;
 };
 
-
-function maxSum(arr) {
-    if (!arr) {
-        return null;
-    }
-
-    let max = arr[0];
-    let sum = arr[0];
-
-    for(let i = 1; i < arr.length; i++) {
-        sum = Math.max(sum + arr[i], arr[i]);
-        max = Math.max(sum, max);
-    }
-
-    return max;
-}
-
-
-将数组中的0都移动到后面
-flag 不是0 加， 是0停
-function toAfterZero(arr) {
-
-    if (!arr) {
-        return null;
-    }
-
-    let flag = 0;
-
-    for(let i = 0; i < arr.length; i++) {
-        if (arr[i] !== 0) {
-            if (arr[flag] === 0) {
-                arr[flag] = arr[i];
-                arr[i] = 0;
-            }
-            flag++;
-        }
-    }
-
-    return arr;
-
-}
-
 中等难度
 
 面试题 01.05. 一次编辑
