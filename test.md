@@ -468,11 +468,10 @@ describe('mock测试组', () => {
 // results: [ { type: 'return', value: 1111 }, { type: 'return', value: 1111 }, { type: 'return', value: 1111 } ] } // 表示mock函数被调用的时候，自己模拟的返回值
 
 
-测试请求第二种方式，在项目根目录下创建一个__mocks__目录， 创建一个和我们将要测试的文件名称相同的文件，在里边写上相同名称的测试方法， 在测试用例文件中使用jest.mock 引用就可以直接验证 我们写的测试方法了
+测试请求第二种方式，创建一个__mocks__目录， 在__mocks__中创建一个和我们引用模块相同名称的js文件， 这个时候我们在测试用例文件中，引用我们源文件， 会直接变成引用__mocks__中创建创建的和原模块相同名称的js文件， 达到mock的效果
 
 
-// jest.mock 是设置在我们import { bbb } from '../demo.js';的时候是从__mocks__目录下的demo.js文件中获取API
-jest.mock('../demo.js');
+// 我们import { bbb } from '../demo.js';的时候是从__mocks__目录下的demo.js文件中获取API
 
 // jest.unmock是在import { bbb } from '../demo.js'的时候，取消从__mocks__目录下的demo.js文件中获取API
 // jest.unmock('../demo.js');
@@ -492,9 +491,6 @@ test('mock 请求测试用例aaa', async () => {
         expect(data).toEqual(111111);
     });
 });
-
-// 目前只能获取到在项目根目录设置的原始文件，然后在项目根目录中创建__mocks__目录，在__mocks__目录中创建相同名称的文件用于测试用例获取进行测试，
-// 其他情况现在还没有跑通，之后再看
 
 12. jest 中快照使用
 
