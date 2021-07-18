@@ -134,8 +134,12 @@ reactDom.render执行之后， 生成一个FiberRoot 对象，
 这个对象 包括很多属性{
  containerInfo: rootDOM 这个属性存放的值， 就是reactDOM.render的第二个参数， 就是项目要挂载的根节点
 
- current: Fiber 这个属性存放的值就是整个项目最后生成这个fiber
+ current: rootFiber 这个属性存放的值就是整个项目最后生成这个fiber
 }
+
+rootFiber.current 就是reactDom.render第一个参数的fiber
+
+
 
 #### fiber对象
 fiber是一个对象，主要结构就是
@@ -143,12 +147,12 @@ fiber是一个对象，主要结构就是
 {
   return: 父节点
 
-  child: 第一个子接点
+  child: 第一个子节点
 
   sibling: 右侧的兄弟节点
 }
 
-fiber 查找节点的规则就是， 先找到自己的第一个子节点，如果还有直接点就通过第一个子节点的sibling获取，如果还是子节点就通过sibling的sibling获取获取， 以此类推，直到没有子节点了， 也没有兄弟节点了，然后返回父节点， return就表示父节点， return就是为了子节点返回父节点，所以才设置的值
+fiber 查找节点的规则就是， 先找到自己的第一个子节点，如果自己点还有子节点就接着往下找， 找到没有子节点的了就看有没有兄弟节点， 如果兄弟节点有子节点接着找兄弟节点的子节点， 如果没有子节点就看看有没有兄弟节点，有兄弟节点接着找兄弟节点， 没有兄弟节点直接返回父节点， 在父节点按照这个规则继续查找
 
 
 fiber 架构 就是根据fiber这个数据结构实现的，这个优化的架构, fiber 整体是一个树形结构
@@ -159,14 +163,34 @@ fiber 架构 就是根据fiber这个数据结构实现的，这个优化的架�
 
 2. 计算出一个expirationTime ， 用于react, 进行优先级任务的更新
 
-3. 创建一个update 用来标记react应用中需要更新的地点，然后给这个update对象添加一些属性
+3. 创建一个update 用来记录更新的相关信息
 
-4. 然后将创建的update， 调用enqueueUpdate, 将update这个更新， 添加react应用对应的Fiber的
-updateQueue中， 一个react引用中的更新都会先将这些更新收集到updateQueue中， 然后在进行统一的更新，这就是react的批量更新的原理
+4. 然后将创建的update， 调用enqueueUpdate, 将update这个更新， 添加到对应react组件的Fiber的
+updateQueue中， react组件中的更新都会先将这些更新收集到updateQueue中， 然后在进行统一的更新，这就是react的批量更新的原理
 
 5. 然后调用scheduleWork方法， 告诉react， 出现了更新， 让react去调度更新， 这就是fiber架构的一部分， 任务优先级， 优先级高的任务先执行，提高性能， 避免浏览器主线程被优先级低的任务占用事件过长，导致页面性能下降
 
 从react16 开始有任务优先级的
+
+update的主要结果
+
+{
+  expirationTime: 更新过期时间
+  payload: 要更新的内容，update更新不止是state更新，还可以是组件内容更新等
+  tag: 更新的类型分为： 0(正常更新)，1(替换更新)，2(强制更新)，3（捕获错误的更新）四种
+  next: 下一个update
+}
+
+
+updateQueue 是一个对象
+
+{
+  baseState: state, 最近更新完成的state
+  firstUpdate: update,firstUpdate是一个单向链表记录这个组件所有的更新，我们所有的更新就记录在这上边
+  lastUpdate: 链表上最后一个更新
+}
+
+
 
 
 
