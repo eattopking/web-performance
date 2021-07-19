@@ -150,6 +150,8 @@ fiber是一个对象，主要结构就是
   child: 第一个子节点
 
   sibling: 右侧的兄弟节点
+
+  updateQueue: 存储更新队列
 }
 
 fiber 查找节点的规则就是， 先找到自己的第一个子节点，如果自己点还有子节点就接着往下找， 找到没有子节点的了就看有没有兄弟节点， 如果兄弟节点有子节点接着找兄弟节点的子节点， 如果没有子节点就看看有没有兄弟节点，有兄弟节点接着找兄弟节点， 没有兄弟节点直接返回父节点， 在父节点按照这个规则继续查找
@@ -175,7 +177,7 @@ updateQueue中， react组件中的更新都会先将这些更新收集到update
 update的主要结果
 
 {
-  expirationTime: 更新过期时间
+  expirationTime: 过期更新时间
   payload: 要更新的内容，update更新不止是state更新，还可以是组件内容更新等
   tag: 更新的类型分为： 0(正常更新)，1(替换更新)，2(强制更新)，3（捕获错误的更新）四种
   next: 下一个update
@@ -189,6 +191,25 @@ updateQueue 是一个对象
   firstUpdate: update,firstUpdate是一个单向链表记录这个组件所有的更新，我们所有的更新就记录在这上边
   lastUpdate: 链表上最后一个更新
 }
+
+### expirationTime
+
+1. 在react的任务优先级中，异步的任务优先级是比较低的， 是可以被优先级更高的同步任务打断的，
+但是为了防止异步任务一直被打断，导致异步任务无法被执行，所以每个异步任务根据优先级都会有一个过期更新时间（expirationTime），过了这个时间异步任务就会被强制执行了， 不能被打断了， 这是expirationTime的第一个作用
+
+2. 同步任务和指定context也有expirationTime（过期更新时间）
+
+### setState
+
+1. setState就是创建一个update(更新)， 将这个更新添加到对应组件的Fiber的updateQueue对象中的存储更新链表的字段上，等之后的统一更新
+
+2.
+
+
+
+
+
+
 
 
 
