@@ -130,15 +130,16 @@ createElement最后返回的就是一个对象， 返回的对象就是虚拟dom
 ### Fiber 架构的理解
 
 #### FiberRoot对象
+fiberRoot 是 reactDOM.render的第二个参数，这个dom对象上的一个属性
+
 reactDom.render执行之后， 生成一个FiberRoot 对象，
 这个对象 包括很多属性{
  containerInfo: rootDOM 这个属性存放的值， 就是reactDOM.render的第二个参数， 就是项目要挂载的根节点
 
- current: rootFiber 这个属性存放的值就是整个项目最后生成这个fiber
+ current: HostRoot 执行一次reactDom.render 创建的react应用的 fiber tree的根节点
 }
 
-rootFiber.current 就是reactDom.render第一个参数的fiber
-
+HostRoot.child 就是reactDom.render第一个参数传入的这个react组件的fiber
 
 
 #### fiber对象
@@ -204,6 +205,21 @@ updateQueue 是一个对象
 1. setState就是创建一个update(更新)， 将这个更新添加到对应组件的Fiber的updateQueue对象中的存储更新链表的字段上，等之后的统一更新
 
 2.
+
+
+react fiber 架构的流程
+
+1. 触发react创建更新的操作的有三种分别是 ReactDom.render(),  setState, forceUpdate
+
+2. 触发更新的时候, 通过expirationTime的值区分任务的等级， 如果使同步任务就立即执行，和有fiber之前的处理方式一样
+
+3. 如果是异步任务，就进入调度流程，将异步任务放在requestIdlCallback(callback) 回调中， 等到浏览器空闲了再去执行这个异步任务，并且在执行异步任务的时候react还会计时，如果超过时间会中断执行的异步任务，在注册一个requestIdlCallback(callback) 回调， 将没有执行完的异步任务，放在注册的回调中，等待下次浏览器空闲在执行，
+当浏览器的空闲的时候，执行requestIdlCallback(callback) 回调的时候， 如果有异步任务已经expirationTime 已经过期的话， 那就会将过期的任务都执行完， 直到执行到第一个没有过期的任务，如果还有时间执行任务就继续执行， 如果没有时间了，那就将控制权交给浏览器
+
+4.
+
+
+
 
 
 
