@@ -374,6 +374,73 @@ rn通过 nativeModules获取native传递给rn的模块，ios底层使用nativeFl
 目前就想到这么多， 想到接着看， 肯定有， 看完这些在查查
 
 
+### react Native 架构原理
+
+1. 通过Metro将react-native代码编译成jsbundle
+
+2. 在hermes js引擎中执行jsbundle(逻辑线程, 逻辑线程也是在原生项目中的)
+
+2.1 hermes 在0.64在ios中也被使用了, 原来只有在安卓中使用
+
+2.2 hermes在安卓和ios打包的时候将js转换为hermes bytecode, 减小了jsbundle的体积, 从而减小整个APP包的大小
+
+2.3 hermes的使用减小了安卓的首屏启动时间, 解决了内存占用的问题
+
+2.4 hermes 执行hermes bytecode的速度很快, 直接执行js速度不如jsc和v8
+
+2.5 js引擎是放在原生的包里的, 设置使用hermes引擎需要在原生代码中设置
+
+2.6 rn0.64 版本中ios 支持使用hermes了, hermes中支持es6的proxy了
+
+2.7 rn0.64版本中metro构建的时候支持构建处理jsbundle按需加载, 是rn代码按需加载不是原生模块按需加载
+
+2.8 0.64 支持了react17
+
+bridge特点:
+2.9 异步通信
+2.10 传递的数据是json, 需要序列化和反序列化, 这里也比较耗时
+2.11 bridge 交互需要批量处理, 不是同步的
+
+3. 将jsbundle中虚拟dom树传递给原生端(渲染线程)
+
+3.1 通过jsi(jsi可以在js中直接获取原生模块)和bridge进行逻辑层和渲染的通信, 不使用json序列化和反序列化这个数据形式传递数据了
+
+3.2 jsi(javascript interface通过C++实现, 可以让逻辑的js直接拿到原生渲染层的模块, 不需要通过bridge异步拿到了)
+
+
+4. 在渲染线程将虚拟dom转换成shadow tree
+
+5. 然后通过yoga 将shadow tree flex布局转换成原生布局, 渲染原生内容
+
+6. 拆分rn, 这个已经完成, 将一些组件和api 拆分到react-native-community包中, 这个已经完成了
+
+
+最新的rn架构和现在的架构不同点
+
+1. fabric就是新架构中处理native渲染层渲染的, 并且通过fabric将native的模块导出为js对象, 可以让逻辑层中js引用, 逻辑层中也可以引用js中对象通过jsi
+
+2. jsi 就是处理新架构中渲染和逻辑层通信的(jsi现在已经实现)
+
+3. turbomodule 实现native模块的按需加载, 在初始化的时候只加载首页需要的native模块, 现在是全部native模块都加载
+
+4. CodeGen 将ts转换为原生代码
+
+
+rn应用启动流程
+
+1. 启动app
+
+2. 加载全部native模块
+
+3. 加载执行jsbundle
+
+4. 在逻辑层将虚拟dom传递给native渲染层后,将虚拟dom转换为shadow tree
+
+6. yoga将shadow tree中的flex布局转换为原生布局
+
+7. 渲染原生内容
+
+
 
 
 
