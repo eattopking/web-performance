@@ -361,7 +361,7 @@ rn通过 nativeModules获取native传递给rn的模块，ios底层使用nativeFl
 
 6. react-native内部通过jsBrige实现js 和 native 的互相通信, jsbridge的作用就是js引擎提供原生的扩展， 让js代码可以引用原生方法, 就是在初始化的时候将原生的方法和模块打包成json格式给js引擎，准确的说是给messagequeue;
 
-7. react-native 0.64版本使用了最新的hermes 引擎，提升了安卓端的性能， 缩短了启动时间， 减小了内存使用， 由于appstore的一些限制， 所以hermes没有应用在ios端
+7. react-native 0.64版本ios也使用了最新的hermes引擎，hermes引擎提升了安卓端的性能， 缩短了启动时间， 减小了内存使用
 
 8. react-native 和 native 的通信的异步的， 所以在进行大量实时交互的时候，会有一些性能问题， 比如大量的动画等， 但是我们的app不涉及大量的实时交互问题， 所以用起来没问题
 
