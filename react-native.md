@@ -140,10 +140,10 @@ ios 手机、pad 上使用 stream 软件抓包
 
 ### 踩坑
 
-1. 在做手机中， 如果元素绝对定位超出了父元素的范围， 超出的子元素的点击事件就失效了，
+1. 安卓手机上， 如果元素绝对定位超出了父元素的范围， 超出的子元素的点击事件就失效了，
 解决方案就是给父元素写固定高度， 不让定位的元素超出父元素的范围
 
-2. react-native App.js这个组件只有app启动初始化的时候才初始化一次, 其他的时候不会有任何的更新\
+2. react-native App.js这个组件只有app启动初始化的时候才初始化一次, 其他的时候不会有任何的更新
 
 3. 安卓打包勾选v1，V2导致打的报出现bug， 只勾选v2就没问题
 
@@ -350,7 +350,9 @@ react-native 和native相比的优点
 
 react-native 通过内部实现的bridge实现rn和native的通信，react-native在Appregistry.registerComponent初始化的时候通过jsBridge获得原生内容,实现rn和native端的通信， 例如ios端就是使用RCTBridge 创建实例
 
-正常的native和js的相互通信就是以js的全局对象为媒介， 在native端例如ios使用JSContext 创建一个js的全局上下文,这个全局上下文就是和js中的全局变量指向相同，native端在js全局上下文上添加原生方法， js就可以通过全局变量获取并调用， js在全局变量中添加方法， 然后native端就可以通过创建的js全局上下文获取到js添加的方法并调用,但是这样会导致js全局变量的污染
+正常的native和js的相互通信就是以js的全局对象为媒介， 在native端例如ios使用JSContext 创建一个js的全局上下文,这个全局上下文就是和js中的全局变量指向相同，native端在js全局上下文上添加原生方法， js就可以通过全局变量获取并调用， js在全局变量中添加方法， 然后native端就可以通过创建的js全局上下文获取到js添加的方法并调用,但是这样会导致js全局变量的污染, 但是现在的rn bridge也是使用这个原理在js 全局变量上添加native提供的模块实现native和js的通信
+
+jsBridge 是通过native 代码实现的, 通过将全局对象作为媒介实现逻辑层和渲染层的通信, native端可以获取js的全局对象,实现了native端可以获取js全局对象上的方法进而可以操作js, 应用初始化的时候 bridge就将原生模块通过Json的形式传递给逻辑层, 然后挂载到js的全局对象上
 
 rn通过 nativeModules获取native传递给rn的模块，ios底层使用nativeFlushQueueImmediate 获取native的模块， js获取native的模块逻辑, ios 是通过JSIExecuter将原生方法指向global.batchedBridge上边的js方法， 实现ios引用js方法
 
