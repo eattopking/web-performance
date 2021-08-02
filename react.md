@@ -224,25 +224,33 @@ updateQueue 是一个对象
 
 3.3 在同一个fiberRoot再次触发更新的时候, 会将新一次更新的expirationTime和fiberRoot上之前的expirationTime做比较, 如果新的expirationTime更小, 说明新的更新优先级更高, 就将fiberRoot的expirationTime 替换成更小的这个, 优先执行优先级更高的任务, 更新都是从顶部向下更新的, 就是从fiberRoot开始向子级更新, 优先级高的任务执行的时候, 会将优先级低的任务执行一部分的结果重置
 
-3.4 如果react中的更新都已处理完毕, 那就将lastScheduledRoot和firstScheduledRoot都设置为null, 最开始没有更新的时候
-lastScheduledRoot和firstScheduledRoot也是null
+3.4 如果react中的更新都已处理完毕, 那就将lastScheduledRoot和firstScheduledRoot都设置为null, 最开始没有更新的时候lastScheduledRoot和firstScheduledRoot也是null
 
 3.5 处理更新的时候, 通过expirationTime的值区分任务的等级， 如果值是sync(同步任务)就会立即执行这个任务不会被打断，一直占用浏览器主线程到将任务处理完毕(处理完毕也是在render阶段), 如果是异步任务, expirationTime越小的优先级越高, 异步任务可以在render阶段可以中断
 
-3.6 如果是异步任务，就进入调度流程，将异步任务放在requestIdlCallback(callback) 回调中， 等到浏览器空闲了再去执行这个异步任务，并且在执行异步任务的时候react会设置一个deadline(时间片)，如果超过deadline就会中断执行的异步任务，在注册一个requestIdlCallback(callback) 回调， 将没有执行完的异步任务，放在注册的回调中，等待下次浏览器空闲在执行，
-当浏览器的空闲的时候，执行requestIdlCallback(callback) 回调的时候， 如果有异步任务的expirationTime 已经过期的话， 那就会将过期的任务都执行完， 直到执行到第一个没有过期的任务，执行行完过期任务之后如果时间没有超过deadline那就继续执行其他优先级高的异步任务，如果时间超过deadline ，那就将浏览器主线程控制权交给浏览器
+3.6 这就是fiber架构的一部分， 任务优先级， 优先级高的任务先执行，提高性能， 避免浏览器主线程被优先级低的任务占用事件过长，导致页面性能下降, 从react16 开始有任务优先级的
 
-3.7 这就是fiber架构的一部分， 任务优先级， 优先级高的任务先执行，提高性能， 避免浏览器主线程被优先级低的任务占用事件过长，导致页面性能下降, 从react16 开始有任务优先级的
+4. 如果expirationTime判断是异步任务,就使用scheduler包进行异步调度, 判断当前任务的expirationTime和正在处理的异步任务那个优先级高, 如果当前任务的优先级更高, 那就通过执行上一个任务的时候设置的callbackId全局变量, 撤销上一个正在执行的任务, 然后执行新的任务, 并且将执行新任务返回的callbackId赋值给全局变量callbackId
 
-4. react commit 阶段
+4.1 react的目的就是保证浏览器每秒可以刷新30次(就是每秒30帧的意思), react保证每帧react处理占用的时间最多的22ms, 浏览器每帧占用11ms, 正常每帧的时间就是33ms
 
-4.1 将合并好的state批量更新
+4.2 时间片就是react处理占用的这22ms
 
-4.2 将最终处理好的fiber tree 进行页面渲染
+4.3 将异步回调加入到异步回调队列中, 根据expirationTime排列顺序
 
-4.3 执行Effect List中的副作用
+4.4 如果是异步任务，就进入调度流程，将异步任务放在requestIdlCallback(callback)回调中， 等到浏览器空闲了再去执行这个异步任务，并且在执行异步任务的时候react会设置一个deadline(时间片)，如果超过deadline就会中断执行的异步任务，在注册一个requestIdlCallback(callback) 回调， 将没有执行完的异步任务，放在注册的回调中，等待下次浏览器空闲在执行，当浏览器的空闲的时候，执行requestIdlCallback(callback) 回调的时候， 如果有异步任务的expirationTime 已经过期的话， 那就会将过期的任务都执行完， 直到执行到第一个没有过期的任务，执行行完过期任务之后如果时间没有超过deadline那就继续执行其他优先级高的异步任务，如果时间超过deadline ，那就将浏览器主线程控制权交给浏览器
 
-4.3 执行生命周期函数
+
+
+5. react commit 阶段
+
+5.1 将合并好的state批量更新
+
+5.2 将最终处理好的fiber tree 进行页面渲染
+
+5.3 执行Effect List中的副作用
+
+5.4 执行生命周期函数
 
 
 
