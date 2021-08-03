@@ -207,13 +207,15 @@ updateQueue 是一个对象
 
 1.5.4 所以说setState本身的执行是同步的, 只是react内部通过将包含setState的函数传入batchedUpdates中, 在执行之前将isBatchingUpdates更新true, 不能进行更新, 只有在包含setState的函数执行完毕后, 在将isBatchingUpdates设置为false, 然后统一更新state
 
+scheduler包进行调度
+
 2. 内部调用scheduleWork方法 处理调度, 给scheduleWork 方法传入当前更新组件的fiber和当前更新任务的expirationTime, 然后通过传入的fiber对象, 找到这个fiber对象对应的FiberRoot
 
 2.1 通过判断当前fiber的expirationTime, 是不是没有过更新, 没有更新就将最新更新的expirationTime赋值给fiber的expirationTime, 最新更新的expirationTime和当前fiber.expirationTime比较, 如果最新更新的expirationTime更小,那就是优先级更高, 直接赋值给fiber.expirationTime
 
 2.2 通过fiber的return属性, 逐级向上查找父级, 最终找到fiberRoot
 
-2.3 新的更新任务优先级高于老的任务优先级, 老的任务正在执行时会被打断, 高优先级的任务会被先执行, 之前低优先级任务已经执行的部分会被还原, 调用resetStack中断, 将之前处理一部分的低优先级的任务还原, 只有isWorking是false或者iscommiting是true, 才可以继续更新,isWorking表示正在工作(包括render阶段和commit阶段), iscommiting 表示正在提交阶段(正在提交阶段就是将最终的fiber tree渲染到页面上, 提交阶段还可以继续触发render阶段的更新,互不影响)
+2.3 在同一个fiberRoot上新的更新任务优先级高于老的任务优先级, 老的任务正在执行时会被打断, 高优先级的任务会被先执行, 之前低优先级任务已经执行的部分会被还原, 调用resetStack中断, 将之前处理一部分的低优先级的任务还原, 只有isWorking是false或者iscommiting是true, 才可以继续更新,isWorking表示正在工作(包括render阶段和commit阶段), iscommiting 表示正在提交阶段(正在提交阶段就是将最终的fiber tree渲染到页面上, 提交阶段还可以继续触发render阶段的更新,互不影响)
 
 
 3. requestWork 将发生更新的fiberRoot加入fiberRoot调度队列, fiberRoot调度队列是个链表, 然后判断是否可以进行批量更新, 通过isBatchingUpdates(如果是true就不可以批量更新) 还有isUnBatchingUpdates(如果是false就不可以进行批量更新), 如果可以进行批量更新, 是同步任务就执行, 是异步任务就开始异步调度
@@ -222,47 +224,56 @@ updateQueue 是一个对象
 
 3.2 每个fiberRoot上边都有nextScheduledRoot属性, 指向fiberRoot链表的下一项, 如果react应用中只有一个fiberRoot, 那么fiberRoot的nextScheduledRoot就是fiberRoot自身
 
-3.3 在同一个fiberRoot再次触发更新的时候, 会将新一次更新的expirationTime和fiberRoot上之前的expirationTime做比较, 如果新的expirationTime更小, 说明新的更新优先级更高, 就将fiberRoot的expirationTime 替换成更小的这个, 优先执行优先级更高的任务, 更新都是从顶部向下更新的, 就是从fiberRoot开始向子级更新, 优先级高的任务执行的时候, 会将优先级低的任务执行一部分的结果重置
+3.3 如果不同fiberRoot触发更新,那就执行优先级更高的那个fiberRoot的任务, 优先级低的那个任务被取消
 
-3.4 如果react中的更新都已处理完毕, 那就将lastScheduledRoot和firstScheduledRoot都设置为null, 最开始没有更新的时候lastScheduledRoot和firstScheduledRoot也是null
+3.4 在同一个fiberRoot再次触发更新的时候, 会将新一次更新的expirationTime和fiberRoot上之前的expirationTime做比较, 如果新的expirationTime更小, 说明新的更新优先级更高, 就将fiberRoot的expirationTime 替换成更小的这个, 优先执行优先级更高的任务, 更新都是从顶部向下更新的, 就是从fiberRoot开始向子级更新, 优先级高的任务执行的时候, 会将优先级低的任务执行一部分的结果重置
 
-3.5 处理更新的时候, 通过expirationTime的值区分任务的等级， 如果值是sync(同步任务)就会立即执行这个任务不会被打断，一直占用浏览器主线程到将任务处理完毕(处理完毕也是在render阶段), 如果是异步任务, expirationTime越小的优先级越高, 异步任务可以在render阶段可以中断
+3.5 如果react中的更新都已处理完毕, 那就将lastScheduledRoot和firstScheduledRoot都设置为null, 最开始没有更新的时候lastScheduledRoot和firstScheduledRoot也是null
 
-3.6 这就是fiber架构的一部分， 任务优先级， 优先级高的任务先执行，提高性能， 避免浏览器主线程被优先级低的任务占用事件过长，导致页面性能下降, 从react16 开始有任务优先级的
+3.6 处理更新的时候, 通过expirationTime的值区分任务的等级， 如果值是sync(同步任务)就会立即执行这个任务不会被打断，一直占用浏览器主线程到将任务处理完毕(处理完毕也是在render阶段), 如果是异步任务, expirationTime越小的优先级越高, 异步任务可以在render阶段可以中断
+
+3.7 这就是fiber架构的一部分， 任务优先级， 优先级高的任务先执行，提高性能， 避免浏览器主线程被优先级低的任务占用事件过长，导致页面性能下降, 从react16 开始有任务优先级的
 
 4. 如果expirationTime判断是异步任务,就使用scheduler包进行异步调度, 判断当前任务的expirationTime和正在处理的异步任务那个优先级高, 如果当前任务的优先级更高, 那就通过执行上一个任务的时候设置的callbackId全局变量, 撤销上一个正在执行的任务, 然后执行新的任务, 并且将执行新任务返回的callbackId赋值给全局变量callbackId
 
-4.1 react的目的就是保证浏览器每秒可以刷新30次(就是每秒30帧的意思), react保证每帧react处理占用的时间最多的22ms, 浏览器每帧占用11ms, 正常每帧的时间就是33ms
+requestHostCallback
 
-4.2 时间片就是react处理占用的这22ms
+4.1 react默认认为浏览器的刷新频率是每秒30次(就是每秒30帧的意思), react保证每帧react处理占用的时间最多的22ms, 浏览器每帧占用11ms, 正常每帧的时间就是33ms, 1s等于1000ms
 
-4.3 将异步回调加入到异步回调队列中, 根据expirationTime排列顺序
+4.2 react根据每帧执行计算出, 具体浏览器每帧执行的时间, 但是react最小只支持每帧时间是8ms, 就是刷新频率是120hz, 每秒刷新120次
 
-4.4 如果是异步任务，就进入调度流程，将异步任务放在requestIdlCallback(callback)回调中， 等到浏览器空闲了再去执行这个异步任务，并且在执行异步任务的时候react会设置一个deadline(时间片)，如果超过deadline就会中断执行的异步任务，在注册一个requestIdlCallback(callback) 回调， 将没有执行完的异步任务，放在注册的回调中，等待下次浏览器空闲在执行，当浏览器的空闲的时候，执行requestIdlCallback(callback) 回调的时候， 如果有异步任务的expirationTime 已经过期的话， 那就会将过期的任务都执行完， 直到执行到第一个没有过期的任务，执行行完过期任务之后如果时间没有超过deadline那就继续执行其他优先级高的异步任务，如果时间超过deadline ，那就将浏览器主线程控制权交给浏览器
+4.3 通过在requestAnimationFrame回调中触发window.postMessage事件, 将react处理的事件放到异步队列中, 等浏览器的一些渲染用户输入的同步任务处理完成之后,计算出时间片, 如果浏览器的操作已经超出了一帧的时间, 并且任务的过程时间还没有过这个时候, react的任务将在下一帧处理, 如果react任务的过期时间已经过了, 那就会直接处理react的任务, 这就是react 模拟requestIdleCallback的方式
 
+4.4 如果是异步任务，就进入调度流程，将异步任务放在模拟的requestIdlCallback(callback)回调中， 等到浏览器空闲了再去执行这个异步任务，并且在执行异步任务的时候react会设置一个deadline(时间片)，如果超过deadline就会中断执行的异步任务，在注册一个模拟的requestIdlCallback(callback) 回调， 将没有执行完的异步任务，放在注册的回调中，等待下次浏览器空闲在执行，当浏览器的空闲的时候，执行模拟的requestIdlCallback(callback) 回调的时候， 如果有异步任务的expirationTime 已经过期的话， 那就会将过期的任务都执行完， 直到执行到第一个没有过期的任务，执行行完过期任务之后如果时间没有超过deadline那就继续执行其他优先级高的异步任务，如果时间超过deadline ，那就将浏览器主线程控制权交给浏览器
 
+4.5 如果是同步任务或者是过期时间已经过了的异步任务, 都是不可以被中断的
 
-5. react commit 阶段
+4.6 一个fiberRoot更新完毕, 会通过firstScheduledRoot查找下一个需要更新的fiberRoot进行更新
 
-5.1 将合并好的state批量更新
+react-reconcile 进行diff 更新和生成effect list
 
-5.2 将最终处理好的fiber tree 进行页面渲染
+5. renderRoot, 循环整个fiberTree, 更新每一个fiber节点
 
-5.3 执行Effect List中的副作用
+5.1 如果fiber节点上有updateQueue表示节点需要更新, 更新完成后需要查找是否有子节点需要更新, 没有子节点需要更新看看是否兄弟节点需要更新, 都没有了更新就结束了
+更新的时候处理的都是workinProgressTree, 最后用这个workInprogress tree更新dom, 然后将workinProgess tree 赋值给current tree
 
-5.4 执行生命周期函数
+6. react commit 阶段
+
+6.1 将合并好的state批量更新
+
+6.2 将最终处理好的fiber tree 进行页面渲染
+
+6.3 执行Effect List中的副作用
+
+6.4 执行生命周期函数
 
 
 
 expirationTime 计算方式
 
-requestIdleCallback  执行的时长
 
-setState isBatchingUpdates  什么时候改变
 
-expirationTime 如何比较
 
-render 阶段同步任务直接执行, 怎么执行的
 
 
 
