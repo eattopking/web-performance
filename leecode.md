@@ -19,12 +19,19 @@ function fibonacci(n) {
     return fibonacci(n - 1) + fibonacci(n - 2);
 };
 
-斐波那契数，指的是这样一个数列：1、1、2、3、5、8、13、21 ,求第n个返回啥
+斐波那契数，指的是这样一个数列 1、2、3、5、8、13、21 ,求第n个返回啥
 
 function fib(n) {
-
-    if (n < 3) {
+    if (n < 1) {
+        return null;
+    }
+    
+    if (n === 1) {
         return 1;
+    }
+
+    if (n === 2) {
+        return 2;
     }
 
     return fib(n-1) + fib(n-2);
