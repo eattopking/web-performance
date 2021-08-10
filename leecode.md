@@ -1469,6 +1469,109 @@ var oneEditAway = function (first, second) {
     return farr.join('') === sarr.join('')
 };
 
+失败重连
+const resetConnect = (callback, delay, time) => {
+    return new Promise((resolve, reject) => {
+        const fn = () => {
+            Promise.resolve(callback()).then((data) => {
+                resolve(data);
+            }).catch((err) => {
+                if (delay) {
+                    setTimeout(fn, time);
+                } else {
+                   reject(err) 
+                }
+                delay--;
+            });
+        }
+        fn();
+}
+
+const tree = {
+    val: 'a',
+    left: {
+        val: 'b',
+        left: {
+            val: 'd',
+            left: null,
+            right: null
+        },
+        right: {
+            val: 'e',
+            left: null,
+            right: null
+        }
+    },
+    right: {
+        val: 'c',
+        left: {
+            val: 'f',
+            left: null,
+            right: null
+        },
+        right: {
+            val: 'g',
+            left: null,
+            right: null
+        }
+    }
+}
+
+const string = (tree) => {
+    const stack = [];
+    const result = [];
+
+    stack.push(tree);
+
+    while(stack.length) {
+        const item = stack.pop();
+        const val = item.val;
+        const left = item.left;
+        const right = item.right;
+
+        result.push(val);
+
+        if (right) {
+            stack.push(right);
+        }
+
+        if (left) {
+            stack.push(left);
+        }
+    }
+
+    return result;
+}
+
+
+
+const string = (tree) => {
+    const list = [tree];
+    let count = 0;
+    const result = [];
+
+    const showtree = () => {
+        const item = list[count];
+        const val = item.val;
+        const left = item.left;
+        const right = item.right;
+        result.push(val);
+        if (left) {
+           list.push(left) 
+        }
+        if (right) {
+           list.push(right) 
+        }
+        count++;
+        if (count === list.length) {
+            return;
+        }
+        showtree();
+    }
+    showtree();
+
+    return result;
+}
 
 
 

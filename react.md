@@ -1,6 +1,6 @@
 ## hooks 总结
 
-### react fabe 架构学习总结
+### react fiber 架构学习总结
 
 
 ### react 组件的性能检测和代码中的性能上报
