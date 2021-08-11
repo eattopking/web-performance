@@ -138,6 +138,10 @@ cors 分为两种： 简单请求、复杂请求
  9. 跨域的时候携带cookie， 只能携带源为自己请求域名或者请求的域名的上级域名
  10. 请求时cookie就是请求头上的一个字段， ajax不能自定义cookie这个请求头， 这个行为是被禁止的
  11. cors跨域携带cookie的是问题， 需要在ajax 中配置withCredentials为true， 让cors跨域的时候，能携带上cookie值
+ 12. cookies是存储在硬盘中的
+
+
+ 浏览器查找缓存的顺序是: service worker、memory cache、disk cache、push cache
 
 
 ### http 的理解和面试
