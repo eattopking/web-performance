@@ -337,6 +337,10 @@ webView和h5通信就是以js的全局变量为媒介， 然后原生和h5的通
 
 在安卓端通过reactContext.getJsModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit('事件名称', 回调参数)  触发事件
 
+native端可以获取到js引擎上的全局对象, 可以通过这个原理执行js方法
+
+React Native 同样借助 JS Engine 的能力，基于 JavaScriptCore 来执行 JS，但是是通过 Bridge 来进行交互的，JS 不会直接引用 Native 层的对象实例，Native 也不会直接引用 JS 层的对象实例(在 React Native 里所有 Native 和 JS 互调都是通过 Bridge 层的几个最基础的方法衔接的)。
+
 六. 看那篇文章了解rn 原理
 
 react-native 和native相比的优点
