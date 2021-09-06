@@ -1574,6 +1574,27 @@ const string = (tree) => {
 }
 
 
+function tryConnection(fun, times, delay) {
+    return new Promise((resolve, reject) => {
+        function callback() {
+            Promise.resolve(fun()).then((data) => {
+                resolve(data);
+            }).catch((err) => {
+                if (times) {
+                    setTimeout(callback, delay);
+                    times--;
+                    return;
+                }
+                reject(err);
+            });
+        }
+        callback();
+    });
+}
+
+
+
+
 
 
 
