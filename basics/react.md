@@ -1,5 +1,15 @@
 ## hooks 总结
 
+react-router 原理
+
+hash router 是根据改变路径上hash值,通过hashchange监听来切换页面, 不会导致网页重新刷新
+
+browser router  通过h5 history 中的 history.pushState 来改变url, 并且不会导致页面刷新, 然后通过监听window.popState来判断切换页面展示
+
+使用browswe  router需要在nginx处理 无论请求路径是什么都返回 单页应用的index.html文件, 这样做是为了手动刷新时不会返回404
+
+然后在接口请求时判断是否是404是404直接返回跳转404组件页面
+
 ### react fiber 架构学习总结(可以，改的挺快)
 
 
