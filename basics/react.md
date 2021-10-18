@@ -10,6 +10,11 @@ browser router  通过h5 history 中的 history.pushState 来改变url, 并且�
 
 然后在接口请求时判断是否是404是404直接返回跳转404组件页面
 
+原生无法监听history.pushState和replaceState的变化, 需要重些这两个api来进行监听他们的变化, react-router监听的时候也是重写的
+
+popState只有在调用history.pushState或replaceState只有, 切换前后页面时才调用
+
+
 ### react fiber 架构学习总结(可以，改的挺快)
 
 
