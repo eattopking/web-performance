@@ -46,6 +46,93 @@ docker push 将自己创建的镜像推动到docker hub， 自己创建的镜像
 
 在企业中使用nexus实现镜像是有仓库比较稳定
 
+docker run -d -p 80:80 --name nginx-web -v /root/nginx/www:/usr/share/nginx/html -v /root/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v /root/nginx/logs:/var/log/nginx nginx
+
+
 #### docker run 参数
 
 [react-native ios 调试](./images/docker1.png)
+
+ //基本配置
+	upstream eattopking.top {
+                server    172.24.21.117:8000;
+                keepalive 64;
+       }
+    # Load modular configuration files from the /etc/nginx/conf.d directory.
+    # See http://nginx.org/en/docs/ngx_core_module.html#include
+    # for more information.
+    #  include /etc/nginx/conf.d/*.conf;
+
+    server {
+	# 设置可以所以来源请求的80端口监听, server_name匹配不到host的值时，对应请求的默认处理server块就是这个块
+	# 设置这个块的worker进程在没有请求时不处理刚刚建立的TCP连接
+        listen       80 default_server deferred;
+        server_name  eattopking;
+        root         /home/lx/react-ssr-ts/public/;
+        index       login.js;
+        # Load configuration files for the default server block.
+        # 开启gzip 压缩
+	gzip    on;
+    gzip_min_length 1024;
+    gzip_proxied    expired no-cache no-store private auth;
+    gzip_types      text/plain text/css application/xml application/json application/javascript application/xhtml+xml;
+    gzip_comp_level 9;
+       # include /etc/nginx/default.d/page.conf;
+
+	#include /etc/nginx/conf.d/*.conf;
+      	 location /public {
+              root /home/lx/react-ssr-ts;
+         }
+
+       location /test {
+              return 200 /home/lx/react-ssr-ts/public/index.js;
+       }
+
+	location /login {
+                proxy_pass http://eattopking.top;
+                proxy_http_version 1.1;
+                 proxy_set_header Upgrade $http_upgrade;
+                 proxy_set_header Connection 'upgrade';
+                 proxy_set_header Host $host;
+                 proxy_cache_bypass $http_upgrade;
+        }
+
+	location /register {
+                proxy_pass http://eattopking.top;
+                proxy_http_version 1.1;
+                 proxy_set_header Upgrade $http_upgrade;
+                 proxy_set_header Connection 'upgrade';
+                 proxy_set_header Host $host;
+                 proxy_cache_bypass $http_upgrade;
+        }
+
+ 	location /page {
+                proxy_pass http://eattopking.top;
+                proxy_http_version 1.1;
+                 proxy_set_header Upgrade $http_upgrade;
+                 proxy_set_header Connection 'upgrade';
+                 proxy_set_header Host $host;
+                 proxy_cache_bypass $http_upgrade;
+        }
+
+        location /api {
+                proxy_pass http://eattopking.top;
+                proxy_http_version 1.1;
+                 proxy_set_header Upgrade $http_upgrade;
+                 proxy_set_header Connection 'upgrade';
+                 proxy_set_header Host $host;
+                 proxy_cache_bypass $http_upgrade;
+        }
+
+        location ^~ /fff {
+		return 200 '11111';
+        }
+
+        error_page 404 /404.html;
+        location = /404.html {
+        }
+
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+        }
+    }
