@@ -288,6 +288,8 @@ nginx 配置https 请求:  首先要安装http_ssl_module模块, 支持ssl加密
 
 1. listen: localhost: 443 ssl deferred(建立tcp连接的时候worker进程先不去处理这个连接, 真正发送请求的时候worker进程才去处理连接) default或者default_server 都是设置默认的虚拟主机（）就是当请求的host虚拟主机名称和所有的server块的server_name设置的虚拟主机名称都不相同时， 这个时候如果server块的listen设置了default或者default_server值， 那就用这个server块处理这个请求， 如果所有的server块都没有设置default， 那就用listen端口符合的第一个server块处理这个请求
 
+直接在浏览器输入框里输入的host (域名), 和在请求头上加的host字段, 都可以被server_name匹配
+
 listen: 127.0.0.1:80 listen就是设置允许如何访问这个服务，这样设置就是只能监听到本地请求80端口，listen 80, 就是 0.0.0.0:80的简写， 表示可以监听本地请求80端口， 也可以监听其他客户端通过访问ip+80端口的形式请求80端口， 所以listen的设置是一个域名，和webpackdevServer中的host + port的设置结果是相同的
 
 2. server_name: test.com test1.com (可以设置多个值server_name), 并且当多个server 块有用相同的值时， host的匹配规则的优先级是 ：全匹配 > 前面使用通配符匹配 > 后面使用通配符匹配 > 正则匹配， 当server_name "",表明server块匹配listen符合，但是没有设置host字段的请求
