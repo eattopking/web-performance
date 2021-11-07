@@ -19,3 +19,5 @@ publish:
           channel: latest
 
 windows和mac要分别设置
+
+3. 新版本下载完成没有重启更新, 在下次重新启动客户端的时候会自动应用新版本
