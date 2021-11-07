@@ -41,37 +41,37 @@ ssh-keygen -f test -t rsa
 
 1. 基本配置
 
-![jenkins基本配置](./images/git-tag-plugin-jenkins.jpeg)
+![jenkins基本配置](../images/git-tag-plugin-jenkins.jpeg)
 
 2. git插件配置
 
 需要将jenkins所在服务器的公钥配置到github上，
 然后在把jenkins所在服务器的私钥配置到jenkins中
 
-![jenkins git配置](./images/git-plugin-jenkins.png)
+![jenkins git配置](../images/git-plugin-jenkins.png)
 
-![jenkins git ssh配置](./images/git-plugin-ssh-jenkins.png)
+![jenkins git ssh配置](../images/git-plugin-ssh-jenkins.png)
 
 3. node插件配置
 
-![jenkins node插件配置](./images/node-plugin-jenkins.jpeg)
+![jenkins node插件配置](../images/node-plugin-jenkins.jpeg)
 
 4. 构建配置
 
-![jenkins 构建配置](./images/build-jenkins.png)
+![jenkins 构建配置](../images/build-jenkins.png)
 
 5. node插件引入配置
 
-![jenkins node插件引入配置](./images/node-plugin-jenkins-import.png)
+![jenkins node插件引入配置](../images/node-plugin-jenkins-import.png)
 
 6. publish插件配置
 
 1. 目前我们使用的是 通过 用户 和 密码 连接远程服务器的方式， 没有使用密钥和公钥的方式
 2. 在高级中的password 输入我们远程服务器密码
 
-![jenkins publish插件配置](./images/publish-over-ssh-jenkins.png "publish插件配置")
+![jenkins publish插件配置](../images/publish-over-ssh-jenkins.png "publish插件配置")
 
-![jenkins publish插件配置](./images/publish-over-ssh-config-jenkins.png)
+![jenkins publish插件配置](../images/publish-over-ssh-config-jenkins.png)
 
 
 

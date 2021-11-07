@@ -51,7 +51,7 @@ docker run -d -p 80:80 --name nginx-web -v /root/nginx/www:/usr/share/nginx/html
 
 #### docker run 参数
 
-[react-native ios 调试](./images/docker1.png)
+[react-native ios 调试](../images/docker1.png)
 
  //基本配置
 	upstream eattopking.top {

@@ -84,7 +84,7 @@ webp 图片小， 画质还高
 
 ### 控制台简介
 
-![控制台简介](./images/browser1.png)
+![控制台简介](../images/browser1.png)
 ### performance全局对象
 
 ```
@@ -93,53 +93,53 @@ webp 图片小， 画质还高
 
 ### element 相关的总结
 
-![element 相关的总结](./images/element1.png)
+![element 相关的总结](../images/element1.png)
 
 ### memory 相关的总结
 
-![memory 相关的总结](./images/memory1.png)
+![memory 相关的总结](../images/memory1.png)
 
 ### network 相关的总结
 
 1.
 
-![network 详情](./images/network-first.png)
+![network 详情](../images/network-first.png)
 
 2.
 
-![network 详情](./images/network-block-request.jpeg)
+![network 详情](../images/network-block-request.jpeg)
 
 3.
 
-![network 详情](./images/network-load.jpeg)
+![network 详情](../images/network-load.jpeg)
 
 4.
 
-![network 详情](./images/network-p-log.png)
+![network 详情](../images/network-p-log.png)
 
 5.
 
-![network 详情](./images/network-alltime.png)
+![network 详情](../images/network-alltime.png)
 
 6.
 
-![network 详情](./images/network-screen.png)
+![network 详情](../images/network-screen.png)
 
 7.
 
-![network 详情](./images/network-time-one.png)
+![network 详情](../images/network-time-one.png)
 
 8.
 
-![network 详情](./images/network-time-two.png)
+![network 详情](../images/network-time-two.png)
 
 9.
 
-![network 详情](./images/network-timing.png)
+![network 详情](../images/network-timing.png)
 
 10.
 
-![network 详情](./images/network-yilai.png)
+![network 详情](../images/network-yilai.png)
 
 ### 使用Lighthouse 进行网页性能检测
 
@@ -158,43 +158,43 @@ chrome 开发者工具提供的Lighthouse 核心模块
 ```
 1. 使用Lighthouse检测页面性能， performance， 还有其他检测选项， 查看结果和performance相同
 
-![开发者工具提供的Lighthouse 详情](./images/lighthouse1.png)
+![开发者工具提供的Lighthouse 详情](.,/images/lighthouse1.png)
 
-![开发者工具提供的Lighthouse 详情](./images/lighthouse2.jpeg)
+![开发者工具提供的Lighthouse 详情](../images/lighthouse2.jpeg)
 
-![开发者工具提供的Lighthouse 详情](./images/lighthouse3.png)
+![开发者工具提供的Lighthouse 详情](../images/lighthouse3.png)
 
-![开发者工具提供的Lighthouse 详情](./images/lighthouse4.png)
+![开发者工具提供的Lighthouse 详情](../images/lighthouse4.png)
 
 
 ### 使用layers 查看页面的图层
 
-![使用layers](./images/layers.png)
+![使用layers](../images/layers.png)
 
 ### 使用performance 查看页面的图层
 
-![performance](./images/performance1.png)
+![performance](../images/performance1.png)
 
-![performance](./images/performance2.png)
+![performance](../images/performance2.png)
 
-![performance](./images/performance3.png)
+![performance](../images/performance3.png)
 
-![performance](./images/performance4.png)
+![performance](../images/performance4.png)
 
-![performance](./images/performance5.png)
+![performance](../images/performance5.png)
 
-![performance](./images/performance6.jpeg)
+![performance](../images/performance6.jpeg)
 
-![performance](./images/performance7.png)
+![performance](../images/performance7.png)
 
-![performance](./images/performance8.png)
+![performance](../images/performance8.png)
 
-![performance](./images/performance9.png)
+![performance](../images/performance9.png)
 
-![performance](./images/performance10.jpeg)
+![performance](../images/performance10.jpeg)
 
-![performance](./images/performance11.png)
+![performance](../images/performance11.png)
 
-![performance](./images/performance12.png)
+![performance](../images/performance12.png)
 
-![performance](./images/performance14.png)
+![performance](../images/performance14.png)
