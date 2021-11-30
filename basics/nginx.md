@@ -93,6 +93,13 @@ yum install nginx
 6. nginx -s stop: 快速停止nginx 服务， 全停啥也不等，没干完就没干完
 7. nginx -s quit: 优雅的停止nginx服务，会等没干完的干完才停止
 
+
+#### nginx 启动
+
+配置了这个文件/usr/local/var/run/nginx.pid, 就可以在任意的目录下启动nginx
+
+如果没有没有配置, 就只能在/usr/local/var/run/nginx目录下启动nginx
+
 ### nginx 执行指令问题
 
 1. 使用第一种安装的方式，可以直接使用nginx 作为指令
@@ -343,6 +350,10 @@ location的配置中有@表示是nginx内部用的， 不会处理用户的请�
 7. 文件操作的优化
 
 8. 对客户端请求的特殊处理
+
+
+
+
 
 
 
