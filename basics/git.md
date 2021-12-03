@@ -25,3 +25,21 @@ git 中两个分支的比较， 都是后面文件和前面文件的比较， �
 #### 将本地多个请求合并成一个
 
 git rebase 将本地的多个commit合并成一个请求, 这种场景只能在本地使用
+
+
+#### git push -u 的含义
+
+```
+git push -u 就是在第一个见本地分支push到远端的时候, 将本地分支和远端的这个分支做了关联
+
+在本地的.git/config文件中创建
+
+[branch "test"]
+	remote = origin
+	merge = refs/heads/test
+
+用于将本地test分支和远程test分支做关联
+
+这样像git pull 和git push这些操作就不需要加参数了, 直接默认指向远程test分支
+
+```
