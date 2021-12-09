@@ -23,3 +23,5 @@ windows和mac要分别设置
 electron-builder打包的时候将生成一个latest-windows.yml和latest-mac.yml存放更新信息, 然后将打出来的包, 部署到更新地址中, 然后进行更新请求, 通过判断latest-windows.yml和latest-mac.yml中的更新信息判断有没有更新,和展示什么更新信息
 
 3. 新版本下载完成没有重启更新, 在下次重新启动客户端的时候会自动应用新版本
+
+#### electron 本地搜索方案记录
