@@ -32,3 +32,31 @@ electron-builder打包的时候将生成一个latest-windows.yml和latest-mac.ym
 
 然后然后根据对应的node sqlite的例子进行开发
 
+前期调研过程: 
+
+    一.node 版本 elasticSearch
+       1. 存取性能高, 搜索快速, 提供分词存储
+
+       2. 需要部署服务, 不能打包到安装包中, 无法集成在electron中
+
+    二. lunr.js js 搜索引擎 github star 7.8k
+
+     1. 中文分词需要插件默认不支持分词 , 2021 年没有提交过, 使用内存存储
+
+    三. search-index 结合 nodejieba分词实现全文搜索 
+      nodejieba分词, 目前发现最好的中文分词
+
+      search-index倒排索引数据库, 底层依赖的数据库是levelDB 
+
+      优点: 实现了分词存储和索引
+
+    四. flexSearch js 搜索引擎 github star 8.1k, 还在持续提交
+      1. 使用内存存储, 不满足需求
+
+ 
+
+    五. 使用https://github.com/wangfenjin/simple
+
+      node sqlite3 结合fts5插件。实现分词和倒排索引
+
+最后集合项目本身使用的就是sqlite3数据库, 并且测试后性能也是符合要求的, 所以避免复杂, 安装过多的其他依赖的前提下, 选择方案五
