@@ -106,6 +106,9 @@ elasticsearch 是支持存储和和搜索的性能很好的, 分词搜索搜索�
 
 ### 一些最重要的 SQL 命令
 SELECT - 从数据库中提取数据
+
+select 是查询一些列的数据, select 相关的语句都是以列为单位查询的
+
 UPDATE - 更新数据库中的数据
 DELETE - 从数据库中删除数据
 INSERT INTO - 向数据库中插入新数据
