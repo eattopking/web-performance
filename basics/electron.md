@@ -60,3 +60,30 @@ electron-builder打包的时候将生成一个latest-windows.yml和latest-mac.ym
       node sqlite3 结合fts5插件。实现分词和倒排索引
 
 最后集合项目本身使用的就是sqlite3数据库, 并且测试后性能也是符合要求的, 所以避免复杂, 安装过多的其他依赖的前提下, 选择方案五
+
+
+### electron-updateer 打包
+
+```
+一、各端打包生成的文件格式
+mac 打包
+
+1. mac 可以打dmg包用于放在官网, 在浏览器下载安装
+2. mac还可以打pkg包用于上传到 mac app store(mas), 让用户在app store中安装的
+
+windows 打包
+1. 打包成exe包, 在windows电脑上进行安装
+
+linux 打包
+1. 打包成deb包, 在liunx图形化系统上安装
+
+electron-updateer 打包文件地址
+
+二、打包输出文件路径
+electron-updateer 打包的将文件打包到项目根目录的dist目录中
+
+三、mac打包为什么要授权签名
+mac 在打dmg和pkg包的时候都需要授权和签名, 要不然mac安装的时候需要让用户确认给权限去安装, 证书授权和签名之后, 就需要确认了, 直接就能安装了
+
+四、
+```
