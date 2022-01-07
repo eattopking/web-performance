@@ -87,7 +87,7 @@ mac 在打dmg和pkg包的时候都需要授权和签名, 要不然mac安装的�
 
 四、electron-builder执行 默认是执行electron-builder.yml文件, electron-builder --config 可以自定义设置可执行文件
 
-五、 electron-builder配置项
+五、 electron-builder配置项, 这是正常打 exe, dmg ,deb的包, 是上传到mas的包的配置
 
 // 安装包的包名就是安装后的目录名
 appId: 'baidu'
@@ -174,5 +174,6 @@ linux:
     executableArgs:
     // 无沙盒
       - "--no-sandbox"
+
 
 ```
