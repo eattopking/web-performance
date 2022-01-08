@@ -86,8 +86,11 @@ electron-builder 打包的将文件打包到项目根目录的dist目录中
 mac 在打dmg和pkg包的时候都需要授权和签名, 要不然mac安装的时候需要让用户确认给权限去安装, 证书授权和签名之后, 就需要确认了, 直接就能安装了
 
 四、electron-builder执行 默认是执行electron-builder.yml文件, electron-builder --config 可以自定义设置可执行文件
+```
 
-五、 electron-builder配置项, 这是正常打 exe, dmg ,deb的包, 是上传到mas的包的配置
+####五、 electron-builder配置项, 这是正常打 exe, dmg ,deb的包, 是上传到mas的包的配置
+```
+1. 正常的electron-builder.yml配置
 
 // 安装包的包名就是安装后的目录名
 appId: 'baidu'
@@ -106,6 +109,9 @@ files:
     - ./test.js
     - ./page.js
     - ./tempate.js
+    // 设置打到包中的图标
+    - icons
+
     // 将项目的静态dll文件移动到根目录的resources目录的build目录中
 extraResources:
     - build/**
@@ -125,6 +131,7 @@ nsis:
 dmg:
     writeUpdateInfo: false
 // 打包windows环境的包, 默认打包是exe格式, 还可以是nsis格式, windows打包也需要签名, 签名时也需要证书
+// electron-builder --windows --publish always 打包window的指令
 win:
     // 代表加密的方式，一般分为'sha256'与'sha1'两种方式，正常就是写sha256就行
     signingHashAlgorithms:
@@ -146,6 +153,7 @@ win:
           // 生成更新配置文件名称
           channel: latest-windows
 // 配置channel: latest 最后生成的 更新配置文件是latest-mac.yml
+// electron-builder --mac --publish always 到包mac dmg包的指令
 mac:
     // 获取到证书的用户id
     identity: baidu (77Q6F9P39T)
@@ -161,6 +169,7 @@ mac:
           // 生成更新配置文件名称
           channel: latest
 // 生成linux包
+// 构建linux包的指令 electron-builder --linux --publish always
 linux:
     // app的类别
     category: Utility
@@ -174,6 +183,100 @@ linux:
     executableArgs:
     // 无沙盒
       - "--no-sandbox"
-
+```
 
 ```
+2. electron-builder.mas.yml 配置
+
+打mac端上传 appstore的包
+
+// 安装包的包名就是安装后的目录名
+appId: 'baidu'
+// 应用可执行文件名称
+productName: '百度'
+// 带有后缀的应用可执行文件名称
+artifactName: '${productName}_Setup_${version}.${ext}'
+// 版权信息声明
+copyright: baidu @ 2022 baidu
+// 是否在开始编译前重构原生依赖,可先尝试true, 如果出现问题再修改为false,
+npmRebuild: false
+// 触发公证, 通过结合electron-notarize 写一个公正脚本, 对mac 进行公正, 否则安装时会提示恶意软件, mac包还需要进行签名, 而windows包只需要签名不需要公正
+afterSign: ./notarize.js
+// electron 打包的时候要打进去的文件, 写哪个哪个就是打进去
+files:
+    - ./test.js
+    - ./page.js
+    - ./tempate.js
+    // 设置打到包中的图标
+    - icons
+
+    // 将项目的静态dll文件移动到根目录的resources目录的build目录中
+extraResources:
+    - build/**
+// 软件安装时候的一些自定义配置, 如不过设置, 就是默认的意见安装不能自定义选择
+nsis:
+    // 允许修改安装目录
+    allowToChangeInstallationDirectory: true
+    // 网络安装程序（nsis-web）的默认设置
+    differentialPackage: false
+    // 一键安装
+    oneClick: false
+    // 是否开启安装时权限限制（此电脑或当前用户）
+    perMachine: true
+    // 在一键安装程序后是否在卸载时删除应用程序数据
+    deleteAppDataOnUninstall: true
+// 设置安装界面
+dmg:
+    writeUpdateInfo: false
+mac:
+    identity: 
+    hardenedRuntime: true
+    entitlements: ./entitlements.mac.inherit.plist
+    publish:
+        - provider: generic
+          url: 
+          channel: latest
+  // electron-builder --config ./electron-builder-mas.yml --mac mas 打包mac pkg包的指令
+mas:
+    identity: null
+    asarUnpack:
+        - '**/*.node'
+    entitlements: ./entitlements.mas.plist
+    // 配置可以授予Electron在内部访问权限文件时相同的权限, 打mas包和mac dmg 包的的entitlements配置文件是不同的, 只有打mas包才需要配置entitlementsInherit项
+    entitlementsInherit: ./entitlements.mas.inherit.plist
+    // 文件在开发者网站下载配置项
+    provisioningProfile: ./dist.provisionprofile
+    hardenedRuntime: false
+    extendInfo:
+        ITSAppUsesNonExemptEncryption: false
+masDev:
+    identity: null
+    // 包的类型
+    type: development
+    // 压缩过滤node文件, 否则无法对node文件进行签名
+    asarUnpack:
+        - '**/*.node'
+    entitlements: ./entitlements.mas.plist
+    entitlementsInherit: ./entitlements.mas.inherit.plist
+    provisioningProfile: ./dev.provisionprofile
+    hardenedRuntime: false
+```
+### electron-notarize配置参数
+```
+const { notarize } = require('electron-notarize');
+notarize({
+  appPath: '',          // 应用的路径 xxx.app 结尾的 
+  appBundleId: '',      // appid
+  appleId: '',          // 苹果开发者 id
+  appleIdPassword: '',  // 应用专用密码
+  ascProvider: ''       // 证书提供者
+})
+
+1. appPath打包后应用的路径，.app 或者 .dmg 结尾。
+
+2. appBundleId 跟 Electron-builder 配置的 appId 一致，这个 appId 要妥善命名。不要发布应用以后再修改，不然会导致应用无法自动更新。
+
+3. 苹果开发者的账号 appleId，填写自己的开发者id 就可以，确保自己是属于开发者。应用专用密码 appleIdPassword, https://appleid.apple.com/
+```
+
+其他公正和签名步骤在这里 https://www.cnblogs.com/mmykdbc/p/11468908.html
