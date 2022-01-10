@@ -114,7 +114,8 @@ files:
     // 设置打到包中的图标
     - icons
 
-    // 将项目的静态dll文件移动到根目录的resources目录的build目录中
+    // 将项目的build目录和里面的内容移动到应用程序的资源目录中, 安装应用程序后, 会存放在电脑本地的
+    // 对应目录中  mac 就是在 应用程序安装包的Contents/Resources目录中，Linux 和 Windows 就是在安装包的resources目录中）
 extraResources:
     - build/**
 // 软件安装时候的一些自定义配置, 如不过设置, 就是默认的意见安装不能自定义选择
@@ -212,7 +213,8 @@ files:
     // 设置打到包中的图标
     - icons
 
-    // 将项目的静态dll文件移动到根目录的resources目录的build目录中
+    // 将项目的build目录和里面的内容移动到应用程序的资源目录中, 安装应用程序后, 会存放在电脑本地的
+    // 对应目录中  mac 就是在 应用程序安装包的Contents/Resources目录中，Linux 和 Windows 就是在安装包的resources目录中）
 extraResources:
     - build/**
 // 软件安装时候的一些自定义配置, 如不过设置, 就是默认的意见安装不能自定义选择
