@@ -282,12 +282,18 @@ notarize({
 
 3. 苹果开发者的账号 appleId，填写自己的开发者id 就可以，确保自己是属于开发者。应用专用密码 appleIdPassword, https://appleid.apple.com/
 ```
+####  公正和签名步骤
+其他公正和签名步骤在这里 https://www.cnblogs.com/mmykdbc/p/11468908.html
 
-####  构建个人理解
+####  electron 个人理解
 ```
 1. 构建什么哪个系统的包, 是更具执行的构建指令决定的, 比如 electron-builder --mac 就是构建macos 的包, 如果没有执行包格式, 默认就是构建dmg和zip格式包
 
 2. win, mac ,liunx 在配置文件中就是对各个系统的打包配置, dmg, mas, deb, 这些配置都是对对应格式的包进行的单独配置
+
+3. electron 主进程就是被node执行的脚本, 所以在electron 主进程就可以正常用node api, 并且在electron主进程中给node的一些模块附加了新的属性, 例如process模块, electron也是c++开发的, 所以可以扩展node
+
+4. electron的工作模式, 就是将页面打包到应用程序中, 然后在应用程序中起本地node服务, 请求本地页面展示
+
 ```
 
-其他公正和签名步骤在这里 https://www.cnblogs.com/mmykdbc/p/11468908.html
