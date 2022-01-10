@@ -69,7 +69,9 @@ electron-builder打包的时候将生成一个latest-windows.yml和latest-mac.ym
 mac 打包
 
 1. mac 可以打dmg包用于放在官网, 在浏览器下载安装
-2. mac还可以打pkg包用于上传到 mac app store(mas), 让用户在app store中安装的
+2. mac还可以打mas包用于上传到 mac app store(mas), 让用户在app store中安装的
+3. mac还可以打pkg包, 在mac中下载的就是pkg包
+
 
 windows 打包
 1. 打包成exe包, 在windows电脑上进行安装
@@ -83,7 +85,7 @@ electron-builder 打包文件地址
 electron-builder 打包的将文件打包到项目根目录的dist目录中
 
 三、mac打包为什么要授权签名
-mac 在打dmg和pkg包的时候都需要授权和签名, 要不然mac安装的时候需要让用户确认给权限去安装, 证书授权和签名之后, 就需要确认了, 直接就能安装了
+mac 在打dmg和mas包的时候都需要授权和签名, 要不然mac安装的时候需要让用户确认给权限去安装, 证书授权和签名之后, 就需要确认了, 直接就能安装了
 
 四、electron-builder执行 默认是执行electron-builder.yml文件, electron-builder --config 可以自定义设置可执行文件
 ```
@@ -236,7 +238,7 @@ mac:
         - provider: generic
           url: 
           channel: latest
-  // electron-builder --config ./electron-builder-mas.yml --mac mas 打包mac pkg包的指令
+  // electron-builder --config ./electron-builder-mas.yml --mac mas 打包mac mas包的指令
 mas:
     identity: null
     asarUnpack:
@@ -277,6 +279,13 @@ notarize({
 2. appBundleId 跟 Electron-builder 配置的 appId 一致，这个 appId 要妥善命名。不要发布应用以后再修改，不然会导致应用无法自动更新。
 
 3. 苹果开发者的账号 appleId，填写自己的开发者id 就可以，确保自己是属于开发者。应用专用密码 appleIdPassword, https://appleid.apple.com/
+```
+
+####  构建个人理解
+```
+1. 构建什么哪个系统的包, 是更具执行的构建指令决定的, 比如 electron-builder --mac 就是构建macos 的包, 如果没有执行包格式, 默认就是构建dmg和zip格式包
+
+2. win, mac ,liunx 在配置文件中就是对各个系统的打包配置, dmg, mas, deb, 这些配置都是对对应格式的包进行的单独配置
 ```
 
 其他公正和签名步骤在这里 https://www.cnblogs.com/mmykdbc/p/11468908.html
