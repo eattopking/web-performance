@@ -43,3 +43,10 @@ git push -u 就是在第一个见本地分支push到远端的时候, 将本地�
 这样像git pull 和git push这些操作就不需要加参数了, 直接默认指向远程test分支
 
 ```
+
+#### git reset --hard 
+
+```
+1. 不但可以回退merge之后的版本
+2. 还可以回退rebase之后的提交, 回退到rebase之前的提交
+```
