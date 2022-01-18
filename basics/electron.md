@@ -295,5 +295,7 @@ notarize({
 
 4. electron的工作模式, 就是将页面打包到应用程序中, 然后在应用程序中起本地node服务, 请求本地页面展示
 
+5. package.json既是node项目中的配置文件, 也是electron的配置文件, main字段是我们electron应用程序的主进程启动文件
+
 ```
 
