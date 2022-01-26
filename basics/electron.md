@@ -299,6 +299,17 @@ notarize({
 
 ```
 
-#### electron 调用c/c++编写的动态链接库的是方法
+#### electron中node 调用c/c++编写的动态链接库的是方法
+
+1. 就是通过ffi-napi调用c/c++编写的动态链接库
 
 [electron调用动态链接库](https://www.cnblogs.com/silenzio/p/11606389.html)
+
+
+#### node调用的c++动态链接库的方法
+
+1. 通过node-ffi 调用, 不需要进行c++操作
+
+2. 通过官方的提供的方式 node-addons 调用, 需要进行c++操作了解c++;
+
+3. 如果node-ffi不满足我们需求, 还需要自己重新修改编译node-ffi,获得满足自己需求的node-ffi,然后在调用
