@@ -299,3 +299,6 @@ notarize({
 
 ```
 
+#### electron 调用c/c++编写的动态链接库的是方法
+
+[electron调用动态链接库](https://www.cnblogs.com/silenzio/p/11606389.html)
