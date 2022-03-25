@@ -401,6 +401,15 @@ windows 端测试
 1.  使用 sqlite3 原始 like , 1200 条笔记, 是 60 毫秒左右
 1.  使用 sqlite3 fts5 , 1200 条笔记, 是 180 毫秒左右
 
+全局搜索的方案, 是使用sqlite 数据提供的fts5虚拟表实现全文搜索, 并且加载了外部扩展simple插件, 增强fts5, 实现倒排索引和分词,
+实现高性能全文搜索
+
+遇到的问题: 
+1. 在老的windown和mac的机型中, 会出现better-sqlite3 db.loadExtension加载不到扩展的问题, 导致抛错应用打不开
+
+2. sqlite中的批量插入有条数限制, 上限是999条, 一次插入超过这么多条, 会报错too many sql variables
+
+
 ## 经验积累
 
 ### 一. 做项目的准备和步骤
