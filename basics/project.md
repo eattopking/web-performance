@@ -409,6 +409,11 @@ windows 端测试
 
 2. sqlite中的批量插入有条数限制, 上限是999条, 一次插入超过这么多条, 会报错too many sql variables
 
+3. electron开发需要注意的问题, 在引入c++的外部扩展文件的时候要判断操作系统的cpu架构(一般都是支持x64, 不支持arm64的), 所以要通过process.arch获取当前系统cpu架构, 防止报错
+
+4. .dll是windows c++外部扩展文件的后缀名, .dylib是mac c++外部扩展文件的后缀名, .so是linux c++外部扩展文件的后缀名
+
+
 
 ## 经验积累
 
