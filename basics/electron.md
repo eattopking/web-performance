@@ -213,10 +213,14 @@ files:
     // 设置打到包中的图标
     - icons
 
-    // 将项目的build目录和里面的内容移动到应用程序的资源目录中, 安装应用程序后, 会存放在电脑本地的
+    //  extraResources将项目的build目录和里面的内容移动到应用程序的资源目录中, 安装应用程序后, 会存放在电脑本地的
     // 对应目录中  mac 就是在 应用程序安装包的Contents/Resources目录中，Linux 和 Windows 就是在安装包的resources目录中）
 extraResources:
     - build/**
+    // extraFiles 将项目根目录下的dll目录打包进应用程序的安装包中, 在mac中Contents/Resources目录是同级, 在Linux 和 Windows中 就是和安装包的resources目录同级, 和extraResources作用一样只是存放额外的本地文件的, 可以在应用程序代码中读取
+    extraResources和extraFiles配置的目录都会被签名, 不签名将会报错无法使用
+extraFiles:
+    - dll/**
 // 软件安装时候的一些自定义配置, 如不过设置, 就是默认的意见安装不能自定义选择
 nsis:
     // 允许修改安装目录
