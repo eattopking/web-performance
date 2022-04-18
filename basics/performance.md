@@ -221,4 +221,11 @@ chrome 开发者工具提供的Lighthouse 核心模块
 
 ![performance](../images/performance12.png)
 
+![performance](../images/performance13.png)
+
 ![performance](../images/performance14.png)
+
+### 瀑布流使用理解
+
+[文章1](https://segmentfault.com/q/1010000021239420)
+[文章2](https://blog.csdn.net/csdn_girl/article/details/54911632)
