@@ -229,3 +229,28 @@ chrome 开发者工具提供的Lighthouse 核心模块
 
 [文章1](https://segmentfault.com/q/1010000021239420)
 [文章2](https://blog.csdn.net/csdn_girl/article/details/54911632)
+
+Queued at 523.35 ms 总共的排队时间
+Started at 720.43 ms 总共的请求等待时间, 这个等待时间包括总共的排队时间或者脚本执行占用时间的总和
+
+Resource Scheduling		DURATION
+Queueing	197.08 ms 因为优先级、相同域名的六个请求限制、或者浏览器正在分配磁盘中的空间导致等待时间
+
+Connection Start		DURATION
+Stalled	37.94 ms  浏览器可以因为优先级、相同域名的六个请求限制、或者浏览器正在分配磁盘中这个三个原因停止请求过程的时间, 或者因为js脚本执行或者页面渲染停止请求过程的时间
+DNS Lookup	185.87 ms dns解析时间
+Initial connection	160.62 ms tcp连接时间
+SSL	116.88 ms ssl安全加密时间
+
+Request/Response		DURATION
+Request sent	发送出请求那一下子的时间
+​
+0.13 ms
+Waiting (TTFB)	从发动出请求到接受到第一个字节的时间
+​
+
+Content Download	内容下载时间
+​
+serviceworker preparation 浏览器启动serviceworker花费的时间
+
+request to serviceworker 浏览器发送请求到serviceworker花费的时间
