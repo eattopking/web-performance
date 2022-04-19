@@ -10,4 +10,6 @@
 
 # match 方法
 
-match 方法 模糊搜索只在后面加星就可以了, 就像这样 FROM table WHERE title match '测试* OR 回家*'
+match 方法 模糊搜索只在后面加星就可以了, 就像这样 FROM table WHERE title match '测试* OR 回家*', or是放在搜索词中使用的
+
+like 方法  模糊搜索, % 在前后都可以, title like '%测试%' or title like '%回家%', or不是放在搜索词中使用的
