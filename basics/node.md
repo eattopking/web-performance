@@ -17,3 +17,9 @@
 2. I/O操作就是读写文件的操作
 
 3. cpu占用就是js计算过多占用cpu比较多, 本身和I/O操作没有关系, 对I/O没有任何影响, 执行如果大循环后面有I/O操作, 在大循环结束之前无法被触发
+
+### commonjs 规范的理解
+
+1. node是根据commonjs规范实现的
+2. commonjs module 只是对commonjs 规范中的一个模块规范, commonjs规范还有很多其他规范, 比如文件系统规范、I/O规范、Packages规范(包规范, npm就是根据这个规范实现的node包管理系统)
+3. js最主要的三个规范分别是 W3c规范(主要是bom和dom根据这个规范实现)、Ecmascript规范(主要是js的一些语法根据这个规范实现, 还有esmoudle也是根据这个规范实现)、Commonjs规范
