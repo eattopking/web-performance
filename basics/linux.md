@@ -29,5 +29,11 @@ root@47.94.87.98 表示对应的服务上的用户
 
 scp -r test.json root@47.94.87.98:/home
 
+#### 在mac查看可执行文件的系统架构, lipo是mac原生支持的命令
 
+lipo -archs 可执行文件路径
+
+### file 查看文件类型
+
+file --brief --no-pad 文件路径
 
