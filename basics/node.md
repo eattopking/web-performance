@@ -37,3 +37,5 @@
 
 3. 如果package.json中有更新, 更新的按照package.json中版本进行安装, 然后将版本信息更新到package-lock.json中, 其他没有更新的依赖还是按照package-lock.json中锁定的版本安装
 
+4. npm3及以后的node_modules安装依赖后层级设置, 按照顺序安装依赖, 正常都是安装到第一层级, 如果有多个依赖的依赖相同的包的不同版本, 后面安装的依赖就在自己的安装到node_modules的目录中在创建一个node_modules目录用户安装不同版本的依赖, 前面的那个依赖的依赖还是安装在第一层
+
