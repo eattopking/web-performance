@@ -28,3 +28,12 @@
 1. node模块化加载(require)有三个流程, 路径分析(确定加载的路径)、文件定位(找到文件的具体位置)、编译执行(就只把加载的js文件模块的导致部分执行的代码执行一遍在导出结果), 最后获取到导出的模块
 
 2. node有两种模块 node中本来就有的叫做核心模块(加载核心模块没有路径分析、文件定位、编译执行这三个流程, 因为已经是编译执行完的了)、 还有就是我们自己写的js文件, 叫做文件模块(文件模块的加载过程就是经历上面三个步骤了, 但是不管是核心模块还是文件模块加载过一次之后导出结果都会被缓存, 所以第二次加载就同一个文件模块, 就不会路径分析、文件定位、编译执行这三个流程了)
+
+
+#### npm 理解
+1. npm install 执行时，如果 package.json 和 package-lock.json 中的版本兼容，会根据 package-lock.json 中的版本下载；如果不兼容，将会根据 package.json 的版本，更新 package-lock.json 中的版本，已保证 package-lock.json 中的版本兼容 package.json。
+
+2. package-lock.json 就是用来锁定项目中依赖的版本, 还有依赖的依赖的版本, 保证所以人在相同项目中npm install 安装的依赖都是版本相同的
+
+3. 如果package.json中有更新, 更新的按照package.json中版本进行安装, 然后将版本信息更新到package-lock.json中, 其他没有更新的依赖还是按照package-lock.json中锁定的版本安装
+
