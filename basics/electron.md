@@ -317,3 +317,10 @@ notarize({
 2. 通过官方的提供的方式 node-addons 调用, 需要进行c++操作了解c++;
 
 3. 如果node-ffi不满足我们需求, 还需要自己重新修改编译node-ffi,获得满足自己需求的node-ffi,然后在调用
+
+
+### 桌面端应用程序主要的目录
+
+1. 桌面端安装后存放静态资源的目录, 通过process.env.resourcesPath 可以获取
+2. 桌面端安装后应用程序的数据目录, 通过process.env.AppData 可以获取
+3. 存放应用程序主进程需要执行的文件的目录, 通过app.getAppPath()获取
