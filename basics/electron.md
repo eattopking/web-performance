@@ -323,4 +323,4 @@ notarize({
 
 1. 桌面端安装后存放静态资源的目录, 通过process.env.resourcesPath 可以获取
 2. 桌面端安装后应用程序的数据目录, 通过process.env.AppData 可以获取
-3. 存放应用程序主进程需要执行的文件的目录, 通过app.getAppPath()获取
+3. 存放应用程序主进程需要执行的文件的目录, 通过app.getAppPath()获取, 这个路径在哪我还没有找到

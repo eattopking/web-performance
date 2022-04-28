@@ -39,3 +39,10 @@
 
 4. npm3及以后的node_modules安装依赖后层级设置, 按照顺序安装依赖, 正常都是安装到第一层级, 如果有多个依赖的依赖相同的包的不同版本, 后面安装的依赖就在自己的安装到node_modules的目录中在创建一个node_modules目录用户安装不同版本的依赖, 前面的那个依赖的依赖还是安装在第一层
 
+### node中流(stream)的理解
+
+1. stream的主要api有pipe,  stream1.pipe(stream2) stream1通过管道将数据传到stream2中
+
+2. 流一般分为可读流和可写流
+
+3. stream.write(111)  向可写流中写入数据
