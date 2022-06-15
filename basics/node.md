@@ -74,6 +74,16 @@ function 对象。最后，将当前模块对象的 exports 属性、 require()�
 属性被返回给了调用方。 exports 属性上的任何方法和属性都可以被外部调用到，但是模块中的
 其余变量或属性则不可直接被调用
 
+8. C/C++文件存放在Node项目的src目录下，JavaScript文件存放在lib目录下
+
+9. 核心模块的js源文件编译成c++代码后，通过process.binding('natives')取出， 这就是核心模块的js源文件的编译过程，最后把取出这个c++代码拿去执行， process.binding还可以取出内建模块
+
+10. 核心模块缓存到NativeModule._cache对象上，文件模块则缓存到Module._cache对象上
+
+11. node中的模块有全部是c++开发的（内建模块， 一般不用户不会使用，一般用于核心模块引用）， 也有c++和js混合开发的（核心模块一般就是这样的）
+
+12. 
+
 #### npm 理解
 
 1. npm install 执行时，如果 package.json 和 package-lock.json 中的版本兼容，会根据 package-lock.json 中的版本下载；如果不兼容，将会根据 package.json 的版本，更新 package-lock.json 中的版本，已保证 package-lock.json 中的版本兼容 package.json。
