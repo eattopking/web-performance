@@ -329,3 +329,5 @@ notarize({
 ### arm64和x64的区别
 
 arm和x86是不同的指令集体系， arm64是指arm指令集体系中的64位体系， x64是指x86指令集体系中的64位体系，一般就是指对应体系对应位数的处理器芯片
+
+node的 process.arch的取值的固定的， arm版本的node process.arch就是arm64， x64版本的node， process.arch就是x64，x64版本的node安装在arm系统的电脑上， process.arch的取值还是x64
