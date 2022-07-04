@@ -4,6 +4,10 @@
 
 [详细使用链接](https://www.lema.fun/post/47e93hs9s)
 
+### node 版本
+
+1. 从16版本开始才有arm的node安装包，所以在arm的机器上使用nvm 安装低于16的版本，要在终端线输入 arch -x86_64 zsh 将终端转成X64的才能安装x64版本的node包
+
 ### node 四种创建子进程的方法的理解
 
 1. execFile 和 exec, 他们都是可以执行主命令的可执行文件或者主命令的环境变量
