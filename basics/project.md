@@ -365,7 +365,7 @@ node sqlite3 结合fts5插件。实现分词和倒排索引
 
 问题:
 
-1. 需要根据操作系统区分process.arch() 方法用于获取正在编译当前 node.js 进程的计算机的 CPU 架构
+1. 需要根据操作系统区分process.arch 用于获取正在编译当前 node.js 进程的计算机的 CPU 架构, process.arch如果是x64版本的node固定返回x64， x64的node安装在arm64的ji机器上返回的还是x64因为这是在node编译过程中就决定的， process.arch如果是arm64版本的node固定返回arm64
 
 2. 现在还有找到存储链接实例的方法, 不是保存了链接实例, 而是判断是否链接没链接重新链接, 在操作, 我们使用单例模式进行数据库操作
 
