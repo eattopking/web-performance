@@ -37,3 +37,7 @@ lipo -archs 可执行文件路径
 
 file --brief --no-pad 文件路径
 
+### linux服务器中ssh远端登录的配置文件路径
+
+/etc/ssh/sshd_config
+
