@@ -346,6 +346,8 @@ location的配置中有@表示是nginx内部用的， 不会处理用户的请�
 5. MIME类型的设置
 
 6. 对客户端请求的限制
+// 对客户端响应头server字段不展示nginx具体信息，只展示nginx只知道是nginx服务器
+server_tokens: off
 
 7. 文件操作的优化
 
