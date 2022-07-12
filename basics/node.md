@@ -118,6 +118,67 @@ dlopen()和dlsym()两个方法；在Windows平台则是通过LoadLibraryExW()和
 
 4. npm3 及以后的 node_modules 安装依赖后层级设置, 按照顺序安装依赖, 正常都是安装到第一层级, 如果有多个依赖的依赖相同的包的不同版本, 后面安装的依赖就在自己的安装到 node_modules 的目录中在创建一个 node_modules 目录用户安装不同版本的依赖, 前面的那个依赖的依赖还是安装在第一层
 
+#### package.json中主要字段说明
+
+1. name。包名。规范定义它需要由小写的字母和数字组成，可以包含.、 _和-，但不允许出
+现空格。包名必须是唯一的，以免对外公布时产生重名冲突的误解。除此之外， NPM还
+建议不要在包名中附带上node或js来重复标识它是JavaScript或Node模块。
+2. description。包简介。
+3. version。版本号。一个语义化的版本号，这在http://semver.org/上有详细定义，通常为
+major.minor.revision格式。该版本号十分重要，常常用于一些版本控制的场合。
+4. keywords。关键词数组， NPM中主要用来做分类搜索。一个好的关键词数组有利于用户
+快速找到你编写的包。
+5 maintainers。包维护者列表。每个维护者由name、 email和web这3个属性组成。示例如下：
+"maintainers": [{ "name": "Jackson Tian", "email": "shyvo1987@gmail.com", "web": "http://html5ify.
+com" }]
+NPM通过该属性进行权限认证。
+6. contributors。贡献者列表。在开源社区中，为开源项目提供代码是经常出现的事情，如
+果名字能出现在知名项目的contributors列表中，是一件比较有荣誉感的事。列表中的第
+一个贡献应当是包的作者本人。它的格式与维护者列表相同。
+7. bugs。一个可以反馈bug的网页地址或邮件地址。
+图灵社区会员 swht 专享 尊重版权2.6 包与 NPM 35
+
+8. licenses。当前包所使用的许可证列表，表示这个包可以在哪些许可证下使用。它的格式
+如下：
+"licenses": [{ "type": "GPLv2", "url": "http://www.example.com/licenses/gpl.html", }]
+9. repositories。托管源代码的位置列表，表明可以通过哪些方式和地址访问包的源代码。
+10. dependencies。使用当前包所需要依赖的包列表。这个属性十分重要， NPM会通过这个属
+性帮助自动加载依赖的包。
+除了必选字段外，规范还定义了一部分可选字段，具体如下所示。
+11. homepage。当前包的网站地址。
+12. os。操作系统支持列表。这些操作系统的取值包括aix、 freebsd、 linux、 macos、 solaris、
+vxworks、 windows。如果设置了列表为空，则不对操作系统做任何假设。
+13. cpu。 CPU架构的支持列表，有效的架构名称有arm、 mips、 ppc、 sparc、 x86和x86_64。同
+os一样，如果列表为空，则不对CPU架构做任何假设。
+14. engine。支持的JavaScript引擎列表，有效的引擎取值包括ejs、 flusspferd、 gpsee、 jsc、
+spidermonkey、 narwhal、 node和v8。
+15. builtin。标志当前包是否是内建在底层系统的标准组件。
+16. directories。包目录说明。
+17. implements。实现规范的列表。标志当前包实现了CommonJS的哪些规范。
+18. scripts。脚本说明对象。它主要被包管理器用来安装、编译、测试和卸载包。示例如下：
+"scripts": { "install": "install.js",
+"uninstall": "uninstall.js",
+"build": "build.js",
+"doc": "make-doc.js",
+"test": "test.js" }
+包规范的定义可以帮助Node解决依赖包安装的问题，而NPM正是基于该规范进行了实现。
+最初， NPM工具是由Isaac Z. Schlueter单独创建，提供给Node服务的Node包管理器，需要单独安
+装。后来，在v0.6.3版本时集成进Node中作为默认包管理器，作为软件包的一部分一起安装。之
+后， Isaac Z. Schlueter也成为Node的掌门人。
+在包描述文件的规范中， NPM实际需要的字段主要有name、 version、 description、 keywords、
+repositories、 author、 bin、 main、 scripts、 engines、 dependencies、 devDependencies。
+与包规范的区别在于多了author、 bin、 main和devDependencies这4个字段，下面补充说明一下。
+19. author。包作者。
+20. bin。一些包作者希望包可以作为命令行工具使用。配置好bin字段后，通过npm install
+package_name -g命令可以将脚本添加到执行路径中，之后可以在命令行中直接执行。前
+面的node-gyp即是这样安装的。通过-g命令安装的模块包称为全局模式。
+21. main。模块引入方法require()在引入包时，会优先检查这个字段，并将其作为包中其余
+模块的入口。如果不存在这个字段， require()方法会查找包目录下的index.js、 index.node、
+图灵社区会员 swht 专享 尊重版权36 第 2 章 模块机制
+index.json文件作为默认入口。
+22. devDependencies。一些模块只在开发时需要依赖。配置这个属性，可以提示包的后续开
+发者安装依赖包。
+
 ### node 中流(stream)的理解
 
 什么是流, 流就是通过片段的形式持续输出和写入内容, 提高效率了, 而不需要全部都准备好在输出或者写入, 准备好一部分就输出或者写入一部分
