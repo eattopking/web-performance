@@ -118,6 +118,21 @@ dlopen()和dlsym()两个方法；在Windows平台则是通过LoadLibraryExW()和
 
 4. npm3 及以后的 node_modules 安装依赖后层级设置, 按照顺序安装依赖, 正常都是安装到第一层级, 如果有多个依赖的依赖相同的包的不同版本, 后面安装的依赖就在自己的安装到 node_modules 的目录中在创建一个 node_modules 目录用户安装不同版本的依赖, 前面的那个依赖的依赖还是安装在第一层
 
+5. npm安装包的过程就是先创建一个node_modules目录， 然后在其中创建一个以包的package.json中name命名的目录，最后将下载的包内容解压到这个目录中
+
+6. 全局安装包不是安装一个全局可以引用的包， 而是安装一个可执行命令， 全局安装的包的位置在node可执行文件所在bin目录的同级的lib目录的node_modules目录中， npm和node遵循commonjs的规范， bin目录中就存放可执行的二进制文件，lib目录中就存放js代码，然后在通过全局安装包package.json中bin字段配置的执行文件路径，在存放node可执行目录中创建一个软链， 这个软链获取可执行文件的方式是通过相对路径，这个软链就是全局命令
+
+7. 全局安装的npm包就是无法在项目中引用到, 全局安装的npm包就不是用来被引用的， 而是创建了一个全局命令
+
+8. where node 查看node的可执行文件地址
+
+9. npm可以本地的包安装到node_modules中，（npm install 包含package.json的目录地址或者包含package.json的存档文件或者一个URL地址），通过npm install 包含package.json的目录地址 安装的包， 在package.json中的版本信息是一个file地址 ，例如file:resources/fs-extra
+
+10. npm install underscore --registry=http://registry.url， 制定自定义下载源，--registry=http://registry.url就是一个格式例子
+
+11. npm ls 可以找到当前目录中可以被引用到的所有包
+
+12. package.json 包的下载版本可以是 file:resources/fs-extra、版本号或者是git地址等，都可以通过npm安装包
 ### node 中流(stream)的理解
 
 什么是流, 流就是通过片段的形式持续输出和写入内容, 提高效率了, 而不需要全部都准备好在输出或者写入, 准备好一部分就输出或者写入一部分
