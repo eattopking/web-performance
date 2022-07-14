@@ -270,7 +270,7 @@ Transform: 类似于双工流、但其输出是其输入的转换的转换流。
 
 ### node 进程间通信理解
 
-1. node 进程间通信使用 IPC 通信, 只有 fork 出来的子进程能和主进程通信
+1. node 进程间通信叫做 IPC 通信, 只有 fork 出来的子进程能和主进程通信, IPC通信就是进程间通信的意思
 
 2. 通信的 send 方法, 只能传递消息和特定类型的句柄, 例如一个 const server = createServer(), 得到的 server 实例就是一个句柄
 
