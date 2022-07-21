@@ -28,4 +28,4 @@ like 方法  模糊搜索, % 在前后都可以, title like '%测试%' or title 
 5. sqlite 支持没创建过表就创建创建过就不创建了， 通过IF NOT EXISTS实现，谷歌都说sqlite不支持， 其实是支持的
 例如 CREATE TABLE IF NOT EXISTS content
 
-6. 
+6. sqlite 连接数据库文件， 如果文件不存在会自动创建数据库文件， 如果数据库所在文件目录不存在，那不会自动创建目录， 会报错
