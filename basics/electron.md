@@ -318,6 +318,13 @@ notarize({
 
 3. 如果node-ffi不满足我们需求, 还需要自己重新修改编译node-ffi,获得满足自己需求的node-ffi,然后在调用
 
+### electron 运行原理
+
+1. 本地开发的时候使用electron .启动应用和进程，就是通过本地项目node_modules中的electron可执行文件（/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron）启动应用， 并执行package.json中的main字段配置的文件， 启动主进程，如果没有配置main字段， 执行项目根目录中的index.js启动主进程， 打包之后执行的原理应该和本地开发的时候差不多
+
+
+
+
 
 ### 桌面端应用程序主要的目录
 
