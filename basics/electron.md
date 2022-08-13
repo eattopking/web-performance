@@ -106,11 +106,13 @@ copyright: baidu @ 2022 baidu
 npmRebuild: false
 // 触发公证, 通过结合electron-notarize 写一个公正脚本, 对mac 进行公正, 否则安装时会提示恶意软件, mac包还需要进行签名, 而windows包只需要签名不需要公正
 afterSign: ./notarize.js
-// electron 打包的时候要打进去的文件, 写哪个哪个就是打进去
+/* electron 打包的时候 app.asar文件中需要的内容, 配置的路径需要和项目中路径对应， 并且打包到app.asar中目录也被保留，app.asar是一个asar压缩文件， app.getAppPath获取的就是app.asar文件的路径 /Applications/有道云笔记.app/Contents/Resources/app.asar
+*/
 files:
-    - ./test.js
-    - ./page.js
-    - ./tempate.js
+    - dist/bridge.js
+    - dist/collect.js
+    - dist/context.js
+    - dist/main.js
     // 设置打到包中的图标
     - icons
 
@@ -320,7 +322,7 @@ notarize({
 
 ### electron 运行原理
 
-1. 本地开发的时候使用electron .启动应用和进程，就是通过本地项目node_modules中的electron可执行文件（/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron）启动应用， 并执行package.json中的main字段配置的文件， 启动主进程，如果没有配置main字段， 执行项目根目录中的index.js启动主进程， 打包之后执行的原理应该和本地开发的时候差不多
+1. 本地开发的时候使用electron .启动应用和进程，就是通过本地项目node_modules中的electron可执行文件（/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron）启动应用， 并执行package.json中的main字段配置的文件， 启动主进程，如果没有配置main字段， 执行项目根目录中的index.js启动主进程， 打包之后执行的原理和本地开发的时候差不多, 使用app.getPath('exe') (/Applications/有道云笔记.app/Contents/MacOS/有道云笔记)对应路径下的，应用可执行文件，去执行app.asar中package.json中的main字段配置的文件启动主进程
 
 
 
