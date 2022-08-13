@@ -106,7 +106,7 @@ copyright: baidu @ 2022 baidu
 npmRebuild: false
 // 触发公证, 通过结合electron-notarize 写一个公正脚本, 对mac 进行公正, 否则安装时会提示恶意软件, mac包还需要进行签名, 而windows包只需要签名不需要公正
 afterSign: ./notarize.js
-/* electron 打包的时候 app.asar文件中需要的内容, 配置的路径需要和项目中路径对应， 并且打包到app.asar中目录也被保留，app.asar是一个asar压缩文件， app.getAppPath获取的就是app.asar文件的路径 /Applications/有道云笔记.app/Contents/Resources/app.asar
+/* electron 打包的时候会把files配置打包到安装包的（/Applications/有道云笔记.app/Contents/Resources/app.asar）这个目录下的 app.asar压缩文件中, 配置的路径需要和项目中路径对应， 并且打包到app.asar中目录也被保留，app.asar是一个asar压缩文件， app.getAppPath获取的就是app.asar文件的路径 /Applications/有道云笔记.app/Contents/Resources/app.asar
 */
 files:
     - dist/bridge.js
@@ -118,8 +118,14 @@ files:
 
     // 将项目的build目录和里面的内容移动到应用程序的资源目录中, 安装应用程序后, 会存放在电脑本地的
     // 对应目录中  mac 就是在 应用程序安装包的Contents/Resources目录中，Linux 和 Windows 就是在安装包的resources目录中）
+    // extraResources配置的路径需要和项目中路径对应， 并且打包后这个路径会在安装包内保存，extraResources配置会被打包到/Applications/有道云笔记.app/Contents/Resources/目录中
 extraResources:
+    // build配置的路径需要和项目中路径对应， 并且打包后这个路径会在安装包内保存，build会被打包到/Applications/有道云笔记.app/Contents/Resources/目录中
     - build/**
+// extraFiles配置的路径需要和项目中路径对应， 并且打包后这个路径会在安装包内保存，extraFiles配置会被打包到/Applications/有道云笔记.app/Contents/目录中
+extraFiles:
+    // dll会被打包到/Applications/有道云笔记.app/Contents/目录中
+    - dll/**
 // 软件安装时候的一些自定义配置, 如不过设置, 就是默认的意见安装不能自定义选择
 nsis:
     // 允许修改安装目录
