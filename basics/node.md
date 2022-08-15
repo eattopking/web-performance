@@ -337,6 +337,8 @@ message的结构如下:
 
 4. I/O操作不只有磁盘I/O，还有网路I/O等
 
+5. I/O操作需要用到CPU
+
 Node中也是js执行的时候是单线程的， 但是node本身是可以多线程的
 
 ### node异步I/O事件循环， 专指I/O操作
@@ -357,3 +359,16 @@ Windows下主要通过IOCP来向系统内核发送I/O调用和从内核获取已
 4. 在Node中，除了JavaScript是单线程外， Node自身其实是多线程的
 
 5. 除了用户代码无法并行执行外，所有的I/O（磁盘I/O和网络I/O等）则是可以并行起来的。
+
+6. process.nextTick(callback) 会在主线程执行完之后立即执行， 并且比setTimeout(callback, 0)性能更好， 因为settimeout用到了红黑树所以消耗性能， setTimeout(callback, 0)中采用红黑树的操作时间复杂度为O(lg(n))， process.nextTick()的时间复杂度为O(1)。相较之下，process.nextTick()更高效
+
+7. 事件队列不是只有一个的， 每个类型的事件都会有一个队列，idle观察者（优先级最高）就是process.nextTick()的类型，它的事件队列是个数组，每次事件循环会将数组中的回调都执行完，然后就是I/O观察者（优先级第二高）就是settimeout这些定时器和异步I/O和事件等，它的事件队列也是一个数组， 每次事件循环都会将数组中的回调都执行完，
+然后就是check观察者就是setImmediate(callback)(优先级最低)，他的事件队列是一个链表， 每次事件循环只会有执行里面的一个回调，setImmediate(callback)之所以这样设计，是为了保证每轮循环能够较快地执行结束，防止CPU占用过多而阻塞后续I/O，但是真实的执行结果可能是有偏差的
+
+8. Node也应用到了异步I/O，网络套接字上侦听到的请求都会形成事件交给I/O观察者（就是注册的事件）， 然后将回调放到事件队列， 事件循环执行回调
+
+9. node 和nginx都是事件驱动的
+
+9. node异步I/O和其他的异步操作就是依赖事件循环实现的
+
+
