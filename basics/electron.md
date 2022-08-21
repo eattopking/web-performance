@@ -92,6 +92,9 @@ mac 在打dmg和mas包的时候都需要授权和签名, 要不然mac安装的�
 
 ####五、 electron-builder配置项, 这是正常打 exe, dmg ,deb的包, 是上传到mas的包的配置
 ```
+
+electron打包就是生成对应平台的安装文件，正常就是在本地打包就是生成到本地
+
 1. 正常的electron-builder.yml配置
 
 // 安装包的包名就是安装后的目录名
@@ -140,7 +143,9 @@ nsis:
     deleteAppDataOnUninstall: true
 // 设置安装界面
 dmg:
-    writeUpdateInfo: false
+    writeUpdateInfo: false,
+    // mac dmg安装时候的安装界面背景图片， 图片路径相对于打包配置文件可以取到就可以
+    background: "build/mac-install/background.png"
 // 打包windows环境的包, 默认打包是exe格式, 还可以是nsis格式, windows打包也需要签名, 签名时也需要证书
 // electron-builder --windows --publish always 打包window的指令
 win:
