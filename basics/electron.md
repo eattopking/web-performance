@@ -316,6 +316,12 @@ notarize({
 
 ```
 
+#### electron-updater 安装更新原理
+
+1. 百度-7.1.6.zip 安装安装包和update-info.json安装信息文件
+2. {"fileName":"百度-7.1.6.zip","sha512":"HYSaPDxMpcACHoWbrdnLuz5QuC+yYv9Yhl6Odg8DRlDKczf95Yk4te0m0k","isAdminRightsRequired":false}， update-info.json安装文件具体内容，
+3. 然后安装新的更新的时候会安装新的安装包， 然后更新update-info.json文件的内容为最新安装包的信息，然后更新的时候就用最新的安装包更新
+
 #### electron中node 调用c/c++编写的动态链接库的是方法
 
 1. 就是通过ffi-napi调用c/c++编写的动态链接库
