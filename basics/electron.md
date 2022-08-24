@@ -316,11 +316,34 @@ notarize({
 
 ```
 
-#### electron-updater 安装更新原理
+#### electron-updater 更新流程和安装更新原理
 
-1. 百度-7.1.6.zip 安装安装包和update-info.json安装信息文件
-2. {"fileName":"百度-7.1.6.zip","sha512":"HYSaPDxMpcACHoWbrdnLuz5QuC+yYv9Yhl6Odg8DRlDKczf95Yk4te0m0k","isAdminRightsRequired":false}， update-info.json安装文件具体内容，
-3. 然后安装新的更新的时候会安装新的安装包， 然后更新update-info.json文件的内容为最新安装包的信息，然后更新的时候就用最新的安装包更新
+1. electron应用的更新依赖于electron应用中打包进来的electron-updater
+
+2. electron-updater只包括了mac和windows的更新不包括linux
+
+3. mac使用electron-updater，下载来的更新文件是 update-info.json和一个应用的zip压缩包
+
+4.  windows使用electron-updater，下载来的更新文件是 update-info.json和.exe的windows可执行文件
+
+5. mac 的下载内容{"fileName":"百度-7.1.6.zip","sha512":"HYSaPDxMpcACHoWbrdnLuz5QuC+yYv9Yhl6Odg8DRlDKczf95Yk4te0m0k","isAdminRightsRequired":false}， update-info.json安装文件具体内容，
+6. 然后安装新的更新的时候会安装新的安装包， 然后更新update-info.json文件的内容为最新安装包的信息，然后更新的时候就用最新的安装包更新
+
+7. Electron 打包要进行签名的原因是， 如果不签名打出来的包在打开的时候， 需要开很多的权限才能打开， 如果进行了签名，那就只会弹出一个确定时候打开的弹窗， 点击确定就可以打开
+
+8. autoUpdater.setFeedURL({
+    provider: 'generic',
+    // 去检查更新的地址， 
+    url: '',
+    latest-arm64-mac.yml更新文件的前缀
+    channel: 'latest-arm64',
+});
+
+electron-builder构建之后根据autoUpdater.setFeedURL的channel配置生成一个包含更新信息的形如latest-arm64-mac.yml的文件
+
+9. 检查更新的时候就是autoUpdater.setFeedURL 的url配置检查形如latest-arm64-mac.yml的文件的内容， 有更新就通知更新，然后去下载， 没有更新就通知没有更新
+
+10. 问题 zip是咱们产生的的， latest-arm64-mac.yml文案怎么产生的本地打包在哪里
 
 #### electron中node 调用c/c++编写的动态链接库的是方法
 
