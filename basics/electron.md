@@ -107,6 +107,9 @@ artifactName: '${productName}_Setup_${version}.${ext}'
 copyright: baidu @ 2022 baidu
 // 是否在开始编译前重构原生依赖,可先尝试true, 如果出现问题再修改为false,
 npmRebuild: false
+directories:
+   // 打包后输出到本地和配置文件同级的目录名
+   output: releases
 // 触发公证, 通过结合electron-notarize 写一个公正脚本, 对mac 进行公正, 否则安装时会提示恶意软件, mac包还需要进行签名, 而windows包只需要签名不需要公正
 afterSign: ./notarize.js
 /* electron 打包的时候会把files配置打包到安装包的（/Applications/有道云笔记.app/Contents/Resources/app.asar）这个目录下的 app.asar压缩文件中, 配置的路径需要和项目中路径对应， 并且打包到app.asar中目录也被保留，app.asar是一个asar压缩文件， app.getAppPath获取的就是app.asar文件的路径 /Applications/有道云笔记.app/Contents/Resources/app.asar
@@ -171,7 +174,7 @@ win:
 // 配置channel: latest 最后生成的 更新配置文件是latest-mac.yml
 // electron-builder --mac --publish always 到包mac dmg包的指令
 mac:
-    // 获取到证书的用户id
+    // 获取到证书的用户id，就是要签名， 不签名的包需要mac开启很多的权限才能打开， 签名的包只需要进行一次二次确认就可以打开
     identity: baidu (77Q6F9P39T)
     // hardenedRuntime就需要写成true
     hardenedRuntime: true
@@ -180,9 +183,9 @@ mac:
     publish:
          // 服务器提供商 正常generic就行
         - provider: generic
-          // 更新安装包地址路径
+          // 检查更新的地址， 下载更新安装包的地址， 打包完成后上穿zip、exe、.yml更新配置文件的地址
           url: xxxx
-          // 生成更新配置文件名称
+          // 生成的更新配置文件的前缀名称
           channel: latest
 // 生成linux包
 // 构建linux包的指令 electron-builder --linux --publish always
@@ -343,7 +346,11 @@ electron-builder构建之后根据autoUpdater.setFeedURL的channel配置生成�
 
 9. 检查更新的时候就是autoUpdater.setFeedURL 的url配置检查形如latest-arm64-mac.yml的文件的内容， 有更新就通知更新，然后去下载， 没有更新就通知没有更新
 
-10. 问题 zip是咱们产生的的， latest-arm64-mac.yml文案怎么产生的本地打包在哪里
+10. zip、exe、dmg、 latest-arm64-mac.yml更新配置文件， 都是打包后生成到打包输出目录的
+
+11. 打包后生成的文件的上传地址和更新配置的地址是一个地址
+
+12. 更新版本的文件配置在哪里配还需要再问问, 更新配置文件和zip dmg啥的都会在打包完事之后穿到制品平台，然后我们检查更新那个地址也是我们资源上传的那个地址
 
 #### electron中node 调用c/c++编写的动态链接库的是方法
 
