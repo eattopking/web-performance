@@ -99,6 +99,10 @@ electron打包就是生成对应平台的安装文件，正常就是在本地打
 
 // 安装包的包名就是安装后的目录名
 appId: 'baidu'
+// 打包输出的安装包格式， mac默认输出dmg和zip
+target: 
+    - dmg
+    - zip
 // 应用可执行文件名称
 productName: '百度'
 // 带有后缀的应用可执行文件名称
@@ -155,6 +159,10 @@ win:
     // 代表加密的方式，一般分为'sha256'与'sha1'两种方式，正常就是写sha256就行
     signingHashAlgorithms:
         - sha256
+    //安装包的格式，默认是"nsis"， nsis就是exe格式
+    target: 
+        - msi
+        - nsis     
     // 是否签名DLL
     signDlls: true
     // 代表时间戳,一般使用'http://timestamp.digicert.com'来进行时间戳的覆盖即可
@@ -387,3 +395,7 @@ electron-builder构建之后根据autoUpdater.setFeedURL的channel配置生成�
 arm和x86是不同的指令集体系， arm64是指arm指令集体系中的64位体系， x64是指x86指令集体系中的64位体系，一般就是指对应体系对应位数的处理器芯片
 
 node的 process.arch的取值的固定的， arm版本的node process.arch就是arm64， x64版本的node， process.arch就是x64，x64版本的node安装在arm系统的电脑上， process.arch的取值还是x64
+
+### macos 本身支持的指令，将background.png background@2x.png合成一个和background.png 图片尺寸一样的，但是更清晰的.tiff格式图片
+
+ tiffutil -cathidpicheck background.png background@2x.png -out background.tiff
