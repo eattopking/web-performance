@@ -398,4 +398,6 @@ node的 process.arch的取值的固定的， arm版本的node process.arch就是
 
 ### macos 本身支持的指令，将background.png background@2x.png合成一个和background.png 图片尺寸一样的，但是更清晰的.tiff格式图片
 
- tiffutil -cathidpicheck background.png background@2x.png -out background.tiff
+1. tiffutil -cathidpicheck background.png background@2x.png -out background.tiff
+
+2. 配置mac安装界面背景图，background.png 540x360的图片是糊的，所以需要处理成tiff
