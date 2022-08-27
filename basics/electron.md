@@ -396,7 +396,9 @@ arm和x86是不同的指令集体系， arm64是指arm指令集体系中的64位
 
 node的 process.arch的取值的固定的， arm版本的node process.arch就是arm64， x64版本的node， process.arch就是x64，x64版本的node安装在arm系统的电脑上， process.arch的取值还是x64
 
-### macos 本身支持的指令，将background.png background@2x.png合成一个和background.png 图片尺寸一样的，但是更清晰的.tiff格式图片
+### 遇到的问题
+
+ macos 本身支持的指令，将background.png background@2x.png合成一个和background.png 图片尺寸一样的，但是更清晰的.tiff格式图片
 
 1. tiffutil -cathidpicheck background.png background@2x.png -out background.tiff
 
