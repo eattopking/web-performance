@@ -360,6 +360,8 @@ electron-builder构建之后根据autoUpdater.setFeedURL的channel配置生成�
 
 12. 更新版本的文件配置在哪里配还需要再问问, 更新配置文件和zip dmg啥的都会在打包完事之后穿到制品平台，然后我们检查更新那个地址也是我们资源上传的那个地址
 
+13. electron autoUpdater模块的实现， windows是依赖 Squirrel.Windows， mac是依赖于 Squirrel.Mac
+
 #### electron中node 调用c/c++编写的动态链接库的是方法
 
 1. 就是通过ffi-napi调用c/c++编写的动态链接库
