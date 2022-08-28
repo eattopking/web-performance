@@ -136,7 +136,7 @@ extraResources:
 extraFiles:
     // dll会被打包到/Applications/有道云笔记.app/Contents/目录中
     - dll/**
-// 软件安装时候的一些自定义配置, 如不过设置, 就是默认的意见安装不能自定义选择
+// 软件安装时候的一些自定义配置, 如不过设置, 就是默认的意见安装不能自定义选择, windows .exe包的配置
 nsis:
     // 允许修改安装目录
     allowToChangeInstallationDirectory: true
@@ -182,7 +182,7 @@ win:
 // 配置channel: latest 最后生成的 更新配置文件是latest-mac.yml
 // electron-builder --mac --publish always 到包mac dmg包的指令
 mac:
-    // 获取到证书的用户id，就是要签名， 不签名的包需要mac开启很多的权限才能打开， 签名的包只需要进行一次二次确认就可以打开
+    // 获取到证书的用户id，就是要签名， 不签名的包需要mac开启很多的权限才能打开， 签名的包只需要进行一次二次确认就可以打开， 就是Apple 的开发者认证
     identity: baidu (77Q6F9P39T)
     // hardenedRuntime就需要写成true
     hardenedRuntime: true
@@ -352,7 +352,7 @@ notarize({
 
 electron-builder构建之后根据autoUpdater.setFeedURL的channel配置生成一个包含更新信息的形如latest-arm64-mac.yml的文件
 
-9. 检查更新的时候就是autoUpdater.setFeedURL 的url配置检查形如latest-arm64-mac.yml的文件的内容， 有更新就通知更新，然后去下载， 没有更新就通知没有更新
+9. 检查更新的时候就是autoUpdater 去autoUpdater.setFeedURL 配置的url地址检查形如latest-arm64-mac.yml的文件的内容， 有更新就通知更新，然后去下载， 没有更新就通知没有更新
 
 10. zip、exe、dmg、 latest-arm64-mac.yml更新配置文件， 都是打包后生成到打包输出目录的
 
