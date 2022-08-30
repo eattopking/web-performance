@@ -105,6 +105,11 @@ cors 分为两种： 简单请求、复杂请求
 
         这三个响应头都满足了，就可以发送正式的请求了，可以发送正式请求就代表可以发送复杂请求了， 可以进行跨域了
 
+#### iframe 跨域
+
+1. 如果iframe加载的域名和加载iframe所在父页面的域名是跨域的那么，就不能通过iframeDocument.contentWindow.document 操作iframe加载的页面
+
+2. 只能通过postMessage进行iframe加载页面和iframe所在父页面的通信
 ### 三. token是什么
 
     token 称为jwt （json+web+token）
