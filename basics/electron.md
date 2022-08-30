@@ -364,7 +364,7 @@ electron-builder构建之后根据autoUpdater.setFeedURL的channel配置生成�
 
 14. 如果本地已经下载了最新版本想直接更新，需要在从autoUpdater.checkForUpdates()，开始从新走一遍流程，经历所有的事件，然后触发autoUpdater.downloadUpdate();去下载，因为本地已经有了最新版本， 所有autoUpdater回去比对线上更新文件和本地更新文件的版本信息， 如果是最新的，就不会下载了， 直接执行update-downloadedupdate-downloaded事件回调，在这个回调中直接调用 autoUpdater.quitAndInstall(false);退出安装并重启
 
-15. 分享包的使用首先要看看包源码ts配置中对外暴露的api，不要单纯看文档， 然后看看包如何log输出，要认真看输出的log，然后根据这两点分析实现想要的功能
+15. 分享包的使用首先要看看包源码ts配置中对外暴露的api，不要单纯看文档， 然后看看包如何log输出，要认真看输出的log，然后根据这两点分析实现想要的功能, 还有结合源码中对应的注释分析实现
 
 #### electron中node 调用c/c++编写的动态链接库的是方法
 
