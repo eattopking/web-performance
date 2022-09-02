@@ -402,6 +402,11 @@ arm和x86是不同的指令集体系， arm64是指arm指令集体系中的64位
 
 node的 process.arch的取值的固定的， arm版本的node process.arch就是arm64， x64版本的node， process.arch就是x64，x64版本的node安装在arm系统的电脑上， process.arch的取值还是x64
 
+
+### electron 另一个日志输出地址
+
+/Users/your_userName/Library/Caches
+
 ### electron打日志的方式
 
 1. Electron-log
@@ -419,8 +424,20 @@ on Windows: %USERPROFILE%\AppData\Roaming\{app name}\logs\{process type}.log
 
 ### 遇到的问题
 
- macos 本身支持的指令，将background.png background@2x.png合成一个和background.png 图片尺寸一样的，但是更清晰的.tiff格式图片
+ 一、macos 本身支持的指令，将background.png background@2x.png合成一个和background.png 图片尺寸一样的，但是更清晰的.tiff格式图片
 
 1. tiffutil -cathidpicheck background.png background@2x.png -out background.tiff
 
 2. 配置mac安装界面背景图，background.png 540x360的图片是糊的，所以需要处理成tiff
+
+
+二、
+1. mac下载完更新后，需要等一会在执行quitAndinstall 要不然会安装不上
+
+2. mac本地已经下载过最新安装包，通过设置autoInstallOnAppQuit = true，退出后，在此重启正常会自动安装更新，但是退出后，快速重启这个时候mac还没有安装完毕， 就不会更新成功
+
+3. 如果本地已经下载了最新版本想直接更新，需要在从autoUpdater.checkForUpdates()，开始从新走一遍流程，经历所有的事件，然后触发autoUpdater.downloadUpdate();去下载，因为本地已经有了最新版本， 所有autoUpdater回去比对线上更新文件和本地更新文件的版本信息， 如果是最新的，就不会下载了， 直接执行update-downloadedupdate-downloaded事件回调，在这个回调中直接调用 autoUpdater.quitAndInstall(false);退出安装并重启, m1电脑如果下载完退出，快速打开应用，这个时候没有更新成功，
+然后执行上面路径的时候，就会报错， 所以需要在error事件中判断一下，然后直接qpp.relaunch() app.exit(0) 重启， 重启可以就可以更新成功了
+
+
+
