@@ -23,8 +23,6 @@ referer 表示通过链接跳转到当前页面的前一个页面的地址栏中
 
 在js中document.referer 和 referer表示的相同
 
-
-
 ### 二. 请求跨域的理解
 1. 同源策略是限制谁的？？？？
 
@@ -107,6 +105,11 @@ cors 分为两种： 简单请求、复杂请求
 
         这三个响应头都满足了，就可以发送正式的请求了，可以发送正式请求就代表可以发送复杂请求了， 可以进行跨域了
 
+#### iframe 跨域
+
+1. 如果iframe加载的域名和加载iframe所在父页面的域名是跨域的那么，就不能通过iframeDocument.contentWindow.document 操作iframe加载的页面
+
+2. 只能通过postMessage进行iframe加载页面和iframe所在父页面的通信
 ### 三. token是什么
 
     token 称为jwt （json+web+token）
@@ -142,6 +145,38 @@ cors 分为两种： 简单请求、复杂请求
 
 
  浏览器查找缓存的顺序是: service worker、memory cache、disk cache、push cache
+
+
+### 五. 表单 x-www-form-urlencoded 与 multipart/form-data 区别
+
+1. 它俩是不一样的数据形式
+
+2. x-www-form-urlencoded 传递数据格式必须是 `aa=aa&bbb=${bbb}&ccc=ccc`, 请求体必须是这种字符串格式的， 它传递数据的时候request payload的类型是form data
+
+3. multipart/form-data 是通过 let formData = new FormData(), formData.append('username', 'Chris'), 然后通过formData实例传递数据， request payload的类型不是form data， request payload数据格式是这样的
+------WebKitForm
+Content-Disposition: form-data; name="aaa"
+
+aaa
+------WebKitForm
+Content-Disposition: form-data; name="bbb"
+
+bbb
+------WebKitForm
+Content-Disposition: form-data; name="ccc"
+
+ccc
+------WebKitForm
+Content-Disposition: form-data; name="ddd"
+
+666
+------WebKitForm
+
+
+
+4. x-www-form-urlencoded，表单默认的 Content-type 类型，支持 ASCII-text 文本内容
+5. multipart/form-data，允许提交表单包含： files，non-ASCII-text，Binary 类型数据
+
 
 
 ### http 的理解和面试

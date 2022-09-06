@@ -89,10 +89,10 @@ width auto 表示子元素的整体宽度（包括padding， 边框等），等�
 
 svg使用
 
-svg 是通过xml语法的一个矢量图
+svg 是通过xml语法的一个矢量图， 也是html标签可以被浏览器直接渲染
 
-1. 可以将svg标签之前放到dom展示, 矢量图
+1. svg 就是一个html标签， 可以被浏览器直接渲染， 改颜色直接改path标签的fill属性
 
-2. 可以将svg标签放在一个.svg的文件中, 然后image标签可以直接引用这个文案的路径展示这个矢量图
+2. 可以将svg标签放在一个.svg的文件中, 然后image标签可以直接引用这个文案的路径展示这个矢量图， 在react中是应用webpack的svg-url-loader实现的
 
-3. 在react中, 可以将svg标签放在一个.svg的文件中, 然后在组件中直接引入这个文件就相当于引入了svg标签, 引入的就是组件了, 然后在react直接使用这个组件, 就相当于使用svg标签了
+3. 在react中, 可以将svg标签放在一个.svg的文件中, 然后在组件中直接引入这个文件就相当于引入了svg标签, 引入的就是组件了, 然后在react直接使用这个组件, 就相当于使用svg标签了, 这是因为webpack的@svgr/webpack， loader实现的

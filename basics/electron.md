@@ -92,10 +92,17 @@ mac 在打dmg和mas包的时候都需要授权和签名, 要不然mac安装的�
 
 ####五、 electron-builder配置项, 这是正常打 exe, dmg ,deb的包, 是上传到mas的包的配置
 ```
+
+electron打包就是生成对应平台的安装文件，正常就是在本地打包就是生成到本地
+
 1. 正常的electron-builder.yml配置
 
 // 安装包的包名就是安装后的目录名
 appId: 'baidu'
+// 打包输出的安装包格式， mac默认输出dmg和zip
+target: 
+    - dmg
+    - zip
 // 应用可执行文件名称
 productName: '百度'
 // 带有后缀的应用可执行文件名称
@@ -104,6 +111,9 @@ artifactName: '${productName}_Setup_${version}.${ext}'
 copyright: baidu @ 2022 baidu
 // 是否在开始编译前重构原生依赖,可先尝试true, 如果出现问题再修改为false,
 npmRebuild: false
+directories:
+   // 打包后输出到本地和配置文件同级的目录名
+   output: releases
 // 触发公证, 通过结合electron-notarize 写一个公正脚本, 对mac 进行公正, 否则安装时会提示恶意软件, mac包还需要进行签名, 而windows包只需要签名不需要公正
 afterSign: ./notarize.js
 /* electron 打包的时候会把files配置打包到安装包的（/Applications/有道云笔记.app/Contents/Resources/app.asar）这个目录下的 app.asar压缩文件中, 配置的路径需要和项目中路径对应， 并且打包到app.asar中目录也被保留，app.asar是一个asar压缩文件， app.getAppPath获取的就是app.asar文件的路径 /Applications/有道云笔记.app/Contents/Resources/app.asar
@@ -126,7 +136,7 @@ extraResources:
 extraFiles:
     // dll会被打包到/Applications/有道云笔记.app/Contents/目录中
     - dll/**
-// 软件安装时候的一些自定义配置, 如不过设置, 就是默认的意见安装不能自定义选择
+// 软件安装时候的一些自定义配置, 如不过设置, 就是默认的意见安装不能自定义选择, windows .exe包的配置
 nsis:
     // 允许修改安装目录
     allowToChangeInstallationDirectory: true
@@ -140,13 +150,19 @@ nsis:
     deleteAppDataOnUninstall: true
 // 设置安装界面
 dmg:
-    writeUpdateInfo: false
+    writeUpdateInfo: false,
+    // mac dmg安装时候的安装界面背景图片， 图片路径相对于打包配置文件可以取到就可以
+    background: "build/mac-install/background.png"
 // 打包windows环境的包, 默认打包是exe格式, 还可以是nsis格式, windows打包也需要签名, 签名时也需要证书
 // electron-builder --windows --publish always 打包window的指令
 win:
     // 代表加密的方式，一般分为'sha256'与'sha1'两种方式，正常就是写sha256就行
     signingHashAlgorithms:
         - sha256
+    //安装包的格式，默认是"nsis"， nsis就是exe格式
+    target: 
+        - msi
+        - nsis     
     // 是否签名DLL
     signDlls: true
     // 代表时间戳,一般使用'http://timestamp.digicert.com'来进行时间戳的覆盖即可
@@ -166,7 +182,7 @@ win:
 // 配置channel: latest 最后生成的 更新配置文件是latest-mac.yml
 // electron-builder --mac --publish always 到包mac dmg包的指令
 mac:
-    // 获取到证书的用户id
+    // 获取到证书的用户id，就是要签名， 不签名的包需要mac开启很多的权限才能打开， 签名的包只需要进行一次二次确认就可以打开， 就是Apple 的开发者认证
     identity: baidu (77Q6F9P39T)
     // hardenedRuntime就需要写成true
     hardenedRuntime: true
@@ -175,9 +191,9 @@ mac:
     publish:
          // 服务器提供商 正常generic就行
         - provider: generic
-          // 更新安装包地址路径
+          // 检查更新的地址， 下载更新安装包的地址， 打包完成后上穿zip、exe、.yml更新配置文件的地址
           url: xxxx
-          // 生成更新配置文件名称
+          // 生成的更新配置文件的前缀名称
           channel: latest
 // 生成linux包
 // 构建linux包的指令 electron-builder --linux --publish always
@@ -311,6 +327,45 @@ notarize({
 
 ```
 
+#### electron-updater 更新流程和安装更新原理
+
+1. electron应用的更新依赖于electron应用中打包进来的electron-updater
+
+2. electron-updater只包括了mac和windows的更新不包括linux
+
+3. mac使用electron-updater，下载来的更新文件是 update-info.json和一个应用的zip压缩包
+
+4.  windows使用electron-updater，下载来的更新文件是 update-info.json和.exe的windows可执行文件
+
+5. mac 的下载内容{"fileName":"百度-7.1.6.zip","sha512":"HYSaPDxMpcACHoWbrdnLuz5QuC+yYv9Yhl6Odg8DRlDKczf95Yk4te0m0k","isAdminRightsRequired":false}， update-info.json安装文件具体内容，
+6. 然后安装新的更新的时候会安装新的安装包， 然后更新update-info.json文件的内容为最新安装包的信息，然后更新的时候就用最新的安装包更新
+
+7. Electron 打包要进行签名的原因是， 如果不签名打出来的包在打开的时候， 需要开很多的权限才能打开， 如果进行了签名，那就只会弹出一个确定时候打开的弹窗， 点击确定就可以打开
+
+8. autoUpdater.setFeedURL({
+    provider: 'generic',
+    // 去检查更新的地址， 
+    url: '',
+    latest-arm64-mac.yml更新文件的前缀
+    channel: 'latest-arm64',
+});
+
+electron-builder构建之后根据autoUpdater.setFeedURL的channel配置生成一个包含更新信息的形如latest-arm64-mac.yml的文件
+
+9. 检查更新的时候就是autoUpdater 去autoUpdater.setFeedURL 配置的url地址检查形如latest-arm64-mac.yml的文件的内容， 有更新就通知更新，然后去下载， 没有更新就通知没有更新
+
+10. zip、exe、dmg、 latest-arm64-mac.yml更新配置文件， 都是打包后生成到打包输出目录的
+
+11. 打包后生成的文件的上传地址和更新配置的地址是一个地址
+
+12. 更新版本的文件配置在哪里配还需要再问问, 更新配置文件和zip dmg啥的都会在打包完事之后穿到制品平台，然后我们检查更新那个地址也是我们资源上传的那个地址
+
+13. electron autoUpdater模块的实现， windows是依赖 Squirrel.Windows， mac是依赖于 Squirrel.Mac
+
+14. 如果本地已经下载了最新版本想直接更新，需要在从autoUpdater.checkForUpdates()，开始从新走一遍流程，经历所有的事件，然后触发autoUpdater.downloadUpdate();去下载，因为本地已经有了最新版本， 所有autoUpdater回去比对线上更新文件和本地更新文件的版本信息， 如果是最新的，就不会下载了， 直接执行update-downloadedupdate-downloaded事件回调，在这个回调中直接调用 autoUpdater.quitAndInstall(false);退出安装并重启
+
+15. 分享包的使用首先要看看包源码ts配置中对外暴露的api，不要单纯看文档， 然后看看包如何log输出，要认真看输出的log，然后根据这两点分析实现想要的功能, 还有结合源码中对应的注释分析实现
+
 #### electron中node 调用c/c++编写的动态链接库的是方法
 
 1. 就是通过ffi-napi调用c/c++编写的动态链接库
@@ -346,3 +401,43 @@ notarize({
 arm和x86是不同的指令集体系， arm64是指arm指令集体系中的64位体系， x64是指x86指令集体系中的64位体系，一般就是指对应体系对应位数的处理器芯片
 
 node的 process.arch的取值的固定的， arm版本的node process.arch就是arm64， x64版本的node， process.arch就是x64，x64版本的node安装在arm系统的电脑上， process.arch的取值还是x64
+
+
+### electron 另一个日志输出地址
+
+/Users/your_userName/Library/Caches
+
+### electron打日志的方式
+
+1. Electron-log
+
+Electron-log默认日志会被记录在如下位置：
+
+on Linux: ~/.config/{app name}/logs/{process type}.log
+on macOS: ~/Library/Logs/{app name}/{process type}.log
+on Windows: %USERPROFILE%\AppData\Roaming\{app name}\logs\{process type}.log
+
+
+2. 自己将log写入本地文件
+
+3. 在看看electron-updater是怎么打log的
+
+### 遇到的问题
+
+ 一、macos 本身支持的指令，将background.png background@2x.png合成一个和background.png 图片尺寸一样的，但是更清晰的.tiff格式图片
+
+1. tiffutil -cathidpicheck background.png background@2x.png -out background.tiff
+
+2. 配置mac安装界面背景图，background.png 540x360的图片是糊的，所以需要处理成tiff
+
+
+二、
+1. mac下载完更新后，需要等一会在执行quitAndinstall 要不然会安装不上
+
+2. mac本地已经下载过最新安装包，通过设置autoInstallOnAppQuit = true，退出后，在此重启正常会自动安装更新，但是退出后，快速重启这个时候mac还没有安装完毕， 就不会更新成功
+
+3. 如果本地已经下载了最新版本想直接更新，需要在从autoUpdater.checkForUpdates()，开始从新走一遍流程，经历所有的事件，然后触发autoUpdater.downloadUpdate();去下载，因为本地已经有了最新版本， 所有autoUpdater回去比对线上更新文件和本地更新文件的版本信息， 如果是最新的，就不会下载了， 直接执行update-downloadedupdate-downloaded事件回调，在这个回调中直接调用 autoUpdater.quitAndInstall(false);退出安装并重启, m1电脑如果下载完退出，快速打开应用，这个时候没有更新成功，
+然后执行上面路径的时候，就会报错， 所以需要在error事件中判断一下，然后直接qpp.relaunch() app.exit(0) 重启， 重启可以就可以更新成功了
+
+
+
