@@ -15,6 +15,10 @@
 
 2. Observable.subscribe((data) => {}), Observable subscribe api 回调后返回正确的值， 就是和promise.then是一样的
 
+3. import { HttpClient, HttpHeaders } from '@angular/common/http', 使用http相关的service
+
+4. 继续学习RX.js的相关操作
+全局使用
 
 ### service
 service 将数据处理或者一个独立的功能逻辑提取出出去，供组件等使用的方式
@@ -41,7 +45,6 @@ service是通过Injectable 装饰器创建的一个类
 
 2. 使用service的时候需要先引入，然后在依赖注入，然后使用
 
-3. 
 ```
 提供单例服务
 
@@ -78,8 +81,6 @@ service是通过Injectable 装饰器创建的一个类
 
 3. styleUrls组件私有样式表文件的位置。
 
-4. 
-
 import { Component } from '@angular/core';
 
 @Component({
@@ -100,6 +101,7 @@ import { Component } from '@angular/core';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   // 引入外部模块的列表，引入后所有组件都可以使用
   // 引入就是引入模块对外导出的声明的，就是声明的组件、指令和管道
@@ -109,7 +111,10 @@ import { FormsModule } from '@angular/forms';
     // 需要使用双向数据绑定需要引入这个模块
     FormsModule,
     // 根router module 需要在 AppModule中引入
-    AppRoutingModule
+    AppRoutingModule,
+    // 要想全局使用 import { HttpClient, HttpHeaders } from '@angular/common/http', 需要在AppModule中引入HttpClientModule
+
+    HttpClientModule
     ],
   // 声明组件、指令和管道的列表，组件、指令和管道只有声明在模块的declarations中才可以使用，声明在AppModule中或者其他模块中都可以
   // 组件、指令和管道只能在一个模块中声明，不能重复在多个模块中声明，否则会报错
@@ -195,7 +200,6 @@ export class AppRoutingModule { }
 
 3. <a routerLink="/dashboard">Dashboard</a> ，routerLink指定跳转路由，点击跳转
 
-4. 
 
 ### 双向数据绑定
 1. 引入FormsModule 才可以使用ngModel
@@ -211,14 +215,14 @@ export class AppRoutingModule { }
 
 1. 组件最后都要统一汇总到模块中管理， 每个模块可以自定义设置要管理的组件
 
-2. 所有的模块最后都要汇总到AppModule(app.module.ts)中管理
+2. 每个模块可以导出组件、指令、管道被导入这个模块的模块的组件、指令、管道引用
 
-3. AppModule 最后要通过 platformBrowserDynamic().bootstrapModule 创建所有module，构建这个应用
+3. 所有的模块最后都要汇总到AppModule(app.module.ts)中管理
 
+4. AppModule 最后要通过 platformBrowserDynamic().bootstrapModule 创建所有module，构建这个应用
 
-4. module可以加载module， module可以加载service， module可以加载组件
+5. module可以导入module， module可以加载service， module可以声明组件
 
-5. 可以加载service
 
 
 
