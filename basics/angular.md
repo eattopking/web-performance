@@ -15,6 +15,9 @@
 
 2. Observable.subscribe((data) => {}), Observable subscribe api 回调后返回正确的值， 就是和promise.then是一样的
 
+3. http service为什么可以在全局使用的原理，实现起来和理解的不同 TODO
+
+4. http相关的其他知识的学习 TODO
 
 ### service
 service 将数据处理或者一个独立的功能逻辑提取出出去，供组件等使用的方式
@@ -221,7 +224,11 @@ export class AppRoutingModule { }
 5. 可以加载service
 
 
+## angular项目的主要目录文件结构
+
+// TODO
 
 
+## angular其他知识细节学习，NgModule 问题解答等学习，看官方中文文档的一些内容学习
 
-
+// TODO
