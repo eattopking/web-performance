@@ -210,7 +210,7 @@ jsbridge就是将native端的方法和模块注入到js引擎中，让js引用
 
 3. 我们使用ts开发，然后然后通过tsc cli将ts转成js
 
-4. 可以使用less等css预处理器， 开发样式，然后自己写一个cil 实时将less等转成wxss
+4. 可以使用less等css预处理器， 开发样式，然后将less全局安装就可以使用lessc指令了，然后自己写一个cil 通过lessc实时将less文件转成wxss文件
 
 5. npm 提供了一些专门为小程序提供的npm包， 在开发者工具中执行的使用需要使用 构建npm 安装， 终端的npm i是无法安装的
 
