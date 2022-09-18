@@ -418,7 +418,7 @@ writeJsonSync
 4. 查询node 内存使用情况process.memoryUsage();
 ```
 {
-  rss: 14958592,
+  rss: 14958592, node 进程所分配的内存，这个值是随时变化的，根据需要
   heapTotal: 7195904, node单进程 已经申请到的内存，就是单进程v8引擎申请到的内存
   heapUsed: 2821496 node单进程 已经使用的内存
 }
@@ -427,7 +427,7 @@ writeJsonSync
 
 5. node 改变内存限制
 
-内存分为新生代内存和老生代内存
+V8堆内存分为新生代内存和老生代内存
 
 * 新生代内存就是存活时间比较短的对象占用的内存
 * 老生代内存就是存活时间比较长的对象占用的内存
@@ -435,9 +435,9 @@ writeJsonSync
 老生代内存和新生代内存共同组成node进程V8引擎的内存大小
 
 ```
-node --max-old-space-size=1700 test.js // 单位为MB 设置老生代内存最大值
+node --max-old-space-size=1700 test.js // 单位为MB 设置老生代内存最大值 设置的是V8堆内存
 // 或者
-node --max-new-space-size=1024 test.js // 单位为KB  设置新生代内存最大值
+node --max-new-space-size=1024 test.js // 单位为KB  设置新生代内存最大值 设置的是V8堆内存
 
 这样可以改变node 主进程执行时，V8分配的内存大小，避免内存占满，进程崩溃
 
@@ -470,5 +470,32 @@ node --max-new-space-size=1024 test.js // 单位为KB  设置新生代内存最�
 * 但是在V8中通过delete 删除对象属性，可能会影响V8的优化，所以最好使用赋值的形式释放内存
 
 
+7. 内存指标
+
+* os模块中的totalmem()和freemem()这两个方法用于查看操作系统的内存使用情况，它们分别返回系统的总内存和闲置内存，以字节为单位
+
+* v8分配的内存叫做堆内存，就是heapTotal的值，heapUsed就是对内存的使用情况，node中的垃圾回收也是针对V8堆内存的, 也只有v8的堆内存超过限制才有导致进程奔溃， node进程分到的内存就是rss，这个内存由两部分组成，一个是V8的堆内存， 还有就是除了V8堆内存以外的堆外内存，堆外内存没有限制，不会导致进程奔溃
+
+* buffer和其他对象不同， buffer占用的堆外内存， 所有内存过大不会导致进程崩溃
+
+8. node中的缓存
+
+* node进程中的对象缓存要慎重，要控制大小和清空机制， 否则容易内存泄漏，导致进程崩溃
+
+* node比较好的方式是使用进程外的缓存，只能不会占用进程的V8内存，可以使垃圾回收更高效
+
+* node进程中的内存是不可以和其他进程共享的，因为进程和进程是隔离的，使用进程外缓存可以缓存共享
 
 
+9. node的内存泄漏排查
+
+* npm安装 node-heapdump， npm install heapdump，然后在需要排查代码引入var heapdump = require('heapdump');， 引入后node执行相应代码，然后堆内存进行一段时间的积累之后在命令行执行（
+kill -USR2 进程id），这命令就可以抓取进程中的堆内存快照，到一个
+heapdump-<sec>.<usec>.heapsnapshot 文件中，然后我们在浏览器控制台的Profiles（内存）右键加载这个文件，就可以看到快照了，根据快照，快照中显示的leak部分就是内存泄漏的部分
+
+* npm安装 node-memwatch ，npm install memwatch，然后在然后在需要排查代码引入var heapdump = require('heapdump');，然后在要排查的代码前面调用 var hd = new memwatch.HeapDiff();，
+然后在想要排查的代码执行完之后执行var diff = hd.end();， 这样就可以拿到要代码代码执行完之后的内存变化了，就可以排查内存泄漏了
+
+10. 大内存应用
+
+* 在读写大内存的文件的时候不能直接使用，fs.readFile()和fs.writeFile()，因为这两个APi操作的时候占用的是V8的堆内存，文件太大会导致堆内存超过限制，进程奔溃，所以我们使用fs.createReadStream()和fs.createWriteStream()， 通过流的方式操作大文件， 因为流是通过buffer实现的，buffer占用的堆外内存所以不用担心进程奔溃的问题， 但是要进行字符串层面的处理，都是需要V8引擎来处理的，就必须用到V8堆内存
