@@ -97,6 +97,27 @@ import { Component } from '@angular/core';
 
 ### 指令
 
+* 创建属性型指令
+```
+import { Directive, ElementRef } from '@angular/core';
+
+@Directive({
+  // 定义css属性选择器，作为指令在调用时候的名称
+  selector: '[appHighlight]'
+})
+export class HighlightDirective {
+    // 注入ElementRef，通过ElementRef.nativeElement可以直接获取到指令作用的那个dom元素
+    constructor(private el: ElementRef) {
+       this.el.nativeElement.style.backgroundColor = 'yellow';
+    }
+}
+```
+
+* 结构型指令
+
+```
+```
+
 ### 模块
 ```
 根模块AppModule（app.module.ts）
