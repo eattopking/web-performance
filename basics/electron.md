@@ -439,5 +439,26 @@ on Windows: %USERPROFILE%\AppData\Roaming\{app name}\logs\{process type}.log
 3. 如果本地已经下载了最新版本想直接更新，需要在从autoUpdater.checkForUpdates()，开始从新走一遍流程，经历所有的事件，然后触发autoUpdater.downloadUpdate();去下载，因为本地已经有了最新版本， 所有autoUpdater回去比对线上更新文件和本地更新文件的版本信息， 如果是最新的，就不会下载了， 直接执行update-downloadedupdate-downloaded事件回调，在这个回调中直接调用 autoUpdater.quitAndInstall(false);退出安装并重启, m1电脑如果下载完退出，快速打开应用，这个时候没有更新成功，
 然后执行上面路径的时候，就会报错， 所以需要在error事件中判断一下，然后直接qpp.relaunch() app.exit(0) 重启， 重启可以就可以更新成功了
 
+### electron-updater灰度发布
+
+* 通过js-yaml可以操作更新yaml文件，添加stagingPercentage字段，字段的取值是0-100，为20就是表示小于20的可以更新，就是20%可以更新， electron-builder构建后，用户安装后electron-updater 本身也包含了灰度发布的逻辑。它会生成一个不变的 stagingUserId 写到本地文件中，作为唯一 id，然后计算出一个 0-100 的数字后，和stagingPercentage字段值比对，如果小于stagingPercentage字段值就表示可以更新
+
+```
+const yaml = require('js-yaml');
+const fs   = require('fs');
+
+// Get document, or throw exception on error
+try {
+  const doc = yaml.load(fs.readFileSync('/home/ixti/example.yml', 'utf8'));
+  console.log(doc);
+} catch (e) {
+  console.log(e);
+}
+```
+
+* 可以上传两个yaml更新文件， 在一个是全量发布的， 一个是灰度发布的， 灰度更新的时候在网管控制一下，将请求全量更新文件的请求
+代理到去请求灰度更新的文件
+
+* electron-updater 可以做全量更新、增量更新、局部更新 参考这个文章 https://juejin.cn/post/7061607016036302861
 
 
