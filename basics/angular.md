@@ -99,7 +99,7 @@ import { Component } from '@angular/core';
 
 * 创建属性型指令
 ```
-import { Directive, ElementRef } from '@angular/core';
+import { Directive, ElementRef, HostListener } from '@angular/core';
 
 @Directive({
   // 定义css属性选择器，作为指令在调用时候的名称
@@ -110,7 +110,22 @@ export class HighlightDirective {
     constructor(private el: ElementRef) {
        this.el.nativeElement.style.backgroundColor = 'yellow';
     }
+
+    // 为指令的宿主元素注册mouseenter事件
+    @HostListener('mouseenter') onMouseEnter() {
+     
+    }
 }
+
+appHighlight指令应用
+
+<p [appHighlight]="color">Highlight me!</p> color是变量
+
+属性绑定就是传递属性，[appHighlight]="color"、appHighlight="yellow" 这两种都是，
+带[]的属性绑定可以传变量和静态常量， 不带[]的只能传静态常量
+
+将指令进行属性绑定，这样就是应用appHighlight指令并且向指令中传递名称为appHighlight的值
+
 ```
 
 * 结构型指令
