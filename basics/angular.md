@@ -249,6 +249,22 @@ angular中内置的管道，也可以自定义管道
 
 自定义管道的方式
 
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'pow'
+})
+export class PowPipe implements PipeTransform {
+  // 管道应用符号｜左边的值是transform第一个参数value，之后通过在管道后面添加: 增加的参数分别作为
+  2、3.... 个参数
+  // 这是固定写法，返回值就是管道的返回值
+  transform(value: number,  exponent?: number): number {  //第二个参数还可以为...arg:unknown[]:
+    return Math.pow(value, isNaN(exponent) ? 1 : exponent); //求传入数值的多少次方
+  }
+}
+
+管道的导出方式和组件、指令一样
+
 ### 路由
 1. 
 ```
