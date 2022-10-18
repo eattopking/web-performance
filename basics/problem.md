@@ -152,3 +152,12 @@ const componentSelectConfig = [
 # 域名问题
 苹果商店和小程序必须使用域名访问， 不能使用ip访问
 
+
+# 安装依赖问题
+yarn install的时候 node-sass install error: no template named 'remove_cv_t' in namespace 'std'; did you mean 'remove_cv' 报错
+
+解决方法： CXXFLAGS="--std=c++17" yarn install
+
+
+
+
