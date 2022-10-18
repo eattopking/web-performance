@@ -97,9 +97,11 @@ import { Component } from '@angular/core';
 
 ### 指令
 
+从功能上指令就分为属性型指令和结构性指令
+
 * 创建属性型指令
 ```
-import { Directive, ElementRef } from '@angular/core';
+import { Directive, ElementRef, HostListener } from '@angular/core';
 
 @Directive({
   // 定义css属性选择器，作为指令在调用时候的名称
@@ -110,12 +112,62 @@ export class HighlightDirective {
     constructor(private el: ElementRef) {
        this.el.nativeElement.style.backgroundColor = 'yellow';
     }
+
+    // 为指令的宿主元素注册mouseenter事件
+    @HostListener('mouseenter') onMouseEnter() {
+     
+    }
 }
+
+appHighlight指令应用
+
+<p [appHighlight]="color">Highlight me!</p> color是变量
+
+属性绑定就是传递属性，[appHighlight]="color"、appHighlight="yellow" 这两种都是，
+带[]的属性绑定可以传变量和静态常量， 不带[]的只能传静态常量
+
+将指令进行属性绑定，这样就是应用appHighlight指令并且向指令中传递名称为appHighlight的值
+
 ```
 
 * 结构型指令
 
 ```
+结构型指令是需要改变页面展示结构的指令
+
+结构性指令就是根据视图和视图容器实现的
+
+// 结构型指令的应用方式需要用*（星号）应用，这是一种简写形式，最后会被解析成<ng-template>包裹的形式
+<p *appUnless="visible">Highlight me!</p> color是变量
+
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+
+
+@Directive({ selector: '[appUnless]'})
+export class UnlessDirective {
+  private hasView = false;
+
+  constructor(
+    // templateRef注入后，可以通过this.templateRef获取到应用了指令之后宿主元素解析成的那个<ng-template>元素整体，然后进行操作，就是获取嵌入视图
+    private templateRef: TemplateRef<any>,
+    // 获取宿主元素上一级的视图容器， 每个dom都可以是一个视图容器，在这个dom创建一个<ng-container></ng-container>作为视图容器，并不当作真正的dom元素使用，只当作视图容器
+    // angular中的展示的最小单位是视图
+    private viewContainer: ViewContainerRef) { }
+
+  // 指令的取值可以通过setter函数取第一个参数，也可以直接 @Input() appUnless; 通过this.appUnless取值
+
+  @Input() set appUnless(condition: boolean) {
+    if (!condition && !this.hasView) {
+      // 创建内嵌视图，放到以宿主元素作为视图容器的视图容器中
+      this.viewContainer.createEmbeddedView(this.templateRef);
+      this.hasView = true;
+    } else if (condition && this.hasView) {
+      // 清空宿主元素上一级的视图容器的内容
+      this.viewContainer.clear();
+      this.hasView = false;
+    }
+  }
+}
 ```
 
 ### 模块
@@ -196,6 +248,22 @@ platformBrowserDynamic()
 angular中内置的管道，也可以自定义管道
 
 自定义管道的方式
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'pow'
+})
+export class PowPipe implements PipeTransform {
+  // 管道应用符号｜左边的值是transform第一个参数value，之后通过在管道后面添加: 增加的参数分别作为
+  2、3.... 个参数
+  // 这是固定写法，返回值就是管道的返回值
+  transform(value: number,  exponent?: number): number {  //第二个参数还可以为...arg:unknown[]:
+    return Math.pow(value, isNaN(exponent) ? 1 : exponent); //求传入数值的多少次方
+  }
+}
+
+管道的导出方式和组件、指令一样
 
 ### 路由
 1. 
