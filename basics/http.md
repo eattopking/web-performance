@@ -23,6 +23,9 @@ referer 表示通过链接跳转到当前页面的前一个页面的地址栏中
 
 在js中document.referer 和 referer表示的相同
 
+
+6. Remote Address代表的是当前HTTP请求的远程地址(就是当前请求的真实的IP地址)
+
 ### 二. 请求跨域的理解
 1. 同源策略是限制谁的？？？？
 
