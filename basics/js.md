@@ -330,3 +330,8 @@ this表示执行事件回调时，注册这个事件回调的元素
 模块化都是只能在同一个进程中共享的引用和修改引用的, 不同进程之间虽然都引用了相同模块, 但是他们的引用都是隔离的, 互不影响
 
 
+### js加密库， web和node都可以用，可以使用流的方式一点点加密
+
+CryptoJS是一个JavaScript的加解密的工具包。它支持多种的算法：MD5、SHA1、SHA2、SHA3、RIPEMD-160 哈希散列，进行 AES、DES、Rabbit、RC4、Triple DES 加解密。
+
+文档地址： https://www.cnblogs.com/huiguo/p/16601076.html
