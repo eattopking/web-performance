@@ -93,9 +93,8 @@ ln -s ./test test2
 
 32. yargs npm 包可以帮助创建脚手架，就是接收命令， 作用和commomd相同， 但是这个更好用
 
-33.
-
-
+33. lerna 和 yarn workspace是独立的东西， yarn workspace可以实现公用node_modules，lerna可以发布npm包、提交代码、
+控制npm提交版本等、可以配置lerna，让在配置了yarn workspace配置的情况下，lerna可以使用yarn workspace的功能
 
 ### lerna 源码解析学习
 
