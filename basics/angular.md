@@ -15,11 +15,18 @@
 
 2. Observable.subscribe((data) => {}), Observable subscribe api 回调后返回正确的值， 就是和promise.then是一样的
 
-3. import { HttpClient, HttpHeaders } from '@angular/common/http', 使用http相关的service
+3. import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http', 使用http相关的service
+
 
 4. 继续学习RX.js的相关操作
 全局使用
-3. http service为什么可以在全局使用的原理，实现起来和理解的不同 TODO
+3. http service为什么可以在全局使用的原理
+
+因为HttpClientModule只在AppModule中导入了， 所以http service是一个单例服务（单例服务就是可以全局应用的服务）， 所以可以全局应用
+
+A模块中通过providers配置了服务， A模块被B模块导入，那么A模块中providers配置的服务，相当于配置到B模块中的providers了，会产生一个新的service实例在B模块的 指令、组件、管道、服务中可以被使用
+
+如果此时B模块在被C模块导入，那么A模块的providers的服务和B模块的providers中的服务应该一起配置到C模块的providers中，这里还需要验证一下，应该是没问题的
 
 4. http相关的其他知识的学习 TODO
 
@@ -55,7 +62,7 @@ service是通过Injectable 装饰器创建的一个类
 
 1. 把 @Injectable() 的 providedIn 属性声明为 root。
 
-2. 把该服务包含在 AppModule 或某个只会被 AppModule 导入的模块中。
+2. 把该服务包含在 AppModule 或某个只会被 AppModule 导入的模块中，在AppModule的providers配置的service就是可以全局使用，这就是AppModule的作用
 
 3. 单例服务只会创建一个service实例，这个service中的数据都是共用的，所有地方用的service都是一个实例
 
@@ -73,8 +80,8 @@ service是通过Injectable 装饰器创建的一个类
 
 7. 组件、指令、管道或服务中都可以依赖注入service， 组件、指令可以通过providers设置私有化的service
 
-8. service和exports的作用域是反着的
-### component
+8. 
+###
 
 组件主要的三个属性
 
