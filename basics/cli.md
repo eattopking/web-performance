@@ -96,6 +96,7 @@ ln -s ./test test2
 33. lerna 和 yarn workspace是独立的东西， yarn workspace可以实现公用node_modules，lerna可以发布npm包、提交代码、
 控制npm提交版本等、可以配置lerna，让在配置了yarn workspace配置的情况下，lerna可以使用yarn workspace的功能, 解释的比较好的文章 https://github.com/pfan123/Articles/issues/73
 
+33. 软链名称可以当作和目录名称一样的作用使用，在通过路径的方式操作的时候， 并且设置软链的生效的地址不只有一个， /usr/local/bin 只是其中一个地址
 ### lerna 源码解析学习
 
 1. lerna 是一个项目管理工具， 它也是一个脚手架, 可以多个项目代码git提交， 多个项目npm包发布， 基于npm+git实现， 实现重复操作， 版本一致性
