@@ -499,3 +499,58 @@ heapdump-<sec>.<usec>.heapsnapshot 文件中，然后我们在浏览器控制台
 10. 大内存应用
 
 * 在读写大内存的文件的时候不能直接使用，fs.readFile()和fs.writeFile()，因为这两个APi操作的时候占用的是V8的堆内存，文件太大会导致堆内存超过限制，进程奔溃，所以我们使用fs.createReadStream()和fs.createWriteStream()， 通过流的方式操作大文件， 因为流是通过buffer实现的，buffer占用的堆外内存所以不用担心进程奔溃的问题， 但是要进行字符串层面的处理，都是需要V8引擎来处理的，就必须用到V8堆内存
+
+
+### node网路编程模块
+
+1. node有四个模块net 、dgram、http、https， 分别是创建TCP、UDP、http、https的模块
+
+2. 他们四个模块既可以作为服务端创建对应的服务，可以作为客户端发动请求，接收响应
+
+3. EventEmitter的实例都是流， 都有data和end事件
+
+#### net
+
+#### 作为服务端使用
+// 创建服务端实例server， server实例是可读可写的流
+var server = net.createServer();
+
+// close方法是禁止客户端和服务端在建立新的连接，原有连接保留
+server.close();
+
+服务端事件
+
+listening 事件： 在调用server.listen的使用出发，在server.listen的第二个参数注册listening事件回掉
+server.listen(port,listeningListener)
+
+connection事件： 在有客户端和服务端建立连接的时候触发，在server.listen的最后一个参数注册事件回调
+
+close事件： 是在服务端和所有连接都断开后调用
+
+error事件： 只要服务发生一场就会触发
+
+node中注册事件的方法都是on，所以服务端注册事件的方法是server.on('error', () => {});
+
+
+
+#### 作为客户端使用
+// 创建客户端实例client
+var client = net.connect({port: 8124}, function () { //'connect' listener
+    console.log('client connected');
+    client.write('world!\r\n');
+});
+
+客户端事件：
+
+connect事件： 客户端和服务端连接成功，就会触发connect事件
+close事件： 客户端和服务端连接断开的时候，就会触发close事件
+
+客户端和服务端都有的事件
+
+data事件： 任意一方发送数据，另一端就会触发data事件并获取数据
+end事件： 任意一放发送结束连接，另一端就会触发end事件
+drain事件： 任何一方通过write方法发送数据（客户端和服务端都可以调用write方法发送数据），都会触发自己的drain事件
+error事件： 任意一方发生错误的时候都会触发error事件
+timeout事件： 连接被闲置了，两端就会触发timeout事件
+
+
