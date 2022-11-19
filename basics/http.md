@@ -180,6 +180,8 @@ Content-Disposition: form-data; name="ddd"
 4. x-www-form-urlencoded，表单默认的 Content-type 类型，支持 ASCII-text 文本内容
 5. multipart/form-data，允许提交表单包含： files，non-ASCII-text，Binary 类型数据
 
+6. 表单 x-www-form-urlencoded 与 multipart/form-data 只能是post请求不能是get请求， 因为没有get没有请求体
+
 
 
 ### http 的理解和面试
