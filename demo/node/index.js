@@ -1,10 +1,10 @@
 
 
 // var child = require('child_process');
-const  aaa = require('fs-extra');
-const  os = require('os');
-const  fs = require('fs');
-const  bbb = require('/Users/zhangheng/lx/web-performance/ccc');
+// const  aaa = require('fs-extra');
+// const  os = require('os');
+// const  fs = require('fs');
+// const  bbb = require('/Users/zhangheng/lx/web-performance/ccc');
 
 // const scholarProcess = child.fork('/Users/zhangheng/lx/web-performance/test1.js', {
   
@@ -76,20 +76,20 @@ const  bbb = require('/Users/zhangheng/lx/web-performance/ccc');
 // saveResourceFile()
 
 
-const a = new Buffer('哈哈哈哈')
-console.log('a', a.toJSON())
+// const a = new Buffer('哈哈哈哈')
+// console.log('a', a.toJSON())
 
-console.log(bbb)
+// console.log(bbb)
 
-console.log(2222, os.tmpdir());
+// console.log(2222, os.tmpdir());
 
-const writeStream = fs.createWriteStream('/Users/zhangheng/lx/web-performance/ccc/index.js');
-const readStream = fs.createReadStream('/Users/zhangheng/lx/web-performance/ccc/sss.js');
+// const writeStream = fs.createWriteStream('/Users/zhangheng/lx/web-performance/ccc/index.js');
+// const readStream = fs.createReadStream('/Users/zhangheng/lx/web-performance/ccc/sss.js');
 
-readStream.pipe(writeStream);
+// readStream.pipe(writeStream);
 
 
-/ var child = require('child_process');
+// var child = require('child_process');
 
 // const scholarProcess = child.fork('/Users/zhangheng/lx/web-performance/test1.js', {
   
@@ -128,3 +128,24 @@ readStream.pipe(writeStream);
 // child.stdout.on('data', (data) => {
 //   console.log(555555, data);
 // })
+
+
+const dgram = require('dgram');
+
+// 创建UDP套接字
+const server = dgram.createSocket('udp4');
+
+server.on("message", function (msg, rinfo) {
+  // rinfo 具体字段
+  // {"address":"127.0.0.1","family":"IPv4","port":52286,"size":21}
+  const buffer = new Buffer('upd服务端端发消息');
+  server.send(buffer, 0, buffer.length, rinfo.port, "localhost");
+});
+
+server.on('listening', function() {
+ var address = server.address();
+ console.log('address', address)
+});
+
+// 创建服务端监听
+server.bind(41234);
