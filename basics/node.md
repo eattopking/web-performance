@@ -613,5 +613,98 @@ client.on('message', (data, rinfo) => {
 });
 
 
+### http 模版 
+
+#### 作为服务端
+
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  // setHeader可以多次调用设置多个header，但是只有在调用writeHead的时候才会一起发出去
+  // 并且setHeader和writeHead只能在res.wrire和res.end之前执行，执行到res.wrire和res.end的时候setHeader和writeHead就不能在执行了
+  res.setHeader('aaa', '111');
+  res.setHeader('bbbb', '111');
+  // 直接在全在这个对象里设置header不通过setHeader设置也是一样的
+  res.writeHead(200, {ccc: '1111'});
+  
+  // res.end执行包括 res.write响应数据， 并且告诉服务器响应结束，然后服务器就会做响应结束的连接处理，也会告诉客户端响应结束
+  res.end('222222');
+});
+server.listen(7777);
+
+server.on('connection', () => {
+  console.log('建立TCP连接后触发这个事件');
+});
+
+server.on('request', () => {
+  console.log('解析请求头后触发这个事件');
+});
+
+server.on('close', () => {
+  console.log('server.close()方法调用后触发这个事件， tcp连接断开触发这个事件');
+});
+
+// 传大数据浏览器发送Expect: 100-continue进行预请求的时候服务端触发这个事件，不过不同意直接返回404
+// 这个事件和request事件互斥，checkContinue验证通过之后，再次请求才会触发request事件
+// 如果不处理checkContinue事件那么就默认允许支持传大数据
+server.on('checkContinue', () => {
+  console.log('传递大数据浏览器发送Expect: 100-continue进行预请求的时候服务端触发这个事件，不过不同意直接返回404');
+});
+
+// 客户端发生error事件服务端会触发clientError
+server.on('clientError', () => {
+  console.log('客户端发生error事件服务端会触发clientError');
+});
 
 
+#### 作为客户端
+
+const http = require('http');
+
+const agent = new http.Agent({
+    maxSockets: 10
+});
+
+// 创建http客户端
+const req = http.request({
+    port: 7777,
+    hostname: '127.0.0.1',
+    headers: {aaaa: 11111, bbbb: 2222},
+    method: 'GET',
+    // 设置最多可以同时请求的数量，agent设置为false就是不限制http客户端同时请求的数量
+    agent
+});
+
+// 服务端响应事件
+req.on('response', (res) => {
+    //设置是指解析响应的内容的编码
+    res.setEncoding('utf-8');
+    // 获取响应数据的事件
+    res.on('data', (data) => {
+        console.log('data', data);
+    });
+});
+
+// 客户端向服务器端发起Upgrade请求时，如果服务器端响应了101 Switching Protocols状态，客户端将会触发该事件
+req.on('upgrade', () => {
+   console.log('Switching Protocols状态');
+});
+
+// 服务端对提交大数据的预请求做出响应后，触发这个事件
+req.on('continue', () => {
+   console.log('服务端对提交大数据的预请求做出响应');
+});
+
+// 客户端使用连接进行请求事件
+req.on('socket', () => {
+   console.log('客户端使用连接进行请求事件')
+});
+
+// 发送请求， 请求体就是通过req.end()发送
+req.end();
+
+#### http 代理是设置客户端连接池或者关闭连接池，设置连接池就是设置http客户端最多同时发送的请求数，http客户端默认可以同时发送五个请求
+
+const agent = new http.Agent({
+    maxSockets: 10
+});
