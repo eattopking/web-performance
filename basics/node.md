@@ -644,6 +644,13 @@ server.on('close', () => {
   console.log('server.close()方法调用后触发这个事件， tcp连接断开触发这个事件');
 });
 
+// 客户端请求升级通信的协议的时候触发
+// 客户端的请求头上添加这字段 Connection: Upgrade, ec-WebSocket-Extensions: permessage-deflate; client_max_window_bits, Sec-WebSocket-Key: TDO3gzgtqO9g+gXKw/L4mQ==, Sec-WebSocket-Version: 13, Upgrade: websocket
+
+server.on('upgrade', () => {
+  console.log('客户端请求升级通信的协议的时候触发');
+});
+
 // 传大数据浏览器发送Expect: 100-continue进行预请求的时候服务端触发这个事件，不过不同意直接返回404
 // 这个事件和request事件互斥，checkContinue验证通过之后，再次请求才会触发request事件
 // 如果不处理checkContinue事件那么就默认允许支持传大数据
@@ -685,7 +692,7 @@ req.on('response', (res) => {
     });
 });
 
-// 客户端向服务器端发起Upgrade请求时，如果服务器端响应了101 Switching Protocols状态，客户端将会触发该事件
+// 客户端向服务器端发起升级通信协议请求时，如果服务器端响应了这个请求，101 Switching Protocols状态，客户端将会触发该事件
 req.on('upgrade', () => {
    console.log('Switching Protocols状态');
 });
@@ -708,3 +715,95 @@ req.end();
 const agent = new http.Agent({
     maxSockets: 10
 });
+
+
+### WebSocket 
+
+1. WebSocket 也是应用层协议，也是依赖TCP协议
+
+2. 客户端和服务端在使用WebSocket协议之前，会先客户端通过http协议发送升级成WebSocket协议的请求给服务端，服务端同意后，两端建立WebSocket协议通信
+
+
+可以使用socket.io库进行客户端和服务端的WebSocket通信
+
+#### 客户端
+
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script>
+    // io.connect 创建socket客户端
+    const socket = io.connect('http://localhost:8877/'); // 这里用http和ws都行，但是还不知道有啥不同
+    socket.on('reload', function() {
+        console.log('更新代码刷新页面');
+        window.location.reload();
+    });
+</script>
+
+#### 服务端
+
+const server = http.createServer(() => {
+    console.log('开启监听');
+});
+
+server.listen(8877);
+
+// socket包裹一个http服务，如果有 socket请求了就自动转成 socket通信，这个是必须的，就是这种方式
+// 创建socket服务端
+const io = require('socket.io')(server); 
+
+// emit触发事件，这个事件名称都是自定义的，客户端注册啥事件名，这里触发就用啥事件名
+io.sockets.emit('reload');
+
+### tls模块 ，tls/ssl协议是传输层协议， 是安全的tcp的协议，本质就是加密的tcp协议
+var tls = require('tls');
+
+
+### https 模块
+
+https其他的都和http一样， 就是https需要私钥和签名证书, https就是继承tls/ssl协议实现的http协议，是安全的http协议
+https就是在应用层是明文的，在传输层是加密的，通过tls/ssl传输层协议创建加密的tcp连接，所以才是安全的
+
+#### 服务端
+
+var https = require('https');
+var fs = require('fs');
+var options = {
+  key: fs.readFileSync('./keys/server.key'),
+  cert: fs.readFileSync('./keys/server.crt')
+};
+
+https.createServer(options, function (req, res) {
+  res.writeHead(200);
+  res.end("hello world\n");
+}).listen(8000);
+
+
+#### 客户端
+
+var https = require('https');
+var fs = require('fs');
+var options = {
+  hostname: 'localhost',
+  port: 8000,
+  path: '/',
+  method: 'GET',
+  key: fs.readFileSync('./keys/client.key'),
+  cert: fs.readFileSync('./keys/client.crt'),
+  ca: [fs.readFileSync('./keys/ca.crt')]
+};
+
+options.agent = new https.Agent(options);
+var req = https.request(options, function(res) {
+  res.setEncoding('utf-8');
+  res.on('data', function(d) {
+    console.log(d);
+  });
+});
+
+req.end();
+req.on('error', function(e) {
+  console.log(e);
+});
+
+### crypto 模块提供加密解密api的模块 可以进行SHA1、 MD5等加密解密
+
+const crypto = require('crypto');
