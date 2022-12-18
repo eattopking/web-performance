@@ -58,19 +58,95 @@ type TEST = {
 
 3. keyof 取出对象类型中的key 并用 ｜ 拼接， 如果key只有一个那就直接去除那个key值
 
+4. extends, 在类型是使用extends 就是返回true或者false用于判断
+type Info<T> = T extends <{a: infer U; b: infer U}> ? U : never;
+
+type Test = Info<{a: number; b: string}> 最后结果type Test = number ｜ string;
+type Test = Info<{a: number; b: number}> 最后结果type Test = number;
+type Test = Info<number> 最后结果type Test = never;
+
+如果 T 的传值字段和  <{a: infer U; b: infer U}>相同， 就是说明T 继承自<{a: infer U; b: infer U}>，
+
+T extends <{a: infer U; b: infer U}>就返回true， type Info的类型就是U，否则是never，然后如果U的类型相同类型就是单一的，否则不同的类型将通过｜组成联合类型
+
+5. infer 可以声明类型变量，可以用在判断中产生一个新的类型， 例如上面
+
 ### 关键字， 用在正常代码中的
 
 1. in， 判断一个字段是否在对象中， 比如 let a = {c: 1111}, c in a 就是true
 
 ### 工具类型，就是处理类型产生新的类型
 
-1. Partial<T>, 将出入的类型变成全部可选的类型并返回
-2. Required<T>, 将出入的类型变成必选的类型并返回
+1. Partial<T>, 将传入的类型变成全部可选的类型并返回
+2. Required<T>, 将传入的类型变成全部必选的类型并返回
+3. Readonly<T>, 将传入的类型变成全部只读的类型并返回
+4. Record<K, T>, K（传入typeof 取出的 ｜拼接的联合类型），T是任意类型，返回结果是一个Key值都是T类型的对象类型
+type Test = 'test' | 'aaaa';
+type Object = Record<Test, number>, Object最后的结果就是type Object = {
+    test: number,
+    aaaa: number
+}
+5. Pick<K, T>, 就是取出一个对象类型中一部分组成一个新的对象类型
+将K这个对象类型中通过T类型取出指定的对象类型， T是typeof K 中的一部分
+
+
+type Object = {
+   a: number;
+   b: string;
+   c: object
+}
+
+type Test = Pick<Object, a | b>, 结果是type Test = {
+   a: number;
+   b: string;
+}
+
+6. Exclude<T, U>, 剔除T类型中的U类型
+数字
+type Test = 1 | 2 | 3;
+type Test1 = Exclude<Test, 3>, type Test1 = 1 | 2;
+
+// 字符串类型
+type info = "name" | "age" | "sex"
+type info1 = "name" | "age" 
+type infoProps = Exclude<info, info1> //  "sex"
+
+// 类型
+type typeProps = Exclude<string | number | (() => void), Function> // string | number
+
+// 对象
+type obj = { name: 1, sex: true }
+type obj1 = { name: 1 }
+type objProps = Exclude<obj, obj1> // nerver
+
+7. Extra<T,K>, 在T类型中提取K类型中包含的类型返回
+
+type Test = Extra<1 ｜ 2 ｜ 3, 1｜4>， 结果是type Test = 1；
+
+8. Omit<T,K>, 提出对象类型中属性返回新类型
+
+type Test = Omit<{a: string; b: number}, 'a'>， 结果是type Test = {b: number}
+
+9. NonNullable<T>, 去掉T联合类型中的undefind和null返回新的类型
+
+type Test = Omit<1｜2｜null>， 结果是type Test = 1｜2;
+10. ReturnType<T>, 获取T函数的返回值类型
+
+type Props = ReturnType<() => string>，结果为type Props = string；
+type Props2 = ReturnType<any>; // any
+type Props3 = ReturnType<never>; // any
+
+11. Parameters<T>, 获取T函数的参数类型，有参数和没有参数，都是以数组的形式返回
+
+type Props = Parameters<() => string>，结果为type Props = [];
+type Props = Parameters<(a: string) => string>，结果为type Props = [string];
+type Props2 = Parameters<any>; // unknown[]
+type Props3 = Parameters<never>; // never
 
 ### 数据类型
 never、enum、字面量类型（比如：'test'、1 这种具体的值作为类型时就叫做字面量类型）
 
-### 泛型， 泛型就是先用一个类型变量占位，在真正使用的时候将类型变量替换为确定的类型
+### 泛型， 泛型就是定义类型变量可以多处占位的类型，可以不明确类型，调用的时候在设置类型， 也可以通过泛型继承明确类型变量的类型
 
 泛型 在定义函数、接口、类、还有type 定义对象类型的时候使用
 
@@ -85,6 +161,19 @@ never、enum、字面量类型（比如：'test'、1 这种具体的值作为类
     return [c];
 } ，这就是给泛型设置默认值在定义的时候，和给函数的参数设置默认值一样
 
+6. 泛型继承， 就可以类型变量通过继承一个类型来明确类型变量的类型， 所以在调用的时候用到类型变量的地方需要满足类型变量已经明确的类型
+
+就像下面的例子
+interface Test {
+    length: number;
+    test: string;
+}
+
+function a<T extends Test>(data: T): number {
+    return data.length;
+}
+
+a<Test>({ length: 111, test: 'string' });
 
 
 ### 概念
