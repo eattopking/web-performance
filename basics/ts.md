@@ -81,12 +81,16 @@ T extends <{a: infer U; b: infer U}>就返回true， type Info的类型就是U�
 2. Required<T>, 将传入的类型变成全部必选的类型并返回
 3. Readonly<T>, 将传入的类型变成全部只读的类型并返回
 4. Record<K, T>, K（传入typeof 取出的 ｜拼接的联合类型），T是任意类型，返回结果是一个Key值都是T类型的对象类型
+将对象类型中的字段都替换成一个类型， 返回一个新的对象类型
+
 type Test = 'test' | 'aaaa';
 type Object = Record<Test, number>, Object最后的结果就是type Object = {
     test: number,
     aaaa: number
 }
 5. Pick<K, T>, 就是取出一个对象类型中一部分组成一个新的对象类型
+从对象类型中挑选类型
+
 将K这个对象类型中通过T类型取出指定的对象类型， T是typeof K 中的一部分
 
 
@@ -102,6 +106,7 @@ type Test = Pick<Object, a | b>, 结果是type Test = {
 }
 
 6. Exclude<T, U>, 剔除T类型中的U类型
+从类型中剔除类型，并改变原类型
 数字
 type Test = 1 | 2 | 3;
 type Test1 = Exclude<Test, 3>, type Test1 = 1 | 2;
@@ -120,24 +125,24 @@ type obj1 = { name: 1 }
 type objProps = Exclude<obj, obj1> // nerver
 
 7. Extra<T,K>, 在T类型中提取K类型中包含的类型返回
-
+从联合类型中挑选出重合类型
 type Test = Extra<1 ｜ 2 ｜ 3, 1｜4>， 结果是type Test = 1；
 
 8. Omit<T,K>, 提出对象类型中属性返回新类型
-
+提出类型中的字段返回新的对象类型
 type Test = Omit<{a: string; b: number}, 'a'>， 结果是type Test = {b: number}
 
 9. NonNullable<T>, 去掉T联合类型中的undefind和null返回新的类型
-
+去掉undefind和null类型
 type Test = Omit<1｜2｜null>， 结果是type Test = 1｜2;
 10. ReturnType<T>, 获取T函数的返回值类型
-
+返回函数的返回值类型
 type Props = ReturnType<() => string>，结果为type Props = string；
 type Props2 = ReturnType<any>; // any
 type Props3 = ReturnType<never>; // any
 
 11. Parameters<T>, 获取T函数的参数类型，有参数和没有参数，都是以数组的形式返回
-
+返回函数的参数类型
 type Props = Parameters<() => string>，结果为type Props = [];
 type Props = Parameters<(a: string) => string>，结果为type Props = [string];
 type Props2 = Parameters<any>; // unknown[]
@@ -182,4 +187,17 @@ a<Test>({ length: 111, test: 'string' });
 
 2. 断言， 就是保证一个值是一个类型，让ts检测不报错， 两种写法 1. let a = 1111; let c = <number>a;   2. let a = 1111; let c = a as number; 这两种断言是等价的， 但是react只能用as 断言， 因为尖括号会被react识别为jsx
 
-3. 
+3. 函数重载，就是在函数有多种参数类型和返回情况的时候，分别定义重载签名，保证我们可以看懂函数没有返回值请款的返回类型，也可以让ts去做正确的判断，然后我们在定义一个包含所有情况的返回类型的真实函数体， 调用的的时候根据情况，选择不同重载签名最后作为函数调用时候的参数类型和返回类型
+function aaa(value: number): User | undefined
+function aaa(value: string): User[]
+
+function aaa(value:number|string):User|User[]|undefined{
+    if(typeof value==='number'){
+        return userList.find(item=>item.id===value)
+    }else{
+        return userList.filter(item=>item.grades===value)
+    }
+}
+
+为了看懂参数类型产生的返回类型
+为了在调用函数的时候获取正确参数类型和返回类型
