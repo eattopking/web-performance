@@ -1,3 +1,5 @@
+ts的本质就是在定义和调用的时候做约束
+
 ### 运算符号 用在类型中的
 1. 非空运算符 !， let a = 'cccc'; (a!表示a不可能是undefined 和null)
 
@@ -180,6 +182,23 @@ function a<T extends Test>(data: T): number {
 
 a<Test>({ length: 111, test: 'string' });
 
+### 接口
+接口可以定义对象类型、可以定义函数类型、也可以定义类类型
+
+定义函数类型就叫你接口
+
+定义函数类型叫做函数接口
+
+interface Props {
+    (data: number): number
+}
+
+const teet: Props = (data) => {
+    return data
+}
+
+定义类类型就是类接口
+
 
 ### 概念
 
@@ -201,3 +220,5 @@ function aaa(value:number|string):User|User[]|undefined{
 
 为了看懂参数类型产生的返回类型
 为了在调用函数的时候获取正确参数类型和返回类型
+
+4. 类中的构造函数重载，和函数重载想相同
