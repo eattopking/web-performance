@@ -686,7 +686,7 @@ url是一个node模块，专门用来处理请求地址的
 
 querystring 也是一个node模块，专门用来处理query字符串的
 
-querystring.parse('foo=bar&foo=baz'), 结果为 { foo: ['bar', 'baz'] },有重复的参数，值放在数组中
+querystring.parse('foo=bar&foo=baz'), 结果为 { foo: ['bar', 'baz'] },有重复的参数，值放在数组中, 就算是'foo=bar&foo=bar', 结果也是{ foo: ['bar', 'bar'] }
 
 querystring.parse('foo=bar'), 结果为 { foo: 'bar' }
 
