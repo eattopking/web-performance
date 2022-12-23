@@ -663,6 +663,32 @@ server.on('clientError', () => {
   console.log('客户端发生error事件服务端会触发clientError');
 });
 
+##### req参数解析
+
+1. req.method 获取请求方法，值全是大写
+2. req.url 获取请求路径, url.parse 方法可以将完成路径解析成为不同的功能模块的字段对应的字符串
+url是一个node模块，专门用来处理请求地址的
+如下 ：
+{
+  protocol: null,
+  slashes: null,
+  auth: null,
+  host: null,
+  port: null,
+  hostname: null,
+  hash: null,
+  search: '?foo=bar&foo=baz',
+  query: 'foo=bar&foo=baz',
+  pathname: '/test/333/',
+  path: '/test/333/?foo=bar&foo=baz',
+  href: '/test/333/?foo=bar&foo=baz'
+}
+
+querystring 也是一个node模块，专门用来处理query字符串的
+
+querystring.parse('foo=bar&foo=baz'), 结果为 { foo: ['bar', 'baz'] },有重复的参数，值放在数组中
+
+querystring.parse('foo=bar'), 结果为 { foo: 'bar' }
 
 #### 作为客户端
 
