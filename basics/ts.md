@@ -1,5 +1,15 @@
 ts的本质就是在定义和调用的时候做约束
 
+### ts 编译
+全局安装ts可以使用tsc指令了，ts官网提供的编译命令就是tsc
+$ npm install -g typescript 
+ //或
+$ yarn global add typescript
+
+tsc 指令可以将ts直接编译成js
+
+
+
 ### 运算符号 用在类型中的
 1. 非空运算符 !， let a = 'cccc'; (a!表示a不可能是undefined 和null)
 
@@ -72,6 +82,17 @@ type Test = Info<number> 最后结果type Test = never;
 T extends <{a: infer U; b: infer U}>就返回true， type Info的类型就是U，否则是never，然后如果U的类型相同类型就是单一的，否则不同的类型将通过｜组成联合类型
 
 5. infer 可以声明类型变量，可以用在判断中产生一个新的类型， 例如上面
+
+6. is 在类型中明确类型的，感觉类似是断言，暂时没看出来有啥用
+
+function isNumber(x: any): x is number { //默认传入的是number类型
+  return typeof x === "number"; 
+}
+
+console.log(isNumber(7)) // true
+console.log(isNumber('7')) //false
+console.log(isNumber(true)) //false
+
 
 ### 关键字， 用在正常代码中的
 
@@ -151,7 +172,21 @@ type Props2 = Parameters<any>; // unknown[]
 type Props3 = Parameters<never>; // never
 
 ### 数据类型
-never、enum、字面量类型（比如：'test'、1 这种具体的值作为类型时就叫做字面量类型）
+1. never
+2. enum， 枚举类型的值只能字符串或者数字，纯数字的枚举叫做数字枚举，纯字符串的枚举叫做字符串枚举， 两者都有的枚举叫做异构枚举， 异构枚举没字符串中断后重新开始变为数字时需要有个起始值： 如 enum a {
+    b,
+    c,
+    D = '7',
+    f = 7,
+    G
+}
+
+此时b为0，c为1，G为8
+3. 字面量类型（比如：'test'、1 这种具体的值作为类型时就叫做字面量类型），字面量类型可以直接当做类型 如let a: 'test' = 'test';
+4. 元组类型就是对一个数组项都明确类型的数组 如 let a: [number, string] = [1, '3'], 这就是元组，元组可以push新的内容，但是不能取新的内容值
+5. Object表示所有原始类型和非原类型，除了null和undefined
+6. object 就表示typeof 的结果等于object的所有类型
+7. any、unknow、never 三个类型都是顶级类型，any和unknow的作用差不多，都表示任意， 但是unknow有两点更加严格，1. unknow类型的值只能赋值给unknow和any类型 2. 不能对unknow类型做任何操作，比如对象取值或者函数调用操作
 
 ### 泛型， 泛型就是定义类型变量可以多处占位的类型，可以不明确类型，调用的时候在设置类型， 也可以通过泛型继承明确类型变量的类型
 
@@ -199,6 +234,58 @@ const teet: Props = (data) => {
 
 定义类类型就是类接口
 
+interface Props {
+    a: string
+} 和
+
+type Props = {
+    a: string
+} 是等价的完全一样的，就是对象的类型
+
+### 类
+class Info {
+    // 定属性定义只读等修饰，修饰符都是放在属性前面
+    public readonly name3: string = ''; // 只读属性
+    // 私有属性
+    #myName = '私有名字';
+    // 另一种定义私有属性的方法
+    private myName2 = '私有名字';
+    name2 = 111;
+    //静态属性
+    static name1 = 'Domesy';
+    // 静态方法
+    static test = () => {
+        console.log(1111);
+    }
+
+    // 功能方法
+    test1 = () => {
+        // 获取私有属性
+        console.log(this.#myName);
+    }
+
+    // 监听一个属性值赋值的set方法
+    set name(value) {
+        this.name2 = value;
+    }
+
+    // 监听一个属性值取值的get方法, 有get 必须有set
+    get name() {
+        return this.name2;
+    }
+}
+
+修饰符
+
+public：类中、子类内的任何地方、外部都能调用
+protected：类中、子类内的任何地方都能调用,但外部不能调用
+private：类中可以调用，子类内的任何地方、外部均不可调用
+
+abstract 关键字
+
+使用abstract 声明的类叫做抽象类， 通过abstract声明的类的方法叫做抽象方法
+
+抽象类和抽象方法都是一个定义，用户可以继承或者实现这个类，但是要实现类中的方法和抽象方法才能使用
 
 ### 概念
 
