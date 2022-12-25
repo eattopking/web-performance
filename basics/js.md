@@ -335,3 +335,9 @@ this表示执行事件回调时，注册这个事件回调的元素
 CryptoJS是一个JavaScript的加解密的工具包。它支持多种的算法：MD5、SHA1、SHA2、SHA3、RIPEMD-160 哈希散列，进行 AES、DES、Rabbit、RC4、Triple DES 加解密。
 
 文档地址： https://www.cnblogs.com/huiguo/p/16601076.html
+
+### js原生提供的URL解析和serach 解析
+分别是 URL 和 URLSearchParams
+
+### ResizeObserver 
+是非常实用的可以监听div元素css 属性发生变化的类
