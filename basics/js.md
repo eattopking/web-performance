@@ -341,3 +341,11 @@ CryptoJS是一个JavaScript的加解密的工具包。它支持多种的算法�
 
 ### ResizeObserver 
 是非常实用的可以监听div元素css 属性发生变化的类
+
+### Element.children 和node.childNotes 
+
+Element.children 和node.childNotes 的取到的值都是动态更新的，删除了元素新增了元素，已经取到的值也会跟着变化
+
+Element.children 只是取的dom元素
+
+node.childNotes 是取所有的元素，text元素、dom元素等
