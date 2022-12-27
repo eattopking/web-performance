@@ -341,3 +341,15 @@ function aaa(value:number|string):User|User[]|undefined{
 为了在调用函数的时候获取正确参数类型和返回类型
 
 4. 类中的构造函数重载，和函数重载想相同
+
+
+### React 涉及的Ts
+
+React.FC
+React.ReactElement jsx
+React.ReactNode 全部节点
+React.CSSproperties 行内css style值
+React.MutableRefObject useref值
+React.MouseEventHandler<HTMLInputElement>, mouse、click 事件
+React.FocusEventHandler<HTMLInputElement> focus 事件
+React.ChangeEventHandler<HTMLInputElement> change事件
