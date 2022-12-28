@@ -690,6 +690,9 @@ querystring.parse('foo=bar&foo=baz'), 结果为 { foo: ['bar', 'baz'] },有重�
 
 querystring.parse('foo=bar'), 结果为 { foo: 'bar' }
 
+3. req.headers 请求头
+4. req.headers.cookie， 获取请求所带的cookie
+
 #### 作为客户端
 
 const http = require('http');
