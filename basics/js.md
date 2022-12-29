@@ -349,3 +349,28 @@ Element.children 和node.childNotes 的取到的值都是动态更新的，删�
 Element.children 只是取的dom元素
 
 node.childNotes 是取所有的元素，text元素、dom元素等
+
+### window.queryLocalFonts()
+
+1. chrome 103 版本开始支持，获取本地字体信息的功能，返回一个字体信息的数组
+
+2. 首次调用 window.queryLocalFonts的时候会弹权限弹窗进行确认
+
+### navigator.permissions.query 获取是否有一些内容的查询权限
+
+async function requestPremission(){
+   const { state } = await navigator.permissions.query({
+     // 本地字体的查询权限
+     name: "local-fonts"
+   });
+   console.log(state)
+   if (state === 'granted') {
+     query();
+   } else if (state === 'prompt') {
+     alert("请授予权限！")
+     query();
+   }
+   else{
+     alert("没有权限获取字体")
+   }
+ }
