@@ -836,3 +836,56 @@ req.on('error', function(e) {
 ### crypto 模块提供加密解密api的模块 可以进行SHA1、 MD5等加密解密
 
 const crypto = require('crypto');
+
+
+### Koa 使用流程
+
+// 引入koa
+const Koa = require('koa');
+const KoaBody = require('koa-body');
+const compress = require('koa-compress');
+const Router = require('koa-router');
+// 创建Koa实例
+const app = new Koa();
+
+// 使用KoaBody中间件，可以然后router监听post请求，并且可以在响应头上添加更多的字段
+app.use(KoaBody());
+
+// koa 开启压缩， 返回给客户端压缩的结果，快速影响给客户端，客户端解析压缩，应用响应，提高响应效率
+// 请求头添加 accept-encoding: gzip, deflate, br， 表示客户端能够支持解析的压缩缩法
+// 响应头添加 content-encoding: gzip， 说明服务端压缩的方式
+app.use(compress(
+  {
+    // 资源文件大于2048b，会被压缩返回
+    threshold: 2048,
+    // 客户端可以解析gzip压缩的结果，就返回gzip压缩结果
+    gzip: {
+      flush: require('zlib').constants.Z_SYNC_FLUSH,
+    },
+    // 客户端可以解析deflate压缩的结果，就返回deflate压缩结果
+    deflate: {
+      flush: require('zlib').constants.Z_SYNC_FLUSH,
+    },
+    br: false, // 禁用br解决https gzip不生效加载缓慢问题
+  }
+));
+
+// 嵌套router
+
+const routerApi = new Router();
+
+// 定义api路由路径
+routerApi.get('/list', () => {});
+
+const router = new Router();
+
+// 将routerApi路由嵌套到router中，然后注册routerApi路由
+router.use('/api', routerApi.routes(), routerApi.allowedMethods());
+
+// 注册router路由使路由真正生效，router是主路由，routerApi是，主路由/api下的二级路由，这样做就可以拆分逻辑
+// 主路由的逻辑单一的时候可以直接用一级路由写逻辑， 如果主路由涉及多个逻辑拆分，就可以用二级路由的方式，拆多个接口拆逻辑
+app.use(router.routes()).use(router.allowedMethods());
+
+
+// 启动监听
+app.listen(8000);
