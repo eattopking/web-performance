@@ -851,7 +851,7 @@ const mount = require('koa-mount');
 // 创建Koa实例
 const app = new Koa();
 
-// 使用KoaBody中间件，可以然后router监听post请求，并且可以在响应头上添加更多的字段
+// 使用KoaBody中间件，可以然后router监听post请求，可以获取请求体的内容，koa默认获取不到请求体的内容， 所以需要借助KoaBody中间件实现
 app.use(KoaBody());
 
 // koa 开启压缩， 返回给客户端压缩的结果，快速影响给客户端，客户端解析压缩，应用响应，提高响应效率
@@ -907,7 +907,7 @@ app1.use(async (cxt) => {
 // 请求/app1路由直接返回结果是'app1'
 app.use(mount('/app1', app1));
 
-// 当app.use和mount都匹配/的时候谁在前边注册，路由为/的时候就执行谁的回调
+// 当app.use和mount都匹配/的时候谁在前边注册，路由为/的时候,如果前边的中间件不执行await next()调用后面的中间件就返回前面的结果，如果执行那就后面返回结果覆盖前面的返回结果，作为最终的返回结果
 // app.use(async (cxt) => {
 //   cxt.body = '9999999';
 // })
@@ -919,6 +919,22 @@ app.use(mount('/app1', app1));
 
 // 启动监听
 app.listen(8000);
+
+
+### 其他中间件
+
+koa-session 使用cookie鉴权的时候使用
+
+koa-jwt 使用token鉴权的时候使用
+
+koa-views 需要使用模版渲染时使用
+
+koa-helmet 需要增加安全响应头时候使用
+
+koa-logger 需要输出日志时可以使用
+
+koa-bunyan-logger 需要输出日志时可以使用
+
 
 
 #### koa 中间件原理
