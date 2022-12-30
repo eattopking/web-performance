@@ -845,6 +845,9 @@ const Koa = require('koa');
 const KoaBody = require('koa-body');
 const compress = require('koa-compress');
 const Router = require('koa-router');
+// koa-mount 就是可以自定义路由，挂载很多东西, koa-mount默认匹配/ 路由， koa-mount就是注册一个get 请求的路由，mount可以挂在一个静态服务，也可以挂载一个新的koa实/例（例如： const app1 = new Koa();）
+
+const mount = require('koa-mount');
 // 创建Koa实例
 const app = new Koa();
 
@@ -886,6 +889,48 @@ router.use('/api', routerApi.routes(), routerApi.allowedMethods());
 // 主路由的逻辑单一的时候可以直接用一级路由写逻辑， 如果主路由涉及多个逻辑拆分，就可以用二级路由的方式，拆多个接口拆逻辑
 app.use(router.routes()).use(router.allowedMethods());
 
+// 挂载静态资源请求服务
+// Static('public') 默认只能匹配 从/开始的路径/后面必须是默认资源目录下的路径，mount可以设置一个路由指向资源的默认目录，这个路由后面加的路径指向资源的默认目录中的路径
+// Static('public') 一直都是值在项目根目录下的public目录中获取资源, 也可以设置具体的绝对路径
+app.use(mount('/world', Static('public')));
+
+// 直接注册一个中间件函数，相当于实现一个注册一个路由为/的get请求监听， 请求/路由的时候回返回'9999999'
+app.use(async (cxt) => {
+  cxt.body = '9999999';
+});
+
+// 挂载 app1
+const app1 = new Koa();
+app1.use(async (cxt) => {
+  cxt.body = 'app1';
+});
+// 请求/app1路由直接返回结果是'app1'
+app.use(mount('/app1', app1));
+
+// 当app.use和mount都匹配/的时候谁在前边注册，路由为/的时候就执行谁的回调
+// app.use(async (cxt) => {
+//   cxt.body = '9999999';
+// })
+// app1.use(async (cxt) => {
+//   cxt.body = '8888888';
+// })
+// app.use(mount('/', app1));
+
 
 // 启动监听
 app.listen(8000);
+
+
+#### koa 中间件原理
+1. 调用原理
+
+koa的中间件就是拥有一个ctx参数和一个next参数的异步函数
+
+// ctx是req和res的整合， next表示下一个注册中间键函数
+调用koa中间的方式是通过app.use(async (ctx, next) => {
+
+
+});
+
+
+2. 实现原理
