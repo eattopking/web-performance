@@ -693,6 +693,12 @@ querystring.parse('foo=bar'), 结果为 { foo: 'bar' }
 3. req.headers 请求头
 4. req.headers.cookie， 获取请求所带的cookie
 
+### res参数解析
+
+1. res.setHeader('Set-Cookie', ['cookie标准字符串', 'cookie标准字符串1']), 同时设置两个响应头Set-Cookie字段，也就是同时设置了两个cookie的字段的值，cookie 字段的值在后端是一个Set-Cookie只能设置一个字段的值，每个字段可以有不同cookie限定属性，在浏览器中展示的时候也能体现出来，只是我们通过document.cookie 取值的时候，将允许取到的cookie字段的值通过; 分割在一个字符串中返回了,(如： 'aaa=111; bbb=333', 然后在客户端可以给document.cookie一次性赋值来改变多个cookie字段的值，也可以多次给document.cookie赋值改变cookie的值，如 document.cookie = 'aaa=111; bbb=333');
+
+2. 
+
 #### 作为客户端
 
 const http = require('http');
