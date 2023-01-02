@@ -16,6 +16,7 @@ const http = require('http');
 // 创建http客户端
 const req = http.request({
     port: 7777,
+    path:'/test/333/?foo=bar&foo=bar',
     hostname: '127.0.0.1',
     headers: {aaaa: 11111, bbbb: 2222},
     method: 'GET'
@@ -49,6 +50,6 @@ req.on('socket', () => {
 // 发送请求， 请求体就是通过req.end()发送
 req.end();
 
-const agent = new http.Agent({
-    maxSockets: 10
-})
+// const agent = new http.Agent({
+//     maxSockets: 10
+// })
