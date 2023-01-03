@@ -970,3 +970,8 @@ app.use() 美执行一次会把this 返回，这样就可以实现链式调用
 三. koa理解
 
 const app = new koa(); 是创建了一个实例，不是直接创建了一个http的server实例，app中包括很多方法和存储的内容，只有在app.listen(), 调用的时候才会在listen函数内部创建一个server实例，并调用server实例的listen方法启动一个http server的监听
+
+
+#### node 监控
+
+easy-monitor 3.0 很不错的node监控

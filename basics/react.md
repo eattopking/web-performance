@@ -294,6 +294,18 @@ concurrent mode 并发模式, 支持不全部批量更新, 可以设置紧急更
 
 concurrent mode 并发模式是在fiber的上层的, fiber是它的组成部分
 
+### react 项目的几种创建方式
+
+create-react-app ,这个只能创建一个webpack构建的普通react项目，不会集成其他东西
+
+next，这个只能创建一个普通react服务端渲染项目，不会集成其他东西
+
+umi，可以创建非ssr和ssr、还有预渲染的react项目，继承了react-router，antd，react-helmet等
+
+antd-pro，在umi的基础上做的创建管理后台的react项目
+
+gatsby，创建普通的react项目
+
 
 
 
