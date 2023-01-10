@@ -113,6 +113,8 @@ cors 分为两种： 简单请求、复杂请求
 1. 如果iframe加载的域名和加载iframe所在父页面的域名是跨域的那么，就不能通过iframeDocument.contentWindow.document 操作iframe加载的页面
 
 2. 只能通过postMessage进行iframe加载页面和iframe所在父页面的通信
+
+3. iframe 加载一个页面如果这个页面高度超过iframe这个元素的高度，那么iframe是可以产生滚动条的，并且页面可以在iframe中滚动，如果设置iframe overflow: hidden,可以通过 iframeWindow!.scrollTo(x, (e.target as Element).scrollTop); 实现iframe内的页面x或y轴滚动指定距离
 ### 三. token是什么
 
     token 称为jwt （json+web+token）

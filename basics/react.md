@@ -286,6 +286,10 @@ react-reconcile 进行diff 更新和生成effect list
 
 expirationTime 计算方式
 
+#### children
+
+this.props.children 可以传任何值，只要父组件内部取到children的时候可以通过children获取到react可以渲染的内容就可以
+
 ### react 18 新更新
 
 concurrent mode 并发模式, 支持不全部批量更新, 可以设置紧急更新和非紧急更新, 紧急更新一起批量更新, 非紧急更新一起批量更新, 紧急更新可以打断非紧急更新, 先执行紧急更新, 更新完真实dom后才进行非紧急更新, 并发模式新增加的中断更新就是可以不是所有的更新都一起批量更新

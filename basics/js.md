@@ -116,7 +116,7 @@ scrollHeight : 元素不包括border，只有padding 和 内容的高度（如�
 
 scrollWidth: 和scrollHeight同理
 
-scrollTop: 没有y轴滚动条时是0，有y轴滚动条时，等于滚动条向上滚动的高度
+scrollTop: 没有y轴滚动条时是0，有y轴滚动条时，等于滚动条向下滚动的高度
 
 scrollLeft: 和scrollTop同理
 
