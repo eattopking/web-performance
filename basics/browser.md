@@ -162,3 +162,31 @@ document对象是文档对象（document），代表浏览器窗口中的文档
 1. 多线程的代价在于创建线程和执行期线程上下文切换的开销较大。
 2. 在复杂的业务中，多线程编程经常面临锁、状态同步等问题，这是多线程被诟病的主要原因。
 3. 多线程在多核CPU上能够有效提升CPU的利用率，这个优势是毋庸置疑的
+
+### chrome 增加了私有网络控制
+
+访问私有网络的时候你必须要部署下面两个 Header，否则所有私有网络访问都会失败：
+
+请求头：Access-Control-Request-Private-Network: true
+响应头：Access-Control-Allow-Private-Network: true
+
+### document.domain 被禁用
+从chrome101版本开始 document.domain变为只读的不能在设置值了，
+
+原来可以设置页面的 document.domain相同，这样可以认为他们是同源的，直接相互获取window就可以通信了，现在不行了
+
+#### User-Agent信息删减
+
+chorme100 是最后一个支持 navigator.userAgent 获取完成信息的版本， 以后的版本都会对获取的信息进行缩减
+
+以后希望用navigator.userAgentData.getHighEntropyValues(
+  ["architecture",
+  "model",
+  "platform",
+  "platformVersion",
+  "fullVersionList"])
+  .then((ua) => { console.log(ua) }); 替换navigator.userAgent获取版本和终端信息
+  
+  #### Priority Hints
+  
+  Chrome 101 正式发布了 Priority Hints，用于指定页面资源的加载优先级设置

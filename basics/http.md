@@ -115,6 +115,12 @@ cors 分为两种： 简单请求、复杂请求
 2. 只能通过postMessage进行iframe加载页面和iframe所在父页面的通信
 
 3. iframe 加载一个页面如果这个页面高度超过iframe这个元素的高度，那么iframe是可以产生滚动条的，并且页面可以在iframe中滚动，如果设置iframe overflow: hidden,可以通过 iframeWindow!.scrollTo(x, (e.target as Element).scrollTop); 实现iframe内的页面x或y轴滚动指定距离
+
+### 新增加的标签fencedframe 使用方式和iframe相同
+
+chrome开始已经支持fencedframe标签
+
+就是在嵌入一些不太信任的页面的时候可以使用fencedframe，这样限制一下嵌入页面的访问权限
 ### 三. token是什么
 
     token 称为jwt （json+web+token）
@@ -147,6 +153,7 @@ cors 分为两种： 简单请求、复杂请求
  10. 请求时cookie就是请求头上的一个字段， ajax不能自定义cookie这个请求头， 这个行为是被禁止的
  11. cors跨域携带cookie的是问题， 需要在ajax 中配置withCredentials为true， 让cors跨域的时候，能携带上cookie值
  12. cookies是存储在硬盘中的
+ 13. Cookie 新增了partitioned属性，可以规定通过iframe嵌入的页面可以获取到哪个父页面的cookie
 
 
  浏览器查找缓存的顺序是: service worker、memory cache、disk cache、push cache

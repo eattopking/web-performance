@@ -76,6 +76,8 @@ js事件循环的循环的执行顺序是：
 
 3. 如果多个async函数同时执行, 那么多个async函数中的await不是按照async 的执行顺序去返回的, 而是按照异步队列的顺序返回的, 这样就会有一个async中只有await没有返回呢, 就去返回其他async函数中的await了
 
+4. await 除了可以在async中使用，也可以在顶层作用域直接使用，不需要async函数
+
 ### js 引擎主线程， 任务队列， 事件队列（也就是异步队列）中任务的执行顺序
 1. 首先是主线程上的任务执行完毕， 然后任务队列中有任务，先执行任务队列中任务， 等任务队列中的任务执行完毕了， 才去执行事件队列中的任务
 2. 主线程中同时只能执行一个任务
@@ -252,6 +254,18 @@ element.getBoundingClientRect(): 获取元素相对于视口的位置
 
 浏览器主进程就是将js引擎线程和GUi渲染线程等真实的线程包装成一个虚拟的线程，然后根据情况，采用不同的真实线程处理任务， 所以说浏览器主线程可以说是一个概念，并不是一个真正的线程
 
+### js 新增运行时执行js代码的方式shadowRealm 和eval作用相同
+
+const sr = new ShadowRealm();
+
+// sr.evaluate是有独立的作用域的高度隔离的有自己的全局变量的
+sr.evaluate和eval类似返回执行结果
+
+sr.importValue()：将执行结果返回一个 Promise 对象，在then回调中获取执行结果。
+
+console.log(
+  sr.evaluate(`'ab' + 'cd'`) === 'abcd'
+);
 
 
 ### typeof
@@ -260,6 +274,26 @@ typeof的原理就是，判断变量机器码的前三位，object前三位是00
 
 
 ### 如果给apply bind call 传递改变this指向 的值是undefined 或者是null，这个时候不会改变函数执行时候的this指向
+
+
+#### js新增数据类型
+
+Record 就是只读的对象
+
+const record = #{
+  a: 1,
+  b: 2
+}
+
+并且record的对比相等是比较里边的值而不是内存引用
+
+Tuple 就是不可变的数组
+
+let tuple = #[
+1, 2, 4
+]
+
+并且tuple的对比相等是比较里边的值而不是内存引用
 
 
 ### instanceof 检验数据类型的原理
@@ -374,3 +408,21 @@ async function requestPremission(){
      alert("没有权限获取字体")
    }
  }
+ 
+ 
+### html inter 属性，让浏览器忽略对应元素的一些时间
+
+inert 是一个全局的 HTML 属性，它可以告诉浏览器忽略元素的用户输入事件，包括焦点事件和来自辅助技术的其他事件。主要是下面两种用例：
+
+元素是 DOM 树的一部分，但在屏幕外或隐藏；
+元素是 DOM 树的一部分，但应该是非交互的。
+
+<div inert>
+  <label for="button2">codemmhy</label>
+  <button id="button2">I am inert</button>
+</div>
+
+function vvv () {
+  const a = await Promise.resolve(1)
+  console.log(77777, a)
+}

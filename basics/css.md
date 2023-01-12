@@ -96,3 +96,52 @@ svg 是通过xml语法的一个矢量图， 也是html标签可以被浏览器�
 2. 可以将svg标签放在一个.svg的文件中, 然后image标签可以直接引用这个文案的路径展示这个矢量图， 在react中是应用webpack的svg-url-loader实现的
 
 3. 在react中, 可以将svg标签放在一个.svg的文件中, 然后在组件中直接引入这个文件就相当于引入了svg标签, 引入的就是组件了, 然后在react直接使用这个组件, 就相当于使用svg标签了, 这是因为webpack的@svgr/webpack， loader实现的
+
+### 容器查询
+
+给容器设置
+
+.container {
+  container-type: inline-size;
+  
+.card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+  // 这样就可以监听.container宽度变化改变.card的样式
+  @container (max-width: 400px) {
+    .card {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+### css :has 伪类
+
+通过选择器判断父元素内是否有某个子元素，来控制样式展示
+p:has(span) {
+  /* magic styles */
+}
+
+figure:has(figcaption) {
+  /* this figure has a figcaption */
+}
+
+### 新的 CSS 视口单位
+为了解决移动端网页滚动时，动态工具栏自动收缩的问题，CSS 工作组规定了视口的各种状态。
+
+Large viewport（大视口）：视口大小假设任何动态工具栏都是收缩状态。
+Small Viewport（小视口）：视口大小假设任何动态工具栏都是扩展状态。
+新的视口也分配了单位：
+
+代表 Large viewport 的单位以 lv 为前缀：lvw、lvh、lvi、lvb、lvmin、lvmax。
+代表 Small Viewport 的单位以 sv 为前缀：svw、svh、svi、svb、svmin、svmax。
+
+另外还有一个  Dynamic viewport（动态视口）
+
+当动态工具栏展开时，动态视口等于小视口的大小。当动态工具栏被缩回时，动态视口等于大视口的大小。
+
+相应的，它的视口单位以 dv 为前缀：dvw, dvh, dvi, dvb, dvmin, dvmax。
+
+目前，各大浏览器均已经对新的视口单位提供了支持：
+
