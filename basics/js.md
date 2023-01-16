@@ -410,12 +410,9 @@ async function requestPremission(){
  }
  
  
-### html inter 属性，让浏览器忽略对应元素的一些时间
+### html inert 属性
 
-inert 是一个全局的 HTML 属性，它可以告诉浏览器忽略元素的用户输入事件，包括焦点事件和来自辅助技术的其他事件。主要是下面两种用例：
-
-元素是 DOM 树的一部分，但在屏幕外或隐藏；
-元素是 DOM 树的一部分，但应该是非交互的。
+inert 是一个 attribute，可以让拥有该属性的 dom 与其子元素无法被访问，即无法被点击、选中、也无法通过快捷键选中
 
 <div inert>
   <label for="button2">codemmhy</label>

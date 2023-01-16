@@ -145,3 +145,48 @@ Small Viewport（小视口）：视口大小假设任何动态工具栏都是扩
 
 目前，各大浏览器均已经对新的视口单位提供了支持：
 
+### @layer 样式优先级
+排在后面的样式优先级更高， 所以override样式的优先级更高
+@layer 里边设置的类名可以是相同的，也可以是不同的，但是都是要在同一个元素上的
+
+写优先级的时候必须的样式是一一对应的，这样才能显示出优先级， 比如color就都要有color
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+<style>
+    
+    @layer test2, test1;
+    @layer test1 {
+        .title1 {
+            color: red;
+        }
+    }
+    
+    @layer test2 {
+        .title {
+            color: yellow;
+        }
+    }
+</style>
+</head>
+<body>
+    <h1 class="title title1">我的第一个标题</h1>
+
+</body>
+</html>
+此时字体颜色是红色
+
+### hwb（hue, whiteness, blackness）定义颜色
+
+.text {
+  color: hwb(30deg 0% 20%);
+}
+
+### 
+
+
+
