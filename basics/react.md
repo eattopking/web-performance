@@ -315,7 +315,11 @@ gatsby，创建普通的react项目
 1. 服务端渲染在node中生成html字符串的时候组件的中生命周期都是不执行的，组件中获得的数据，都是在node获取到然后在从顶层组件传进去的
 
 
+#### immutable 数据更新的 JavaScript 库
 
+immer 速度慢，但是支持ie，兼容性好
+
+mutative 速度比immer快， 内部通过proxy实现，支持ie，兼容性没有immer好
 
 
 
