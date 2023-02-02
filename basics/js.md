@@ -423,3 +423,6 @@ function vvv () {
   const a = await Promise.resolve(1)
   console.log(77777, a)
 }
+
+### 见元素滚动到可视区域
+dom?.scrollIntoView({ behavior: 'smooth', block: 'start' });
