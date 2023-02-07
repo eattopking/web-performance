@@ -280,6 +280,8 @@ Transform: 类似于双工流、但其输出是其输入的转换的转换流。
 
 5. 通过 send 方法在进程中只是可以传递消息, 不能传递对象, 能够传递对象只是内部处理后给到使用者的假象, 通过 IPC 通道传递的消息都是需要通过 JSON.stringfy 序列化之后在传递的, send 方法在通过 IPC 通道传递之前会将需要传递的内容, 组装成两个对象一个是 handler, 一个 message, 子进程就是根据父进程传递过来的 JSON.stringfy 之后的 message 配置还原父进程传递的真实内容, 子进程发给父进程的同理
 
+6. 只有fork出来的字子进程中才可以使用process.send()给父进程中的子进程实例发消息，然后父进程中的子进程实例监听message事件，接收消息，不是fork处理进程中process.send不是一个函数，是undefiend
+
 ```
 message的结构如下:
 
