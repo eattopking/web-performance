@@ -232,3 +232,39 @@ html:toggle(lightswitch) button::before {
 }
 上面的例子把 button 定义为 lightswitch 的触发器，且定义当 lightswitch 触发或不触发时的 css 样式，这样就可以实现点击按钮后，黑脸与黄脸的切换。
 
+### CSS 函数
+
+#### attr() 获取元素上属性的值
+
+ ```
+ .title:after {
+        content: attr(class);
+  }
+  
+  <h1 class="title title1">我的第一个标题</h1>
+```
+ 最后展示在页面的内容是     我的第一个标题title title1
+ 
+#### calc() 计算方法
+
+#### max() 获取最大的属性值
+
+max(50%, 300px);， 要单位，要是可以比较的值
+
+#### min() 获取最小的属性值
+
+min(50%, 300px);， 要单位，要是可以比较的值
+
+#### url(), 通过资源地址获取资源的方法
+
+background-image:  url('https:// aaa.bbb.bbb')
+
+#### var(),获取css变量使用
+
+#### minmax(400px, 50%), 定义长度或者宽带的闭合区间，和grid布局一起使用
+
+#### clamp(min, change, max) 方法, 
+设置一个最小值(px, rem,都可)，在设置一个可以自适应的值， 在设置一个最大值，当可以变值超过最小值，就等于最小值， 超过
+最大值就等于最大值，没超过就等于自适应的值自己
+
+#### fit-content() CSS 函数将给定大小夹紧为可用大小 根据公式 min(maximum size, max(minimum size, argument))， 在grid中使用
