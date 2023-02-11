@@ -141,6 +141,10 @@ chrome开始已经支持fencedframe标签
  ### token和cookie的相同点
 
  1. 都是字符串
+ 
+ ### 如何保证token的安全
+ 1. 对token进行签名，防止token被修改
+ 2. 对登陆产生token的电脑的ip进行存储，下次通过token进行请求的时候对这个ip做检验，防止token被复制走在别的电脑上进行操作
 
  ### 四 cookie的理解
 
