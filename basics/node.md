@@ -841,6 +841,14 @@ req.on('error', function(e) {
   console.log(e);
 });
 
+### node cookie
+
+1. cookie 在req.headers上， req.headers.cookie
+
+2. 给静态资源网站和其他非静态资源网区分域名，这样可以避免访问静态资源网站的时候，携带不必要的cookie，导致带宽浪费，降低传输错误
+
+3. DNS解析是有缓存的
+
 ### crypto 模块提供加密解密api的模块 可以进行SHA1、 MD5等加密解密
 
 const crypto = require('crypto');
