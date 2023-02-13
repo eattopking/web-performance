@@ -46,3 +46,11 @@ nocoDB本质上是一个基于关系型数据库的在线Excel
 #### codeMirror 代码编辑器
 
 代码编辑器， 可以代码不全、错误提醒， 标签不全等
+
+#### Astro 是个适合静态网站的构建工具， 类似vite等
+
+### bun.js 是一个新的js运行环境， 和node和deno的作用相同
+
+bun 支持node的大部分api， 并且原生支持很多写法， 比如fetch、ts、JSX等
+
+bun的js引擎是javescriptCore，javescriptCore是通过zig语言实现的，执行js的速度更快

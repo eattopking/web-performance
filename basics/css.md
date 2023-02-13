@@ -268,3 +268,33 @@ background-image:  url('https:// aaa.bbb.bbb')
 最大值就等于最大值，没超过就等于自适应的值自己
 
 #### fit-content() CSS 函数将给定大小夹紧为可用大小 根据公式 min(maximum size, max(minimum size, argument))， 在grid中使用
+
+
+### css伪类选择器
+
++ 选择紧邻后面的兄弟元素 , > 选择直接子元素，～选择后面的任意兄弟元素，
+
+先后顺序，即：:link — :visited — :hover — :active
+
+1. :hover 元素被鼠标悬浮是被选中
+
+2. :active 激活元素时被选中， 就是元素被鼠标点击时被选中
+
+3. :link  a标签链接被选中的时候，就是被点击的时候
+
+4. :visited 表示选中被点击过后的a标签链接
+
+5. :checked CSS 伪类选择器表示任何处于选中状态的radio(<input type="radio">), checkbox (<input type="checkbox">) 或 ("select") 元素中的option HTML 元素， label元素
+
+:checked { // :checked可以就这样自己直接用的， 也可以和元素一起交集匹配特定的元素
+  margin-left: 25px;
+  border: 1px solid blue;
+}
+
+6. :default 选中一组相关元素中，默认选中的那个选项， 比如button、checkbox、radio、select") 元素中的option
+
+7. 
+
+
+
+
