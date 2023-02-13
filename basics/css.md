@@ -272,7 +272,7 @@ background-image:  url('https:// aaa.bbb.bbb')
 
 ### css伪类选择器
 
-+ 选择紧邻后面的兄弟元素 , > 选择直接子元素，～选择后面的任意兄弟元素，
++ 选择紧邻后面的兄弟元素 , > 选择直接子元素，～选择后面的任意兄弟元素, 空格 是后代选择器
 
 先后顺序，即：:link — :visited — :hover — :active
 
@@ -293,8 +293,79 @@ background-image:  url('https:// aaa.bbb.bbb')
 
 6. :default 选中一组相关元素中，默认选中的那个选项， 比如button、checkbox、radio、select") 元素中的option
 
-7. 
+7. :disabled 选中被禁用的元素，例如radio，checkbox等
 
+8. :enabled 选择被启用的元素， 和:disabled正好相反
 
+9. :empty 选择没有子元素的元素， 注释的内容不算子元素，但是空格算子元素
 
+10. :first-child 选择一组兄弟中，第一个元素, 这就要求，一定要是第一个元素对应的选择器和:first-child结合才能选择出对应的元素，例如，div: first-child {}, 只能是div是第一个才行
 
+11. :first-of-type 选择一组兄弟中，第一个某种类型的元素, 例如，div: first-child {}, div不是兄弟中的第一个
+但是会选择到兄弟中的第一个div
+
+12. :focus 选择获取焦点的元素，例如input和其他元素, 其他元素设置tabindex属性也可以获取焦点
+
+13. :focus-within 选择元素本身获得焦点，或者元素的后代获得焦点的元素
+
+/* 当 <div> 的某个后代获得焦点时，匹配 <div> */
+div:focus-within {
+  background: cyan;
+}
+
+14. :has(), 函数伪类选择器，判断选择器条件如果成立，元素就被选中
+
+比如 div:has(+ p){},这个就表示，如果div有相邻的兄弟元素p, 这个div元素就被选择
+
+15. :is 选择器就是汇总形成一个并集，表示任意一个做的is函数的参数的选择器
+```
+这就是表示main和footer中的p标签hover字体颜色都是red
+<style>   
+   :is(main, footer) p:hover {
+        color: red;
+   }
+   
+</style>
+</head>
+<body>
+    <main class="container">   
+        <p>1</p>
+        <div  class="link" href="https://www.baidu.com">
+            <div tabindex="11">5</div>
+            <div>6</div>
+            <div>7</div>
+        </div>
+        <div>3</div>
+    </main>
+    <footer>
+        <p>2</p>
+    </footer>
+</body>
+```
+16. :last-child ,匹配对应元素在它父元素中最后最后一个元素，对应元素和最后一个元素类型必须相同
+
+div:last-child ，如果最后一个元素是div就是匹配
+
+17. :last-of-type 匹配父元素中最后一个对应类型的元素
+
+div:last-of-type 匹配父元素中最后一个div元素
+
+18. :not(), 匹配相反的选择器
+
+:not(p) ,匹配所有不是p的元素
+
+19. :nth-col() 匹配表格中第几行
+
+20. :only-child, 用来匹配父节点中唯一的元素， p:only-child(), 匹配唯一的p元素
+
+21. :picture-in-picture 匹配当前处于画中画中的元素
+
+22. :read-only  匹配只读元素，例如禁用的input框, div, 本身就不能编辑的元素就视为只读元素
+
+23. :read-write 匹配可以被编辑的元素，例如input框,
+
+24. :required 选择设置了required必选项的元素, :required直接可以匹配到任意设置了required必须项的元素
+
+25. :root 匹配根元素html元素
+
+26. :where选择器是和:is选择器作用相同的， 只不过:is选择器的的优先级是根据参数的选择器优先级，而where的优先级一直是0
