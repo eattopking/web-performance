@@ -376,6 +376,13 @@ div:last-of-type 匹配父元素中最后一个div元素
 
 2. ::before 在元素内容前面创建一个伪元素
 
-3. ::highlight 实现文字自定义样式的伪元素
+3. ::highlight 实现文字高亮作为伪元素
 
-4. ::selection 被鼠标选中的那部分元素，也可以和具体元素结合使用，(p::selection,这表示被鼠标选中的那部分p元素)
+4. ::selection 被鼠标选中的那部分元素作为伪元素，也可以和具体元素结合使用，(p::selection,这表示被鼠标选中的那部分p元素)
+
+5. ::file-selector-button CSS 伪元素代表 type="file" 的 <input> 的按钮。
+
+6. ::first-letter 匹配一个元素中真正在第一位置的文字或字母作为伪元素
+
+7. ::first-line 匹配一个元素中真正第一行的文字作为伪元素
+
