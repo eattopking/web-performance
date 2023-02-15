@@ -121,6 +121,8 @@ cors 分为两种： 简单请求、复杂请求
 
 3. iframe 加载一个页面如果这个页面高度超过iframe这个元素的高度，那么iframe是可以产生滚动条的，并且页面可以在iframe中滚动，如果设置iframe overflow: hidden,可以通过 iframeWindow!.scrollTo(x, (e.target as Element).scrollTop); 实现iframe内的页面x或y轴滚动指定距离
 
+4. iframe对于它所加载的页面来说就是一个窗口，它加载页面的100vw就是我们给iframe设置的宽，我们可以给iframe设置宽高
+
 ### 新增加的标签fencedframe 使用方式和iframe相同
 
 chrome开始已经支持fencedframe标签
