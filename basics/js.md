@@ -426,3 +426,10 @@ function vvv () {
 
 ### 见元素滚动到可视区域
 dom?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+### 判断当前页面在iframe中加载的
+
+window.frameElement?.tagName === 'IFRAME'， true就表示在iframe中加载的
+
+### 在iframe加载的页面中获取承载iframe标签的这个页面的window
+window.parent
