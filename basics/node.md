@@ -849,6 +849,15 @@ req.on('error', function(e) {
 
 3. DNS解析是有缓存的
 
+4. 为了保证cookie的安全可以对登陆校验的cookie进行签名
+
+### node session
+
+1. session存储数据和cookie中的值进行匹配，做登陆校验
+
+2. 如果将session存储在内存中，起多个进程的话，因为进程间隔离会导致session不同步，所以通常的方式是使用redis这样的缓存服务统一存储session，
+这样做的也是有一些问题的，这样做会导致我们去发送请求获取session，会比直接从内存中取值慢，但是这样的影响小之又小
+
 ### crypto 模块提供加密解密api的模块 可以进行SHA1、 MD5等加密解密
 
 const crypto = require('crypto');
