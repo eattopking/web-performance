@@ -227,6 +227,13 @@ lerna源码分析
 
 1. vite生产环境的时候使用rollup构建，保证代码打包后的模块化，所以浏览器都支持、es6转成es5
 
+vite4的优化
+
+1. vite4新增了swc，swc是rust写的替代babel的库，vite4编译react可以选择@vitejs/plugin-react，@vitejs/plugin-react-swc
+
+2. vite4中正式环境构建升级到rollup3
+
+3. 
 #### esbuild的理解 
 esbuild为什么快
 
