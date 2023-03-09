@@ -100,11 +100,13 @@ console.log(isNumber(true)) //false
 
 ### 工具类型，就是处理类型产生新的类型
 
-1. Partial<T>, 将传入的类型变成全部可选的类型并返回
-2. Required<T>, 将传入的类型变成全部必选的类型并返回
-3. Readonly<T>, 将传入的类型变成全部只读的类型并返回
+1. Partial<T>, 将传入的对象类型变成全部可选的类型并返回
+2. Required<T>, 将传入的对象类型变成全部必选的类型并返回
+3. Readonly<T>, 将传入的对象类型变成全部只读的类型并返回
 4. Record<K, T>, K（传入typeof 取出的 ｜拼接的联合类型），T是任意类型，返回结果是一个Key值都是T类型的对象类型
 将对象类型中的字段都替换成一个类型， 返回一个新的对象类型
+
+参数是一个联合类型和一个任意类型
 
 type Test = 'test' | 'aaaa';
 type Object = Record<Test, number>, Object最后的结果就是type Object = {
@@ -114,7 +116,7 @@ type Object = Record<Test, number>, Object最后的结果就是type Object = {
 5. Pick<K, T>, 就是取出一个对象类型中一部分组成一个新的对象类型
 从对象类型中挑选类型
 
-将K这个对象类型中通过T类型取出指定的对象类型， T是typeof K 中的一部分
+将K这个对象类型中通过T类型取出指定的对象类型， T必须是typeof K 中的一部分
 
 
 type Object = {
@@ -128,7 +130,11 @@ type Test = Pick<Object, a | b>, 结果是type Test = {
    b: string;
 }
 
-6. Exclude<T, U>, 剔除T类型中的U类型
+6. Omit<T,K>, 提出对象类型中属性返回新类型
+提出类型中的字段返回新的对象类型
+type Test = Omit<{a: string; b: number}, 'a'>， 结果是type Test = {b: number}
+
+7. Exclude<T, U>, 剔除T联合类型中的U类型
 从类型中剔除类型，并改变原类型
 数字
 type Test = 1 | 2 | 3;
@@ -147,27 +153,21 @@ type obj = { name: 1, sex: true }
 type obj1 = { name: 1 }
 type objProps = Exclude<obj, obj1> // nerver
 
-7. Extra<T,K>, 在T类型中提取K类型中包含的类型返回
-从联合类型中挑选出重合类型
+8. Extract<T,K>, 在T类型中提取K类型中包含的类型返回
+从联合类型中提取出重合类型
 type Test = Extra<1 ｜ 2 ｜ 3, 1｜4>， 结果是type Test = 1；
-
-8. Omit<T,K>, 提出对象类型中属性返回新类型
-提出类型中的字段返回新的对象类型
-type Test = Omit<{a: string; b: number}, 'a'>， 结果是type Test = {b: number}
 
 9. NonNullable<T>, 去掉T联合类型中的undefind和null返回新的类型
 去掉undefind和null类型
 type Test = Omit<1｜2｜null>， 结果是type Test = 1｜2;
-10. ReturnType<T>, 获取T函数的返回值类型
-返回函数的返回值类型
+10. ReturnType<T>, 获取T函数类型的返回值类型
 type Props = ReturnType<() => string>，结果为type Props = string；
 type Props2 = ReturnType<any>; // any
 type Props3 = ReturnType<never>; // any
 
-11. Parameters<T>, 获取T函数的参数类型，有参数和没有参数，都是以数组的形式返回
-返回函数的参数类型
+11. Parameters<T>, 获取T函数类型的参数和参数类型，有参数和没有参数，都是以特定内容的数组类型返回
 type Props = Parameters<() => string>，结果为type Props = [];
-type Props = Parameters<(a: string) => string>，结果为type Props = [string];
+type Props = Parameters<(a: string) => string>，结果为type Props = [a: string];
 type Props2 = Parameters<any>; // unknown[]
 type Props3 = Parameters<never>; // never
 
