@@ -4,7 +4,7 @@ react-router 原理
 
 hash router 是根据改变路径上hash值,通过hashchange监听来切换页面, 不会导致网页重新刷新
 
-browser router  通过h5 history 中的 history.pushState 来改变url, 并且不会导致页面刷新, 然后通过监听window.popState来判断切换页面展示
+browser router  通过h5 history 中的 history.pushState 来改变url, 并且不会导致页面刷新, 然后通过监听window的popState事件来切换页面展示
 
 使用browswe  router需要在nginx处理 无论请求路径是什么都返回 单页应用的index.html文件, 这样做是为了手动刷新时不会返回404
 
@@ -12,7 +12,7 @@ browser router  通过h5 history 中的 history.pushState 来改变url, 并且�
 
 原生无法监听history.pushState和replaceState的变化, 需要重些这两个api来进行监听他们的变化, react-router监听的时候也是重写的
 
-popState只有在调用history.pushState或replaceState只有, 切换前后页面时才调用
+popState事件只有在调用history.pushState或replaceState只有, 切换前后页面时才调用
 
 
 ### react fiber 架构学习总结(可以，改的挺快)
