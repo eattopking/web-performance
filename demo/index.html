@@ -1,32 +1,29 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>菜鸟教程(runoob.com)</title>
-<style>
-    
-    @layer test2, test1;
-    @layer test1 {
-        .title1 {
-            color: red;
-        }
-    }
-    
-    .title {
-            color: yellow;
-        }
-    
-    @layer test2 {
-        .title {
-            color: yellow;
-        }
-    }
-</style>
-</head>
-<body>
-    <h1 class="title title1">我的第一个标题</h1>
+  <head>
+    <meta charset="utf-8" />
+    <title>菜鸟教程(runoob.com)</title>
+    <style>
+      .father {
+        height: 500px;
+        width: 500px;
+        background-color: yellow;
+        display: grid;
+        /* align-items: center; */
+        /* justify-content: center; */
+      }
 
-</body>
+      .child {
+        width: 100px;
+        height: 100px;
+        background-color: red;
+      }
+    </style>
+  </head>
+  <!-- 创建页面 -->
+  <body>
+    <div class="father">
+      <div class="child">1111111</div>
+    </div>
+  </body>
 </html>
-
-
