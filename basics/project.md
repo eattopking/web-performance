@@ -439,7 +439,7 @@ fts5 利用分词结果建立倒排索引
 
 中间展示区域，分为两层，上层是编辑层，下层是展示层，下层的展示层是通过iframe加载展示组件路由用于展示，然后是通过postmessage获取展示数据
 
-模块是是通过data-id标识的，这个data-id是从外到内的这种名称拼接而成，只有标识了的模块才可以编辑，根据data-edit区分需要进行什么类型的编辑，bkg， font，选中之后的编辑，将通过将data-id，key，value传入处理函数，得到更新后模块区域数据，然后更新到全局数据中，再通过postmessage将数据穿给iframe进行展示
+模块是是通过data-id标识的，这个data-id是从外到内的这种名称拼接而成，只有标识了的模块才可以编辑,文本编辑通过medium-editor实现，根据data-edit区分需要进行什么类型的编辑，bkg， font，选中之后的编辑，将通过将data-id，key，value传入处理函数，得到更新后模块区域数据，然后更新到全局数据中，再通过postmessage将数据穿给iframe进行展示
 
 右侧的属性编辑区域，就是根据data-edit决定进行什么编辑，然后根据data-id进行更新的
 
