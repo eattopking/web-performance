@@ -321,6 +321,8 @@ immer 速度慢，但是支持ie，兼容性好
 
 mutative 速度比immer快， 内部通过proxy实现，支持ie，兼容性没有immer好
 
+### react 组件设计原则，react开发方法论
+
 
 
 

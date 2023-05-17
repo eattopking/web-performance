@@ -201,6 +201,9 @@ Small Viewport（小视口）：视口大小假设任何动态工具栏都是扩
 
 以前只能用 @media (min-width: 320px) 描述宽度不小于某个值，现在可以用 @media (width >= 320px) 代替了。
 
+### js时间从上层穿透到下层使用pointer-events
+pointer-events
+
 ### scroll-start
 
 设置滚动条从某个高度开始滚动
