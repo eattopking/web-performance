@@ -1,4 +1,4 @@
-### electron 知识记录
+### electron 经验总结
 
 一、electron更新流程
 
@@ -60,6 +60,8 @@ electron-builder打包的时候将生成一个latest-windows.yml和latest-mac.ym
       node sqlite3 结合fts5插件。实现分词和倒排索引
 
 最后集合项目本身使用的就是sqlite3数据库, 并且测试后性能也是符合要求的, 所以避免复杂, 安装过多的其他依赖的前提下, 选择方案五
+
+sqlite3 + fts5虚拟表模块 + fts5插件simple 实现sqlite全局搜索
 
 
 ### electron-builder 打包
