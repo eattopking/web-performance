@@ -133,6 +133,8 @@ dlopen()和dlsym()两个方法；在Windows平台则是通过LoadLibraryExW()和
 11. npm ls 可以找到当前目录中可以被引用到的所有包
 
 12. package.json 包的下载版本可以是 file:resources/fs-extra、版本号或者是git地址等，都可以通过npm安装包
+
+13. npm link 可以在项目中安装本地的包，但是不会在package.json中产生记录，可以引用这个包使用，这个包进行修改无需重新npm link修改就会生效
 #### package.json中主要字段说明
 
 1. name。包名。规范定义它需要由小写的字母和数字组成，可以包含.、 _和-，但不允许出
