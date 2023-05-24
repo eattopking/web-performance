@@ -4,21 +4,25 @@
 
 ##### commonjs
 
-module.exports = {}
+1. module.exports = {}
 
-exports = {a: 1}
+2. exports = {a: 1}
 
-require()
+3. require()
+
+不知道require在各种环境中，模块地址可不可以是远端地址
 
 ##### esmodule 
 
-export a;
+1. export a;
 
-export default a;
+2. export default a;
 
-import
+3. import，import()
 
-包管理工具
+4. import和import()需要根据模块地址获取模块内容，这个模块地址可以是相对路径，可以是绝对路径、也可以是远端地址，/user/test.js和https://baidu/user/test.js都属于远端地址，import和import()在浏览器环境下、构建工具环境下、node环境下可能支持的模块地址不同，不同就是不知道import在node环境和构建工具环境下模块地址可不可以是远端地址
+
+#### 包管理工具
 
 npm、yarn、pnpm，他们三个提供功能差不多
 
