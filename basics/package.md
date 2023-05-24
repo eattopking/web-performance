@@ -18,6 +18,10 @@ export default a;
 
 import
 
+包管理工具
+
+npm、yarn、pnpm，他们三个提供功能差不多
+
 
 #### 开发一个包的用途
 1. 可以在node环境下被引用并使用
