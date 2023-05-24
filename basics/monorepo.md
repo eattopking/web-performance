@@ -21,3 +21,7 @@ packages:
   - 'app/*'
 这些配置的目录下项目都可以相互引用通过webspace:*, 比如项目a在package.json中的name叫a， 在项目b中的package.json中的devDependencies中就可以使用
 a:'webspace:*',声明依赖，这个时候就可pnpm安装依赖，a就被安装到b的node_modules中了
+
+#### yarn 创建menorepo
+
+#### tuborepo 创建menorepo
