@@ -36,14 +36,21 @@ npm、yarn、pnpm，他们三个提供功能差不多
 
 #### 开发包的时候三种导出方式的区别
 ##### main导出
-1. 在node环境下，不支持esmodule的情况下默认是导出符合commonjs规范的内容，
-在支持esmodule的情况下，设置type:module将导出esmodule规范的内容，设置type:module也会起到允许包中文件使用esmodule的作用，正常node环境指定模块化导出只能被其相对应的引入方式所引入
+1. 在node环境下，不支持esmodule的情况下默认是导出符合commonjs规范的内容，在支持esmodule的情况下，设置type:module将导出esmodule规范的内容，设置type:module也会起到允许包中文件使用esmodule的作用，正常node环境指定模块化导出只能被其相对应的引入方式所引入
 
 2. 在构建工具环境下，main可以导出conmonjs和esmodule规范的内容，构建工具将导出到conmonjs规范按照esmodule引入，正常对应规范引入也是可以的
+
+3. 设置type: module,main也可以作为commonjs的导出
+
 
 ##### module 导出
 1. 在node环境中，module不支持导出任何东西
 2. 在构建工具环境下，module支持导出esmodule规范的内容
 
 ##### exports导出
-1. 
+1. exports默认是不支持导入项目子目录的，其他的默认都是支持的
+
+exports的优先级最高
+
+
+模块化引入会去寻找包中和模块化对应的导出，找到了可以引入，找不到就不能引入
