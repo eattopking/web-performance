@@ -350,6 +350,6 @@ React.ReactElement jsx
 React.ReactNode 全部节点
 React.CSSproperties 行内css style值
 React.MutableRefObject useref值
-React.MouseEventHandler<HTMLInputElement>, mouse、click 事件
-React.FocusEventHandler<HTMLInputElement> focus 事件
-React.ChangeEventHandler<HTMLInputElement> change事件
+React.MouseEvent<HTMLInputElement>, mouse、click 事件
+React.FocusEvent<HTMLInputElement> focus 事件
+React.ChangeEvent<HTMLInputElement> change事件
