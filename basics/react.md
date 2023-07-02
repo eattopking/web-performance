@@ -2,99 +2,93 @@
 
 react-router 原理
 
-hash router 是根据改变路径上hash值,通过hashchange监听来切换页面, 不会导致网页重新刷新
+hash router 是根据改变路径上 hash 值,通过 hashchange 监听来切换页面, 不会导致网页重新刷新
 
-browser router  通过h5 history 中的 history.pushState 来改变url, 并且不会导致页面刷新, 然后通过监听window的popState事件来切换页面展示
+browser router 通过 h5 history 中的 history.pushState 来改变 url, 并且不会导致页面刷新, 然后通过监听 window 的 popState 事件来切换页面展示
 
-使用browswe  router需要在nginx处理 无论请求路径是什么都返回 单页应用的index.html文件, 这样做是为了手动刷新时不会返回404
+使用 browswe router 需要在 nginx 处理 无论请求路径是什么都返回 单页应用的 index.html 文件, 这样做是为了手动刷新时不会返回 404
 
-然后在接口请求时判断是否是404是404直接返回跳转404组件页面
+然后在接口请求时判断是否是 404 是 404 直接返回跳转 404 组件页面
 
-原生无法监听history.pushState和replaceState的变化, 需要重些这两个api来进行监听他们的变化, react-router监听的时候也是重写的
+原生无法监听 history.pushState 和 replaceState 的变化, 需要重些这两个 api 来进行监听他们的变化, react-router 监听的时候也是重写的
 
-popState事件只有在调用history.pushState或replaceState只有, 切换前后页面时才调用
-
+popState 事件只有在调用 history.pushState 或 replaceState 只有, 切换前后页面时才调用
 
 ### react fiber 架构学习总结(可以，改的挺快)
 
-
 ### react 组件的性能检测和代码中的性能上报
 
-react 中渲染让的含义： 渲染就是触发render， 然后进行render中新旧结果的比较， 得出比较结果
+react 中渲染让的含义： 渲染就是触发 render， 然后进行 render 中新旧结果的比较， 得出比较结果
 
-react 中提交（commit）的含义： 提交就是根据渲染得出的render差异，更新虚拟dom（但是没有更新真实的dom），
-更新完虚拟dom会触发componentDidMount或componentDidUpdate生命周期
+react 中提交（commit）的含义： 提交就是根据渲染得出的 render 差异，更新虚拟 dom（但是没有更新真实的 dom），
+更新完虚拟 dom 会触发 componentDidMount 或 componentDidUpdate 生命周期
 
-在react代码中的Profiler代码默认会在开发模式构建后被开启，在生产模式构建后被禁用， 我们也可以通过特殊的配置让我们在生产模式构建后的代码中依然可以实现Profiler的性能检测上报
+在 react 代码中的 Profiler 代码默认会在开发模式构建后被开启，在生产模式构建后被禁用， 我们也可以通过特殊的配置让我们在生产模式构建后的代码中依然可以实现 Profiler 的性能检测上报
 
-[profiler代码在生产模式构建后依然可以使用的配置](https://gist.github.com/bvaughn/25e6233aeb1b4f0cdb8d8366e54a3977)
+[profiler 代码在生产模式构建后依然可以使用的配置](https://gist.github.com/bvaughn/25e6233aeb1b4f0cdb8d8366e54a3977)
 
+1. 在生产模式构建后被禁用的 Profiler， 是指代码中的 Profiler 组件代码和 chrome 的 react 插件中的 profiler 录制都禁用
 
-1. 在生产模式构建后被禁用的Profiler， 是指代码中的Profiler组件代码和chrome的react插件中的profiler录制都禁用
+2. 在代码中加入 Profiler 组件本身就会影响性能
 
-2. 在代码中加入Profiler组件本身就会影响性能
+3. 在开发模式构建代码，通过亲身测试不能直接使用 Profiler 和 profiler 录制， 然后引入 resolve: {
+   alias: {
+   'react-dom': 'react-dom/profiling',
+   'scheduler/tracing': 'scheduler/tracing-profiling',
+   }
+   }
+   还报错，不知道啥原因， 先记录到这里， 等要使用的时候在研究把
 
-3. 在开发模式构建代码，通过亲身测试不能直接使用Profiler和profiler录制， 然后引入resolve: {
-    alias: {
-      'react-dom': 'react-dom/profiling',
-      'scheduler/tracing': 'scheduler/tracing-profiling',
-    }
-  }
-  还报错，不知道啥原因， 先记录到这里， 等要使用的时候在研究把
+#### 在 chrome 浏览器中分析 react 组件性能
 
-#### 在chrome浏览器中分析react组件性能
+1. chrome 中通过安装 react 插件，通过其中 profiler（类似于 chrome 中的 performance 的录制）进行页面操作时的，组件提交的性能录制来分析 react 的性能
 
-1. chrome中通过安装react插件，通过其中profiler（类似于chrome中的performance的录制）进行页面操作时的，组件提交的性能录制来分析react的性能
+[profiler 的具体使用教程](https://react.docschina.org/blog/2018/09/10/introducing-the-react-profiler.html)
 
-[profiler的具体使用教程](https://react.docschina.org/blog/2018/09/10/introducing-the-react-profiler.html)
-
-2. profiler的性能分析就是以组件为单位(时间就是组件的虚拟dom更新时间)， 性能标准就是每次顶层和它子组件的渲染提交时间(虚拟dom更新时间)，每次提交可能顶层没有重新渲染， 所有是灰色， 只有顶层的子组件进行了渲染提交然后展示黄色等颜色，可以查看提交耗费的时间， 然后比较性能， 和选中后的组件的state和props可以根据切换提交来观察，不同提交的state和props的变化
+2. profiler 的性能分析就是以组件为单位(时间就是组件的虚拟 dom 更新时间)， 性能标准就是每次顶层和它子组件的渲染提交时间(虚拟 dom 更新时间)，每次提交可能顶层没有重新渲染， 所有是灰色， 只有顶层的子组件进行了渲染提交然后展示黄色等颜色，可以查看提交耗费的时间， 然后比较性能， 和选中后的组件的 state 和 props 可以根据切换提交来观察，不同提交的 state 和 props 的变化
 
 ![react profiler](../images/profiler.png)
 
-#### 在组件中上报吗react的提交时间等性能
+#### 在组件中上报吗 react 的提交时间等性能
 
-通过在在react实例中获取 unstable_Profiler 这个组件， 然后将组件改名为Profiler，然后将这个组件包裹在想监听的组件外边，
-然后在Profiler的onRender事件回调中获取各种性能信息， 用于上报， 还必须给Profiler组件设置一个id， 用于区分不同的Profiler
+通过在在 react 实例中获取 unstable_Profiler 这个组件， 然后将组件改名为 Profiler，然后将这个组件包裹在想监听的组件外边，
+然后在 Profiler 的 onRender 事件回调中获取各种性能信息， 用于上报， 还必须给 Profiler 组件设置一个 id， 用于区分不同的 Profiler
 
 ### React 严格模式
 
-通过过在react实例中获取StaticMode组件， 然后包裹在对应组件的外部， 实现对组件的严格模式检查， 如果出现不符合的， 会在控制台报出警告
+通过过在 react 实例中获取 StaticMode 组件， 然后包裹在对应组件的外部， 实现对组件的严格模式检查， 如果出现不符合的， 会在控制台报出警告
 
-严格模式会在webpack 开发模式构建后被开启， 会在webpack 生产模式构建被关闭
+严格模式会在 webpack 开发模式构建后被开启， 会在 webpack 生产模式构建被关闭
 
+### redux 的源码实现
 
-### redux的源码实现
+首先 redux 有几个概念， store， reducer， action， store 就是通过 createStore 传入 reducer 创建出来的，
+store 包含存放数据的 state， 还有用于发送 action 的 dispatch， reducer 使用用于在 dispatch 发送 action 的时候调用更新 state 的， reducer 是一个函数， 它的参数是 action 和 当前的 state
 
-首先redux有几个概念， store， reducer， action， store就是通过createStore 传入reducer创建出来的，
-store 包含存放数据的state， 还有用于发送action的 dispatch， reducer 使用用于在dispatch 发送action的时候调用更新state 的， reducer是一个函数， 它的参数是action 和 当前的state
+redux 还有中间件机制， 用于增强 store 的功能的， 主要是通过函数柯理化的原理实现的
 
-redux 还有中间件机制， 用于增强store的功能的， 主要是通过函数柯理化的原理实现的
+react 中要运用 redux 要 redux 和 react-redux 配合使用，react-redux 提供两个组件一个是 provider 组件用于包裹入口组件， 将 redux 的 store 传给 provider props 上的 store，用于从顶层传递数据， 还提供了 connect 高阶组件，
+用于组件注册 redux 数据的更新，然后返回一个新的组件， 然后在这新组件内部调用我们传入进去的组件， 然后将我们 redux 的数据通过 props 传递给我们原有的组件实现在我们自己组件的内部接收 redux 数据的目的
 
-react中要运用redux 要redux 和react-redux配合使用，react-redux提供两个组件一个是provider 组件用于包裹入口组件， 将redux的store 传给provider props上的store，用于从顶层传递数据， 还提供了connect 高阶组件，
-用于组件注册redux数据的更新，然后返回一个新的组件， 然后在这新组件内部调用我们传入进去的组件， 然后将我们redux的数据通过props 传递给我们原有的组件实现在我们自己组件的内部接收redux数据的目的
+connect 和 provider 可以通信的原因是，react-redux 内部是通过 context 传递数据的， connect 和 provider 共用一个 context 实例， 所以它们两个数据是一个， 所以就可以将通过 provider 传递的数据，传递给被 connect 包裹的组件了
 
-connect和provider可以通信的原因是，react-redux内部是通过context传递数据的， connect和provider共用一个context实例， 所以它们两个数据是一个， 所以就可以将通过provider传递的数据，传递给被connect包裹的组件了
-
-
-redux的使用还需要在看一遍
-
+redux 的使用还需要在看一遍
 
 ### create-react-app
-创建的项目配置文件， webpack 配置会隐藏起来默认， 可以通过npm run eject 将隐藏的配置目录显示出来
 
+创建的项目配置文件， webpack 配置会隐藏起来默认， 可以通过 npm run eject 将隐藏的配置目录显示出来
 
 ### react 事件机制的实现
 
-1. 首先我们react元素上注册的不是原生事件， 是合成事件， 因为我们react是虚拟dom， 我们注册事件的时候只是往fiber的props上加了属性， 还有不同浏览器之间在事件处理上有一些差异， 所以使用合成事件还有合成事件对象可以磨平不同浏览器的差异，通过react内部的判断
+1. 首先我们 react 元素上注册的不是原生事件， 是合成事件， 因为我们 react 是虚拟 dom， 我们注册事件的时候只是往 fiber 的 props 上加了属性， 还有不同浏览器之间在事件处理上有一些差异， 所以使用合成事件还有合成事件对象可以磨平不同浏览器的差异，通过 react 内部的判断
 
-2. react的合成事件， 提供了顶层注册、事件收集、统一触发的事件机制
+2. react 的合成事件， 提供了顶层注册、事件收集、统一触发的事件机制
 
-3. 顶层注册就是将真实的原始事件注册到root元素上，react17以后就是注册到root上了， 原来版本是注册到document上的， 注册到root上是因为，避免多版本react共存的时候， 发生事件系统冲突
+3. 顶层注册就是将真实的原始事件注册到 root 元素上，react17 以后就是注册到 root 上了， 原来版本是注册到 document 上的， 注册到 root 上是因为，避免多版本 react 共存的时候， 发生事件系统冲突
 
-4. 事件收集是指， 在通过目标元素触发root上注册的事件处理函数时，会根据目标元素向上查找，等到对应的事件执行路径数组，和对应的合成事件对象
+4. 事件收集是指， 在通过目标元素触发 root 上注册的事件处理函数时，会根据目标元素向上查找，等到对应的事件执行路径数组，和对应的合成事件对象
 
-5. 统一触发就是react 会在root上注册的事件处理函数中， 模拟原生事件的事件执行过程， 执行事件执行路径数组里边的事件处理函数
+5. 统一触发就是 react 会在 root 上注册的事件处理函数中， 模拟原生事件的事件执行过程， 执行事件执行路径数组里边的事件处理函数
 
 react 内部 会将相同类型事件捕获阶段执行的事件， 和冒泡阶段执行的事件按照顺序统一放在一个事件执行路径数组中，
 当数组反向遍历的时候模拟捕获阶段， 正向遍历的时候模拟冒泡阶段， 我们的目标元素注册的事件是放在数组的第一位的
@@ -103,42 +97,42 @@ react 内部 会将相同类型事件捕获阶段执行的事件， 和冒泡阶
 
 事件是有优先级的：
 
-优先级分为  连续事件（error） > 用户阻塞事件（scroll） > 离散时间（click）
+优先级分为 连续事件（error） > 用户阻塞事件（scroll） > 离散时间（click）
 
-不同优先级的事件， 在root上注册原生事件时使用的事件处理函数是不同的
+不同优先级的事件， 在 root 上注册原生事件时使用的事件处理函数是不同的
 
-在render 阶段 检测的到fiber的prop注册了事件， 这个时候就会往root上注册对应的原生事件, 如果react有对应的事件更新， 那就移除root上对应的原生事件，重新注册
+在 render 阶段 检测的到 fiber 的 prop 注册了事件， 这个时候就会往 root 上注册对应的原生事件, 如果 react 有对应的事件更新， 那就移除 root 上对应的原生事件，重新注册
 
-react 根据事件名称判断事件触发的时机， 带有capture的事件就在捕获阶段执行
+react 根据事件名称判断事件触发的时机， 带有 capture 的事件就在捕获阶段执行
 
 如果在父元素上注册了相同事件， 捕获和冒泡执行的两种情况， 这个时候事件收集阶段只会把和作为目标元素的子元素的相同触发阶段的事件收集
 
-
 ### createElement 源码理解
 
-createElement接受三个或更多参数 createElement(type, config, children ,children),
-除了前两个参数以外都是children, createElement内部会通过arguments 获取所有的children到一个数组， 然后把这个数组设置给传给这个组件的props.children属性
+createElement 接受三个或更多参数 createElement(type, config, children ,children),
+除了前两个参数以外都是 children, createElement 内部会通过 arguments 获取所有的 children 到一个数组， 然后把这个数组设置给传给这个组件的 props.children 属性
 
-type 表示当前createElement创建的是什么react元素， 是类组件，函数组件，react 原生元素， react提供的例如Suspends这样的组件
+type 表示当前 createElement 创建的是什么 react 元素， 是类组件，函数组件，react 原生元素， react 提供的例如 Suspends 这样的组件
 
-config 就是父组件传给这个组件的props,然后组件内部筛选出这四个属性 __self, __source, key, ref, 然后其余属性作为props传给组件内部
+config 就是父组件传给这个组件的 props,然后组件内部筛选出这四个属性 **self, **source, key, ref, 然后其余属性作为 props 传给组件内部
 
-
-createElement最后返回的就是一个对象， 返回的对象就是虚拟dom
+createElement 最后返回的就是一个对象， 返回的对象就是虚拟 dom
 
 这个对象包括 {
-  // 这是表示这个元素是什么react 类型， 只要是jsx 都是REACT_ELEMENT_TYPE类型的
-  $$typeof: REACT_ELEMENT_TYPE,
-  // 我们给元素传的key
-  key: key,
-  // 我们给元素传的ref
-  ref: ref,
-  // 这个元素是什么类型的react元素
-  type: type,
-  // 筛选过后可以传给组件内部的props
-  props: props
-  //这个之后在了解
-  __owner: owner
+// 这是表示这个元素是什么 react 类型， 只要是 jsx 都是 REACT_ELEMENT_TYPE 类型的
+
+$$
+typeof: REACT_ELEMENT_TYPE,
+// 我们给元素传的key
+key: key,
+// 我们给元素传的ref
+ref: ref,
+// 这个元素是什么类型的react元素
+type: type,
+// 筛选过后可以传给组件内部的props
+props: props
+//这个之后在了解
+__owner: owner
 }
 
 
@@ -156,52 +150,52 @@ fiberRoot 是 reactDOM.render的第二个参数，这个dom对象上的一个属
 
 reactDom.render执行之后， 生成一个FiberRoot 对象，
 这个对象 包括很多属性{
- containerInfo: rootDOM 这个属性存放的值， 就是reactDOM.render的第二个参数， 就是项目要挂载的根节点
+containerInfo: rootDOM 这个属性存放的值， 就是reactDOM.render的第二个参数， 就是项目要挂载的根节点
 
  current: HostRoot 执行一次reactDom.render 创建的react应用的 fiber tree的根节点
 }
 
-HostRoot 
+HostRoot
 {
-  child 就是reactDom.render第一个参数传入的这个react组件的fiber
-  expirationTime 有更新时,当前hostRoot中优先级最高的任务的过期时间
-  return : null , 只有HostRoot return是null,
-  stateNode: FiberRoot
+child 就是reactDom.render第一个参数传入的这个react组件的fiber
+expirationTime 有更新时,当前hostRoot中优先级最高的任务的过期时间
+return : null , 只有HostRoot return是null,
+stateNode: FiberRoot
 }
 
 #### fiber对象
 fiber是一个对象，主要结构就是
 
 {
-  return: 父节点
+return: 父节点
 
   child: 第一个子节点
 
   sibling: 右侧的兄弟节点
 
   updateQueue: 存储更新队列,
-  expirationTime: 当前组件上优先级最高的任务的过期时间, 当组件没有更新的时候, expirationTime为null
+expirationTime: 当前组件上优先级最高的任务的过期时间, 当组件没有更新的时候, expirationTime为null
 }
 
 fiber 查找节点的规则就是， 先找到自己的第一个子节点，如果自己点还有子节点就接着往下找， 找到没有子节点的了就看有没有兄弟节点， 如果兄弟节点有子节点接着找兄弟节点的子节点， 如果没有子节点就看看有没有兄弟节点，有兄弟节点接着找兄弟节点， 没有兄弟节点直接返回父节点， 在父节点按照这个规则继续查找
 
-fiber 架构 就是根据fiber这个数据结构实现的，这个优化的架构, fiber 整体是一个树形结构
+fiber 架构 就是根据fiber这个数据结构实现的，这个优化的架构, fiber 整体是一个链表结构
 
 1.3 update的主要结果
 
 {
-  expirationTime: 过期更新时间
-  payload: 要更新的内容，update更新不止是state更新，还可以是组件内容更新等
-  tag: 更新的类型分为： 0(正常更新)，1(替换更新)，2(强制更新)，3（捕获错误的更新）四种
-  next: 下一个update
+expirationTime: 过期更新时间
+payload: 要更新的内容，update更新不止是state更新，还可以是组件内容更新等
+tag: 更新的类型分为： 0(正常更新)，1(替换更新)，2(强制更新)，3（捕获错误的更新）四种
+next: 下一个update
 }
 
 updateQueue 是一个对象
 
 {
-  baseState: state, 最近更新完成的state
-  firstUpdate: update,firstUpdate是一个单向链表记录这个组件所有的更新，我们所有的更新就记录在这上边
-  lastUpdate: 链表上最后一个更新
+baseState: state, 最近更新完成的state
+firstUpdate: update,firstUpdate是一个单向链表记录这个组件所有的更新，我们所有的更新就记录在这上边
+lastUpdate: 链表上最后一个更新
 }
 
 1.4 expirationTime
@@ -257,7 +251,7 @@ requestHostCallback
 
 4.2 react根据每帧执行计算出, 具体浏览器每帧执行的时间, 但是react最小只支持每帧时间是8ms, 就是刷新频率是120hz, 每秒刷新120次
 
-4.3 通过在requestAnimationFrame回调中触发window.postMessage事件, 将react处理的事件放到异步队列中, 等浏览器的一些渲染用户输入的同步任务处理完成之后,计算出时间片, 如果浏览器的操作已经超出了一帧的时间, 并且任务的过程时间还没有过这个时候, react的任务将在下一帧处理, 如果react任务的过期时间已经过了, 那就会直接处理react的任务, 这就是react 模拟requestIdleCallback的方式
+4.3 通过在requestAnimationFrame回调中触发window.postMessage事件, 将react处理的事件放到异步队列中, 等浏览器的一些渲染用户输入的同步任务处理完成之后,计算出时间片, 如果浏览器的操作已经超出了一帧的时间, 并且任务的过期时间还没有过这个时候, react的任务将在下一帧处理, 如果react任务的过期时间已经过了, 那就会直接处理react的任务, 这就是react 模拟requestIdleCallback的方式
 
 4.4 如果是异步任务，就进入调度流程，将异步任务放在模拟的requestIdlCallback(callback)回调中， 等到浏览器空闲了再去执行这个异步任务，并且在执行异步任务的时候react会设置一个deadline(时间片)，如果超过deadline就会中断执行的异步任务，在注册一个模拟的requestIdlCallback(callback) 回调， 将没有执行完的异步任务，放在注册的回调中，等待下次浏览器空闲在执行，当浏览器的空闲的时候，执行模拟的requestIdlCallback(callback) 回调的时候， 如果有异步任务的expirationTime 已经过期的话， 那就会将过期的任务都执行完， 直到执行到第一个没有过期的任务，执行行完过期任务之后如果时间没有超过deadline那就继续执行其他优先级高的异步任务，如果时间超过deadline ，那就将浏览器主线程控制权交给浏览器
 
@@ -334,9 +328,4 @@ mutative 速度比immer快， 内部通过proxy实现，支持ie，兼容性没�
 
 
 
-
-
-
-
-
-
+$$
