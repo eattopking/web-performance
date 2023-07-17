@@ -1,6 +1,5 @@
 解题步骤， 先找到解决题目的规律，然后看看用什么手段实现这个规律
 
-
 ### 算法练习
 
 1. 斐波那契数列
@@ -25,7 +24,7 @@ function fib(n) {
     if (n < 1) {
         return null;
     }
-    
+
     if (n === 1) {
         return 1;
     }
@@ -67,10 +66,24 @@ function throttle(callback, time) {
     }
 }
 
+截流第三遍
+
+function throttle(func, time) {
+    let prev = null;
+    return (...rest) => {
+        let current = Date.now();
+        if (!prev || current - prev > time) {
+            prev = current;
+            func(...rest)
+        }
+    }
+}
 ```
+
 3. 防抖, 防抖就可以理解为，防止多次点击， 防止多次请求
 
-主要思路： 就是在外层函数中缓存一个存储timerid的变量， 然后在返回的函数中刚开始就是clearInterval(timerid), 确保调用时就把没有执行的定时器清除掉
+主要思路： 就是在外层函数中缓存一个存储 timerid 的变量， 然后在返回的函数中刚开始就是 clearInterval(timerid), 确保调用时就把没有执行的定时器清除掉
+
 ```
 function debounce(fun, time) {
     let id = null;
@@ -83,26 +96,29 @@ function debounce(fun, time) {
 }
 
 防抖的第二遍
-function test(callback, time) {
-    let timer = null;
+
+function debounce(func, time) {
+    let timmer = null
     return (...rest) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-                callback(...rest);
-        }, time);
+        clearTimeout(timmer);
+        timmer = setTimeout(() => {
+            func(...rest);
+        }, time)
     }
 }
 ```
 
 4. 深拷贝
-```
 
 ```
 
-5. Promise.all 原理就是Promise只能改变一次状态， 然后定义一个变量缓存resolve的次数， 用于和数组的长度比较，
-当全部promise都变成resolve时候就将最外层的promise变为fulfilled状态返回数组， 如果有promise变成reject状态，直接返回这个reject状态的值，设置一个数组的index值， 前面没有值得索引会用空值占位
+```
 
-Promise.all 的诀窍，最后就返回一个promise实例的状态
+5. Promise.all 原理就是 Promise 只能改变一次状态， 然后定义一个变量缓存 resolve 的次数， 用于和数组的长度比较，
+   当全部 promise 都变成 resolve 时候就将最外层的 promise 变为 fulfilled 状态返回数组， 如果有 promise 变成 reject 状态，直接返回这个 reject 状态的值，设置一个数组的 index 值， 前面没有值得索引会用空值占位
+
+Promise.all 的诀窍，最后就返回一个 promise 实例的状态
+
 ```
 Promise.all = function(arr) {
     if(!Array.isArray(arr)) {
@@ -173,41 +189,50 @@ function wrongConnect(fun, times, delay) {
 
 promise.resolve 将函数执行结果统一转换一下， 写一个函数， 在下面执行， 然后在catch 中进行settimeout 递归调用定义的函数， 在catch 中判断次数， 然后没有次数了返回失败状态
 ```
-7. apply实现  使用的原理就是函数当作为谁属性调用的时候，这个函数的this指向就是谁， 还有只有null 和undefined == null， 内置构造函数创建实例， 用不用new都可以， Object 类似于Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf方法是获取对象的原始值的方法, 对象的toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的
 
-诀窍： 就是函数作为一个对象的方法调用时，函数内部this指向就是这个对象
+7. apply 实现 使用的原理就是函数当作为谁属性调用的时候，这个函数的 this 指向就是谁， 还有只有 null 和 undefined == null， 内置构造函数创建实例， 用不用 new 都可以， Object 类似于 Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf 方法是获取对象的原始值的方法, 对象的 toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的
+
+诀窍： 就是函数作为一个对象的方法调用时，函数内部 this 指向就是这个对象
+
 ```
-Function.prototype.apply = function (newThis, arr) {
-    if (newThis == null) {
-         this(...arr);
-         return;
+Function.prototype.apply = function(newThis, arr) {
+    if (newThis === undefiend || newThis === null) {
+        return this(...arr);
     }
-
-    const currentThis = Object(newThis);
-
-    currentThis.fun = this;
-    currentThis.fun(...arr);
-    delete currentThis.fun;
+    newThis = Object(newThis);
+    newThis.fn = this;
+    const result = newThis.fn(...rest);
+    delete newThis.fn;
+    return result;
 }
-```
-8. call 实现  使用的原理就是函数当作为谁属性调用的时候，这个函数的this指向就是谁， 还有只有null 和undefined == null， 内置构造函数创建实例， 用不用new都可以， Object 类似于Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf方法是获取对象的原始值的方法, 对象的toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的
 
-诀窍： 就是函数作为一个对象的方法调用时，函数内部this指向就是这个对象
+
 ```
-Function.prototype.call = function(newThis, ...rest) {
-    if (newThis == null) {
-        this(...rest);
-        return;
+
+8. call 实现 使用的原理就是函数当作为谁属性调用的时候，这个函数的 this 指向就是谁， 还有只有 null 和 undefined == null， 内置构造函数创建实例， 用不用 new 都可以， Object 类似于 Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf 方法是获取对象的原始值的方法, 对象的 toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的
+
+诀窍： 就是函数作为一个对象的方法调用时，函数内部 this 指向就是这个对象
+
+```
+Function.prototype.call = function(newThis, ...test) {
+    if (newThis === null || newThis === undefiend) {
+        return newThis(...test);
     }
-    const currentThis = Object(newThis);
-    currentThis.fun = this;
-    currentThis.fun(...rest);
-    delete currentThis.fun;
+    
+    newThis = Object(newThis);
+    newThis.fn = this;
+    const result = newThis.fn(...test);
+    delete newThis.fn;
+    return result;
 }
-```
-9. bind 实现  使用的原理就是函数当作为谁属性调用的时候，这个函数的this指向就是谁， 还有只有null 和undefined == null， 内置构造函数创建实例， 用不用new都可以， Object 类似于Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf方法是获取对象的原始值的方法, 对象的toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的, 还是使用了闭包的原理缓存rest
 
-诀窍： 就是函数作为一个对象的方法调用时，函数内部this指向就是这个对象
+
+```
+
+9. bind 实现 使用的原理就是函数当作为谁属性调用的时候，这个函数的 this 指向就是谁， 还有只有 null 和 undefined == null， 内置构造函数创建实例， 用不用 new 都可以， Object 类似于 Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf 方法是获取对象的原始值的方法, 对象的 toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的, 还是使用了闭包的原理缓存 rest
+
+诀窍： 就是函数作为一个对象的方法调用时，函数内部 this 指向就是这个对象
+
 ```
 Function.prototype.bind = function (newThis, ...rest) {
     return (...params) => {
@@ -221,33 +246,17 @@ Function.prototype.bind = function (newThis, ...rest) {
         return result;
     }
 }
-
-// bind实现第二遍
-
-Function.prototype.bind = function(self, ...params) {
-    return function(...rest) {
-        if (self == null) {
-            return this(...[...params, ...rest]);
-        }
-
-        self = Object(self);
-        self.fn = this;
-        const result = self.fn(...[...params, ...rest]);
-        delete self.fn;
-        return result;
-    }
-}
-
 ```
+
 10. new 过程
 
-new 实现的原理： 就是自定义一个new 函数， 然后参数是我们的构造函数和构造函数的参数， 创建一个最后返回的实例， 并将构造函数的原型对象设置给实例的原型，然后使用call调用new函数， 并将this指向设置为我们创建的实例， 函数的参数也设置为我们传入的参数，
-再有就是判断一下构造函数是否返回对象， 如果返回对象new函数直接返回这个对象， 我们没有返回对象， new函数就返回我们创建的那个实例
+new 实现的原理： 就是自定义一个 new 函数， 然后参数是我们的构造函数和构造函数的参数， 创建一个最后返回的实例， 并将构造函数的原型对象设置给实例的原型，然后使用 call 调用 new 函数， 并将 this 指向设置为我们创建的实例， 函数的参数也设置为我们传入的参数，
+再有就是判断一下构造函数是否返回对象， 如果返回对象 new 函数直接返回这个对象， 我们没有返回对象， new 函数就返回我们创建的那个实例
 
-诀窍： new就是先创建一个空对象，然后被这个对象添加属性
+诀窍： new 就是先创建一个空对象，然后被这个对象添加属性
 
 function customNew(fun, ...rest) {
-    const that = Object.create(fun.prototype);
+const that = Object.create(fun.prototype);
 
     const result = fun.apply(that, rest);
 
@@ -257,23 +266,8 @@ function customNew(fun, ...rest) {
         return result
     }
     return that;
+
 }
-
-new 第二遍
-function customNew(fun, ...rest) {
-    const that = Object.create(fun.prototype);
-
-    const result = fun.apply(that, rest);
-
-    const type = typeof result;
-
-    if ((type === 'object' && result !== null) || type === 'function') {
-        return result
-    }
-    return that;
-}
-
-
 
 ```
 12. 判断 字符串是否如 {[()]} , [()]、{()} 等结构, 如果是就返回true， 不是就返回false, 这里栈中存的是对应括号的右侧部分 ， 不是右侧的索引
@@ -282,10 +276,11 @@ function customNew(fun, ...rest) {
 
 诀窍就是要括号需要是挨着配对或者对称配对， 整好符合栈的特性
 ```
+
 function isTrueString(str) {
-    if(!str.length) {
-        return false;
-    }
+if(!str.length) {
+return false;
+}
 
     let stack = [];
     for (let i = 0; i < str.length; i++) {
@@ -309,7 +304,9 @@ function isTrueString(str) {
         }
     }
     return !stack.length
+
 }
+
 ```
 12.1 有效字符串需满足：
 
@@ -321,10 +318,10 @@ function isTrueString(str) {
 
 题目要求的是紧挨着或者对称的位置有配对的才是对的
 
-所以就是循环将对称或者挨着的配对项消掉， 如果最后的数组不是空的就不对， 返回false
+所以就是循环将对称或者挨着的配对项消掉， 如果最后的数组不是空的就不对， 返回 false
 
 function isTrueString(string) {
-    let stack = [];
+let stack = [];
 
     for(let i = 0; i < string.length; i++) {
         const item = string[i];
@@ -365,15 +362,15 @@ function isTrueString(string) {
     }
 
     return !stack.length;
-}
 
+}
 
 有效数字第二遍
 
 var isValid = function(string) {
-    if (!string) {
-        return false;
-    }
+if (!string) {
+return false;
+}
 
     const stack = [];
     for(let i = 0; i < string.length; i++) {
@@ -409,6 +406,7 @@ var isValid = function(string) {
     }
 
     return !stack.length;
+
 };
 
 ```
@@ -536,78 +534,45 @@ var checkValidString = function(string) {
 
 诀窍就是就是实现nodeEventEmitter 类
 ```
+
 // 写算法就是写这个类， 然后在创建实例在去演示， 不直接写下边的实例
 class EventEmitter {
-    constructor() {
-        this.eventList = {}
-    };
-    subscribe(type, callback) {
-        const eventList = this.eventList[type];
-        if (eventList) {
-            eventList.push(callback)
-        } else {
-            this.eventList[type] = [callback];
-        }
-    };
-    unSubscribe(type, fn) {
-        const eventList = this.eventList[type];
-        if (eventList && eventList.length) {
-            this.eventList[type] = eventList.filter((item) => {
-                if(item !== fn) {
-                    return true;
-                }
-                return false;
-            })
-        }
-    };
-    // 这里rest是触发事件的时候可以向下传自定义的参数给回调
-    publish(type, ...rest) {
-        const eventList = this.eventList[type];
-        if (eventList && eventList.length) {
-            eventList.forEach((item) => {
-                item(...rest);
-            });
-        }
-    }
+constructor() {
+this.eventList = {}
+};
+subscribe(type, callback) {
+const eventList = this.eventList[type];
+if (eventList) {
+eventList.push(callback)
+} else {
+this.eventList[type] = [callback];
 }
-
-const eventEmitter = {
-    eventList: {},
-    subscribe(type, callback) {
-        const eventList = this.eventList[type];
-        if (eventList) {
-            eventList.push(callback)
-        } else {
-            this.eventList[type] = [callback];
-        }
-    },
-    unSubscribe(type, fn) {
-        const eventList = this.eventList[type];
-        if (eventList && eventList.length) {
-            this.eventList[type] = eventList.filter((item) => {
-                if(item !== fn) {
-                    return true;
-                }
-                return false;
-            })
-        }
-    },
-    // 这里rest是触发事件的时候可以向下传自定义的参数给回调
-    publish(type, ...rest) {
-        const eventList = this.eventList[type];
-        if (eventList && eventList.length) {
-            eventList.forEach((item) => {
-                item(...rest);
-            });
-        }
-    }
+};
+unSubscribe(type, fn) {
+const eventList = this.eventList[type];
+if (eventList && eventList.length) {
+this.eventList[type] = eventList.filter((item) => {
+if(item !== fn) {
+return true;
 }
-
-
+return false;
+})
+}
+};
+// 这里 rest 是触发事件的时候可以向下传自定义的参数给回调
+publish(type, ...rest) {
+const eventList = this.eventList[type];
+if (eventList && eventList.length) {
+eventList.forEach((item) => {
+item(...rest);
+});
+}
+}
+}
 
 //观察者模式实现第二遍
 class EventEmitter {
-    eventList = {}
+eventList = {}
 
     addEvent = (eventName, callback) => {
         if (this.eventList[eventName]) {
@@ -628,7 +593,9 @@ class EventEmitter {
             this.eventList[eventName].forEach((item) => item(...rest));
         }
     }
+
 }
+
 ```
 #### 链表
 使用js 实现一个链表的数据结构，是这样的
@@ -671,6 +638,32 @@ var reverseList = function(head) {
 
     return obj;
 };
+
+const reverseList = (head) => {
+    let obj = null;
+
+    function deepHead(head1) {
+        if (head1) {
+            return;
+        }
+
+        obj = {
+            val: head1.val,
+            next: obj
+        }
+
+        if (head1.next) {
+            deepHead(head1.next)
+        }
+    }
+
+
+    deepHead(head);
+
+    return obj;
+}
+
+
 
 链表就是使用while循环， 然后循环一次存储上次循环项的next， 用于下次循环
 
@@ -718,39 +711,42 @@ var deleteNode = function(head, val) {
     return obj;
 };
 
+const deleteList = (head, val) => {
+   let obj = null;
+   let next = null;
 
-// 删除链表第二遍
+   function deepList(head1) {
+        if(!head1) {
+            return;
+        }
 
-var deleteNode = function(head, val) {
-    let current = head;
-    let currentNext = null;
-    let result = null;
-    while(current) {
-        if(current.val === val) {
-            if (!result) {
-                result = current.next;
+        if(head1.val !== val) {
+            if (obj) {
+                if (obj.next) {
+                    next.next = {
+                        val: head1.val,
+                        next: null
+                    }
+                    next = next.next;
+                } else {
+                    obj.next = {
+                        val: head1.val,
+                        next: null
+                    }
+                    next = obj.next;
+                }
             } else {
-                currentNext.next = current.next;
+              obj = {
+                val: head1.val,
+                next: obj
+              }  
             }
-            return result;
         }
+   }
 
-        const item = {
-            val: current.val,
-            next: null,
-        }
-
-        if (result) {
-            currentNext.next = item;
-            currentNext = item;
-        } else {
-            result = item;
-            currentNext = item;
-        }
-
-        current = current.next;
-    }
-};
+   deepList(head1);
+   return obj;
+}
 
 3. 链表相关题中等
 
@@ -1168,11 +1164,12 @@ return result[k-1];
 
 诀窍背诵： 二叉树的结构就是val， left， right
 ```
+
 function treeSum(tree) {
-    let sum = 0;
-    if (tree.val) {
-        sum += tree.val;
-    }
+let sum = 0;
+if (tree.val) {
+sum += tree.val;
+}
 
     if (tree.left) {
         sum += treeSum(tree.left)
@@ -1183,29 +1180,30 @@ function treeSum(tree) {
     }
 
     return sum;
+
 }
 
 const tree = {
-    val: 0,
-    left: {
-        val: 0,
-        left: {
-            val: 2,
-            left: null,
-            right: {
-                val: 2,
-                left: null,
-                right: null,
-            },
-        },
-        right: null,
-    },
-    right: {
-        val: 2,
-        right: {
-            val: 2,
-            left: null,
-            right: null,
+val: 0,
+left: {
+val: 0,
+left: {
+val: 2,
+left: null,
+right: {
+val: 2,
+left: null,
+right: null,
+},
+},
+right: null,
+},
+right: {
+val: 2,
+right: {
+val: 2,
+left: null,
+right: null,
 
         },
         left: {
@@ -1214,14 +1212,15 @@ const tree = {
             right: null,
         }
     }
+
 }
 
 求二叉树中所有值的和第二遍
 
 function treeSum(tree) {
-    if (!tree) {
-        return null;
-    }
+if (!tree) {
+return null;
+}
 
     let sum = 0;
 
@@ -1242,7 +1241,9 @@ function treeSum(tree) {
     deep(tree);
 
     return sum ? sum : null;
+
 }
+
 ```
 11. 获得二叉树的最小深度
 
@@ -1479,7 +1480,7 @@ const resetConnect = (callback, delay, time) => {
                 if (delay) {
                     setTimeout(fn, time);
                 } else {
-                   reject(err) 
+                   reject(err)
                 }
                 delay--;
             });
@@ -1557,10 +1558,10 @@ const string = (tree) => {
         const right = item.right;
         result.push(val);
         if (left) {
-           list.push(left) 
+           list.push(left)
         }
         if (right) {
-           list.push(right) 
+           list.push(right)
         }
         count++;
         if (count === list.length) {
@@ -1591,18 +1592,23 @@ function tryConnection(fun, times, delay) {
         callback();
     });
 }
+```
 
 
+function maxLength(s) {
+    let value = null;
+    let maxLength = 0
+    let set = new Set();
+    for(let i = 0; i < s.length; i++) {
+        if (set.size || set.has(s[i])) {
+            set.add(s[i]);
+            value = s[i];
+            maxLength = Math.max(maxLength, set.size);
+        } else {
+            set.clear();
+            set.add(s[i]);
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
+    return maxLength;
+}
