@@ -4,26 +4,33 @@
     <meta charset="utf-8" />
     <title>菜鸟教程(runoob.com)</title>
     <style>
-      .father {
-        height: 500px;
-        width: 500px;
-        background-color: yellow;
-        display: grid;
-        /* align-items: center; */
-        /* justify-content: center; */
-      }
-
-      .child {
-        width: 100px;
-        height: 100px;
-        background-color: red;
-      }
+        .border-1px {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            background: red;
+            border-radius: 8px;
+        }
+        /*全部边框*/
+        .border-1px:after {
+            content: '';
+            position: absolute;
+            box-sizing: border-box;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            border: 1px solid #000;
+            border-radius: 16px;
+            -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+            overflow: hidden;
+            -webkit-transform-origin: top left;
+        }
     </style>
   </head>
   <!-- 创建页面 -->
   <body>
-    <div class="father">
-      <div class="child">1111111</div>
-    </div>
+    <div class="border-1px">cell</div>
   </body>
 </html>

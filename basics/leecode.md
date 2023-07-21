@@ -143,6 +143,32 @@ Promise.all = function(arr) {
         });
     });
 }
+
+
+Promise.all = function(arr) {
+    if (!Array.isArray(arr)) {
+        throw new Error('params must array');
+    }
+
+    let result = []
+    let count = 0;
+
+    return new Promise((resolve, reject) => {
+        for(let i = 0; i < arr.length; i++) {
+            const promise = Promise.resolve(arr[i]);
+            promise.then((data) => {
+                count++;
+                result[i] = data;
+                if (count === arr.length) {
+                    resolve(result);
+                }
+            }).
+            catch((error) => {
+                reject(error);
+            });
+        }
+    })
+}
 ```
 
 ```
@@ -162,6 +188,24 @@ const wrongConnect = (callback, times, delay) => {
         };
 
         fn();
+    });
+}
+
+const wrongConnect = (fun, times, delay) => {
+    
+    return new Promise((resolve, reject) => {
+        const callback = () => {
+            Promise.resolve(fun()).then(resolve).catch((error) => {
+                if (times === 0) {
+                    reject(error);
+                } else {
+                    times--;
+                    setTimeout(callback, delay)
+                }
+            })
+        }
+
+        callback()
     });
 }
 
@@ -1612,3 +1656,12 @@ function maxLength(s) {
 
     return maxLength;
 }
+
+
+实现数组的flat 方法
+
+给定一个二叉树和一个给定值，要求找到和为给定值的路径
+
+手写_instanceof
+
+

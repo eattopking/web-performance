@@ -195,10 +195,46 @@ css 和页面适配
 2. 页面适配
 3. width: 100%和 width: auto
 4. 定位有几种
+5. 盒子模型的理解
+6. link和@import的区别
+7. 三栏布局
+8. 两栏布局
+9. 伪类和伪元素的区别
+10. 水平垂直居中
+11. 移动端1px问题
+12. 高性能css
 
 js原生和es6复习
+1. 事件队列，宏任务微任务
+2. 原型链理解
+3. 作用域链理解
+4. 箭头函数和普通函数的区别
+5. js计算的精度问题 IEEE754标准来定义整数和浮点数，使用双精度存储，计算的以后转成二进制相加之后转成十进制就会多一点
+6. 作用域的种类和区别
+7. 闭包的概念
+8. this的理解
+9. js变量提升函数提升
+10. js数据类型
+11. es6中的weakmap和weakset的作用
+12. Generator和async函数的区别
+13. bigInt是用来表达大于2^53-1的数
+14. promise
+15. reflect 重写了一些操作对象的方法
+16. promise
+17. === 和 ==，object.is 区别
+18. dom事件相关自定义事件， new Event('eventName'), new CustomEvent('eventName',  {}) 
+19. 如何判断数据类型
+20. valueOf和toString，js隐式转换
+21. requestAnimationFrame和 requestIdleCallback区别和使用这个还没看呢
+
 
 ts复习
+1. 数据类型
+2. ts的优点
+3. implements 和extends区别
+4. type和interface区别
+5. pick和omit区别
+6. 多态的意思
 
 react 复习
 
@@ -225,6 +261,9 @@ state、props、context
    所以不会在一开始将 isBatchingUpdates 设置为 true, 所有每次调用 setstate 都会触发同步更新, 还有就是 isBatchingUpdates 已经从 true 变为 false 了, 这个异步的回调中的 setState 才执行, 所以也是同步更新, isBatchingUpdates 就是控制 state 批量更新的全局变量
    http
 5. react hooks的实现原理
+
+6. react生命周期和常用hooks
+
 
 rn复习
 
@@ -267,6 +306,7 @@ gzip 压缩后传输
 2. 重排重绘
 3. 垃圾回收机制
 4. 浏览器如何离线操作，service worker
+5. webworker
 
 小程序
 实现原理
