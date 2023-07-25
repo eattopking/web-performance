@@ -226,6 +226,7 @@ js原生和es6复习
 19. 如何判断数据类型
 20. valueOf和toString，js隐式转换
 21. requestAnimationFrame和 requestIdleCallback区别和使用这个还没看呢
+22. 
 
 
 ts复习
@@ -306,7 +307,8 @@ gzip 压缩后传输
 2. 重排重绘
 3. 垃圾回收机制
 4. 浏览器如何离线操作，service worker
-5. webworker
+5. web worker
+6. 地址栏输入url的全过程
 
 小程序
 实现原理
@@ -373,6 +375,12 @@ webpack 构建优化
 6. 使用 cache-loader，减少热更新时间
 
 7. 压缩使用 terser-webpack-plugin 并开启多线程较少压缩时间
+
+### 异常监控
+1. try {} catch {} 运行
+2. object.onerror 和 img.onerror
+3. sentry 异常上报
+
 
 做过的比较印象深刻的项目
 

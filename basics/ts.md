@@ -103,7 +103,7 @@ console.log(isNumber(true)) //false
 1. Partial<T>, 将传入的对象类型变成全部可选的类型并返回
 2. Required<T>, 将传入的对象类型变成全部必选的类型并返回
 3. Readonly<T>, 将传入的对象类型变成全部只读的类型并返回
-4. Record<K, T>, K（传入typeof 取出的 ｜拼接的联合类型），T是任意类型，返回结果是一个Key值都是T类型的对象类型
+4. Record<K, T>, K（传入keyof 取出的 ｜拼接的联合类型），T是任意类型，返回结果是一个Key值都是T类型的对象类型
 将对象类型中的字段都替换成一个类型， 返回一个新的对象类型
 
 参数是一个联合类型和一个任意类型
@@ -116,7 +116,7 @@ type Object = Record<Test, number>, Object最后的结果就是type Object = {
 5. Pick<K, T>, 就是取出一个对象类型中一部分组成一个新的对象类型
 从对象类型中挑选类型
 
-将K这个对象类型中通过T类型取出指定的对象类型， T必须是typeof K 中的一部分
+将K这个对象类型中通过T类型取出指定的对象类型， T必须是keyof K 中的一部分
 
 
 type Object = {
