@@ -1259,12 +1259,43 @@ right: null,
 
 }
 
+{
+    val: 1,
+    left: {
+        val: 1,
+        left: 3,
+        right: 2
+    },
+    right: {
+        val: 2,
+        left: 2,
+        right: 3
+    }
+}
+
+function sumNum(tree) {
+    let sum = 0;
+    if (tree.val) {
+        sum += tree.val;
+    }
+
+    if (tree.left) {
+        sum += sumNum(tree.left);
+    }
+
+    if (tree.right) {
+        sum += sumNum(tree.right);
+    }
+
+    return sum;
+}
+
 求二叉树中所有值的和第二遍
 
 function treeSum(tree) {
-if (!tree) {
-return null;
-}
+    if (!tree) {
+        return null;
+    }
 
     let sum = 0;
 

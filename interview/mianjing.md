@@ -265,6 +265,24 @@ state、props、context
 
 6. react生命周期和常用hooks
 
+7. react的性能优化
+
+8. react服务端渲染
+
+9. react17和18的新功能
+
+10. react hooks原理，
+useState原理
+fiberNode = {
+   memorizedState: list,
+   baseState: 初始值
+   queue: 保存过度值
+}
+
+通过 Hooks 调用的顺序来与实际保存的数据结构来关联
+useEffect原理
+
+以链表的形式挂载在 FiberNode.updateQueue
 
 rn复习
 
@@ -346,16 +364,21 @@ gzip 压缩后传输
 
 前端页面的优化
 
-首先根据 lightHouse 进行性能分析，然后进行对应的性能优化
+1. 首先根据 lightHouse 进行性能分析，然后进行对应的性能优化
 
-有几个性能指标 Fp fcp lcp tti，通过查看这几个指标发现，影响首屏渲染的问题是包过大，导致加载时间过长，导致首屏在 1 秒左右
-然后经过 webpack splitchunk 的分包，将代码和 node_modules 中的依赖分饱，减小了加载时间，将首屏缩短为 300 毫秒
+2. 有几个性能指标 Fp fcp lcp tti，通过查看这几个指标发现，影响首屏渲染的问题是包过大，导致加载时间过长，导致首屏在 900毫秒左右
+然后通过webpack-bundle-analyzer分析包的大小，然后通过dllplugin进行预编译，固定版本，还有通过splitchunks进行分包，减小了首屏加载包的大小
+减小了加载时间，还有react组件可以懒加载的进行懒加载，将首屏缩短为 300 毫秒
 
-还有图片过大，对图片进行压缩，并上传到 cdn
+3. 还有图片过大加载时间长，对图片进行压缩，并上传到 cdn， 使用webp图片，图片懒加载
 
-接口请求时间长，服务端帮忙优化接口
+4. 接口请求时间长，服务端帮忙优化接口
 
-请求开启 gzip 压缩
+5. 请求开启 gzip 压缩
+
+6. 其他的非首屏优化有react性能优化，和performance记录之后的代码性能点优化
+
+
 
 webpack 构建优化
 
@@ -368,13 +391,23 @@ webpack 构建优化
 
 3. 针对转化过程设置 exclude 和 include 避免不必要的转化
 
-4. 针对于解析转化过程，通过 dllplugin 对 node_modules 中的包进行预编译，较少构建时间
+4. 针对于解析转化过程，通过 dllplugin 对 node_modules 中的包进行预编译，较少构建时间，使用webpack-bundle-analyzer分析webpack包体积
 
 5. 并且通过 thread-loader 开启多线程较少构建时间
 
 6. 使用 cache-loader，减少热更新时间
 
 7. 压缩使用 terser-webpack-plugin 并开启多线程较少压缩时间
+
+工程化模块化
+
+1. babel过程，将es6生成ast抽象语法树,对抽象语法书进行编译生成新的ast，然后将新的ast转成es5
+
+2. webpack的工作流程
+
+3. conmonjs和esmodule的区别
+
+4. 
 
 ### 异常监控
 1. try {} catch {} 运行
