@@ -1696,3 +1696,46 @@ function maxLength(s) {
 手写_instanceof
 
 
+### 二叉树
+
+1. 二叉树的前中后序遍历, 命名是根据root节点的位置定义的
+llet arr = [];
+let prev = (node) => {
+    if (node === null) {
+        return;
+    }
+
+    arr.push(node.val);
+    prev(node.left);
+    prev(node.right);
+
+}
+
+// prev(tree)
+const center = (node) => {
+  if(node === null) {
+    return;
+  }
+
+  center(node.left);
+  arr.push(node.val);
+  center(node.right);
+}
+
+// center(tree)
+console.log(arr)
+
+const after = (node) => {
+  if(node === null) {
+    return
+  }
+
+  after(node.left);
+  
+  after(node.right);
+  arr.push(node.val);
+}
+
+
+
+
