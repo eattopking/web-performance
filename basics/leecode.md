@@ -1669,8 +1669,9 @@ function tryConnection(fun, times, delay) {
 }
 ```
 
+### 代码实现
 
-function maxLength(s) {
+1. function maxLength(s) {
     let value = null;
     let maxLength = 0
     let set = new Set();
@@ -1689,11 +1690,63 @@ function maxLength(s) {
 }
 
 
-实现数组的flat 方法
+2. 实现数组的flat 方法
 
-给定一个二叉树和一个给定值，要求找到和为给定值的路径
+递归+ concat + reduce
 
-手写_instanceof
+3. 给定一个二叉树和一个给定值，要求找到和为给定值的路径
+
+4. 手写_instanceof
+
+5. 手写valueof和toString的面试题
+
+数值隐式转化调用valueof ，字符隐式转化调用toString
+
+6. 截流防抖
+截流 一定时间内只能执行一次 Date.now() ,闭包
+防抖 每次执行都取消上一次执行 setTimeout , 闭包
+
+7. bind、apply、call实现
+
+作为传入的this的方法执行的时候内部this就是传入的this
+
+8. 失败重连
+promise.catch的时候重复调用方法，有一个数，重连一次就--，到0的时候直接返回error结果， 最终就是返回一个promise
+
+9. promise.all promise.allSettled
+最终返回一个promise，内部第一个数组缓存结果， allSettled结果有特殊结构，{value: 11, status: ''}
+
+10. new 实现
+通过Object.create(fun.prototype)创建一个空对象，然后把fun作为空对象的方法调用，主意返回值，如果函数返回了函数或者对象直接就返回，如果没有返回，那就是直接返回之前创建的空对象
+
+11. 观察者模式实现
+
+添加、出发、删除
+
+add、delete、emit
+
+12. JavaScript 把数组里的0放到后面
+
+口诀： 使用一个变量缓存0项的索引， 然后当循环遇到非0项时，在才自增， 时间复杂度n
+
+// 用一个标识表示为0项的索引，0项的时候 tmp不自增，遇到非0项， 通过tmp取到0项和非0项换位置，然后tmp 自增，寻找下一个可能实0项, 当item为0 tmp不自增， 这是为了遇到不为0的item0，可以通过tmp取到为0的item进行替换, 直到最后一个非0项， 都被替换为0， 结束。
+
+function lastZero(arr) {
+    let tmp = 0
+    for(let i = 0; i < arr.length; i++) {
+        const item = arr[i];
+        if (item !== 0) {
+            if (arr[tmp] === 0) {
+                arr[tmp] = arr[i];
+                arr[i] = 0;
+            }
+
+            tmp++;
+        }
+    }
+
+    return arr;
+}
 
 
 ### 二叉树
