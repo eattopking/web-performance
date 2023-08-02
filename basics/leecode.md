@@ -37,36 +37,23 @@ function fib(n) {
 }
 ```
 
-2. 截流, 截流就是第一次操作之后，没有达到效果之前，不让他在点击操作
+### 代码实现
 
+2. 实现数组的flat 方法
+
+递归+ concat + reduce
+
+3. 给定一个二叉树和一个给定值，要求找到和为给定值的路径
+
+4. 手写_instanceof
+
+5. 手写valueof和toString的面试题
+
+数值隐式转化调用valueof ，字符隐式转化调用toString
+
+6. 截流防抖
+截流 一定时间内只能执行一次 Date.now() ,闭包
 实现要点: 在外层函数缓存旧的时间，在内层函数实时获取当前时间， 取差值比较是否允许函数执行
-
-```
-function throttle (fun, time) {
-    let delay = null;
-    return (...rest) => {
-        const currentDate = Date.now();
-        if (!delay || currentDate - delay > time) {
-            delay = currentDate;
-            return fun(...rest);
-        }
-    }
-}
-
-截流第二遍
-function throttle(callback, time) {
-    let oldDate = null;
-
-    return (...rest) => {
-        let currentDate = Date.now();
-        if (!oldDate || currentDate - oldDate > time) {
-            oldDate = currentDate;
-            return callback(...rest);
-        }
-    }
-}
-
-截流第三遍
 
 function throttle(func, time) {
     let prev = null;
@@ -78,25 +65,9 @@ function throttle(func, time) {
         }
     }
 }
-```
 
-3. 防抖, 防抖就可以理解为，防止多次点击， 防止多次请求
-
+防抖 每次执行都取消上一次执行 setTimeout , 闭包
 主要思路： 就是在外层函数中缓存一个存储 timerid 的变量， 然后在返回的函数中刚开始就是 clearInterval(timerid), 确保调用时就把没有执行的定时器清除掉
-
-```
-function debounce(fun, time) {
-    let id = null;
-    return (...rest) => {
-        clearTimeout(id);
-        id = setTimeout(() => {
-            fun(...rest);
-        }, time)
-    }
-}
-
-防抖的第二遍
-
 function debounce(func, time) {
     let timmer = null
     return (...rest) => {
@@ -106,44 +77,95 @@ function debounce(func, time) {
         }, time)
     }
 }
-```
 
-4. 深拷贝
+7. bind、apply、call实现
 
-```
+作为传入的this的方法执行的时候内部this就是传入的this
 
-```
+call实现: 使用的原理就是函数当作为谁属性调用的时候，这个函数的 this 指向就是谁， 还有只有 null 和 undefined == null， 内置构造函数创建实例， 用不用 new 都可以， Object 类似于 Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf 方法是获取对象的原始值的方法, 对象的 toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的
 
-5. Promise.all 原理就是 Promise 只能改变一次状态， 然后定义一个变量缓存 resolve 的次数， 用于和数组的长度比较，
-   当全部 promise 都变成 resolve 时候就将最外层的 promise 变为 fulfilled 状态返回数组， 如果有 promise 变成 reject 状态，直接返回这个 reject 状态的值，设置一个数组的 index 值， 前面没有值得索引会用空值占位
+诀窍： 就是函数作为一个对象的方法调用时，函数内部 this 指向就是这个对象
 
-Promise.all 的诀窍，最后就返回一个 promise 实例的状态
-
-```
-Promise.all = function(arr) {
-    if(!Array.isArray(arr)) {
-        throw new Error('params must array');
+Function.prototype.call = function(newThis, ...test) {
+    if (newThis === null || newThis === undefiend) {
+        return newThis(...test);
     }
+    
+    newThis = Object(newThis);
+    newThis.fn = this;
+    const result = newThis.fn(...test);
+    delete newThis.fn;
+    return result;
+}
 
+
+apply 实现: 使用的原理就是函数当作为谁属性调用的时候，这个函数的 this 指向就是谁， 还有只有 null 和 undefined == null， 内置构造函数创建实例， 用不用 new 都可以， Object 类似于 Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf 方法是获取对象的原始值的方法, 对象的 toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的
+
+诀窍： 就是函数作为一个对象的方法调用时，函数内部 this 指向就是这个对象
+
+
+Function.prototype.apply = function(newThis, arr) {
+    if (newThis === undefiend || newThis === null) {
+        return this(...arr);
+    }
+    newThis = Object(newThis);
+    newThis.fn = this;
+    const result = newThis.fn(...rest);
+    delete newThis.fn;
+    return result;
+}
+
+bind 实现: 使用的原理就是函数当作为谁属性调用的时候，这个函数的 this 指向就是谁， 还有只有 null 和 undefined == null， 内置构造函数创建实例， 用不用 new 都可以， Object 类似于 Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf 方法是获取对象的原始值的方法, 对象的 toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的, 还是使用了闭包的原理缓存 rest
+
+诀窍： 就是函数作为一个对象的方法调用时，函数内部 this 指向就是这个对象
+
+Function.prototype.bind = function (newThis, ...rest) {
+    return (...params) => {
+        if (newThis == null) {
+            return this(...[...rest, ...params]);
+        }
+        const currentThis = Object(newThis);
+        currentThis.fun = this;
+        const result = currentThis.fun(...[...rest, ...params]);
+        delete currentThis.fun;
+        return result;
+    }
+}
+
+
+
+
+
+8. 失败重连
+promise.catch的时候重复调用方法，有一个数，重连一次就--，到0的时候直接返回error结果， 最终就是返回一个promise
+
+错误重连的原理就是返回一个promise实例，创建一个递归函数，然后初始化调用， fulfilled状态直接resolve状态返回，如果rejected状态直接setTimeout递归延时执行， 然后减去一个次数， 如果次数到0，
+直接还是rejected，直接就reject 返回状态 返回err值
+
+function wrongConnect(fun, times, delay) {
     return new Promise((resolve, reject) => {
-        let cont = 0;
-        const result = [];
-        const len = arr.length;
-        arr.forEach((item, index) => {
-            const promise = Promise.resolve(item);
-            promise.then((data) => {
-                ++cont;
-                result[index] = data;
-                if(len === cont) {
-                    resolve(result);
-                }
-            }).catch((err) => {
-                reject(err);
-            });
-        });
+        function callback() {
+           Promise.resolve(fun()).then(resolve).catch((err) => {
+               if (times > 0) {
+                   times--;
+                   setTimeout(callback, delay);
+                   return;
+               }
+               reject(err);
+           })
+        }
+
+        callback();
     });
 }
 
+promise.resolve 将函数执行结果统一转换一下， 写一个函数， 在下面执行， 然后在catch 中进行settimeout 递归调用定义的函数， 在catch 中判断次数， 然后没有次数了返回失败状态
+
+9. promise.all promise.allSettled
+最终返回一个promise，内部第一个数组缓存结果， allSettled结果有特殊结构，{value: 11, status: ''};
+
+Promise.all 原理就是 Promise 只能改变一次状态， 然后定义一个变量缓存 resolve 的次数， 用于和数组的长度比较，
+   当全部 promise 都变成 resolve 时候就将最外层的 promise 变为 fulfilled 状态返回数组， 如果有 promise 变成 reject 状态，直接返回这个 reject 状态的值，设置一个数组的 index 值， 前面没有值得索引会用空值占位
 
 Promise.all = function(arr) {
     if (!Array.isArray(arr)) {
@@ -169,130 +191,9 @@ Promise.all = function(arr) {
         }
     })
 }
-```
 
-```
-实现一个错误重连
-
-const wrongConnect = (callback, times, delay) => {
-    return new Promise((resolve, reject) => {
-        const fn = () => {
-            Promise.resolve(callback()).then(resolve).catch((err) => {
-                if(times === 0) {
-                    reject(err);
-                } else {
-                    setTimeout(fn, delay);
-                    times--;
-                }
-            })
-        };
-
-        fn();
-    });
-}
-
-const wrongConnect = (fun, times, delay) => {
-    
-    return new Promise((resolve, reject) => {
-        const callback = () => {
-            Promise.resolve(fun()).then(resolve).catch((error) => {
-                if (times === 0) {
-                    reject(error);
-                } else {
-                    times--;
-                    setTimeout(callback, delay)
-                }
-            })
-        }
-
-        callback()
-    });
-}
-
-错误重连的原理就是返回一个promise实例，创建一个递归函数，然后初始化调用， fulfilled状态直接resolve状态返回，如果rejected状态直接setTimeout递归延时执行， 然后减去一个次数， 如果次数到0，
-直接还是rejected，直接就reject 返回状态 返回err值
-
-失败重连第二遍
-
-function wrongConnect(fun, times, delay) {
-    return new Promise((resolve, reject) => {
-        function callback() {
-           Promise.resolve(fun()).then(resolve).catch((err) => {
-               if (times > 0) {
-                   times--;
-                   setTimeout(callback, delay);
-                   return;
-               }
-               reject(err);
-           })
-        }
-
-        callback();
-    });
-}
-
-promise.resolve 将函数执行结果统一转换一下， 写一个函数， 在下面执行， 然后在catch 中进行settimeout 递归调用定义的函数， 在catch 中判断次数， 然后没有次数了返回失败状态
-```
-
-7. apply 实现 使用的原理就是函数当作为谁属性调用的时候，这个函数的 this 指向就是谁， 还有只有 null 和 undefined == null， 内置构造函数创建实例， 用不用 new 都可以， Object 类似于 Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf 方法是获取对象的原始值的方法, 对象的 toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的
-
-诀窍： 就是函数作为一个对象的方法调用时，函数内部 this 指向就是这个对象
-
-```
-Function.prototype.apply = function(newThis, arr) {
-    if (newThis === undefiend || newThis === null) {
-        return this(...arr);
-    }
-    newThis = Object(newThis);
-    newThis.fn = this;
-    const result = newThis.fn(...rest);
-    delete newThis.fn;
-    return result;
-}
-
-
-```
-
-8. call 实现 使用的原理就是函数当作为谁属性调用的时候，这个函数的 this 指向就是谁， 还有只有 null 和 undefined == null， 内置构造函数创建实例， 用不用 new 都可以， Object 类似于 Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf 方法是获取对象的原始值的方法, 对象的 toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的
-
-诀窍： 就是函数作为一个对象的方法调用时，函数内部 this 指向就是这个对象
-
-```
-Function.prototype.call = function(newThis, ...test) {
-    if (newThis === null || newThis === undefiend) {
-        return newThis(...test);
-    }
-    
-    newThis = Object(newThis);
-    newThis.fn = this;
-    const result = newThis.fn(...test);
-    delete newThis.fn;
-    return result;
-}
-
-
-```
-
-9. bind 实现 使用的原理就是函数当作为谁属性调用的时候，这个函数的 this 指向就是谁， 还有只有 null 和 undefined == null， 内置构造函数创建实例， 用不用 new 都可以， Object 类似于 Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf 方法是获取对象的原始值的方法, 对象的 toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的, 还是使用了闭包的原理缓存 rest
-
-诀窍： 就是函数作为一个对象的方法调用时，函数内部 this 指向就是这个对象
-
-```
-Function.prototype.bind = function (newThis, ...rest) {
-    return (...params) => {
-        if (newThis == null) {
-            return this(...[...rest, ...params]);
-        }
-        const currentThis = Object(newThis);
-        currentThis.fun = this;
-        const result = currentThis.fun(...[...rest, ...params]);
-        delete currentThis.fun;
-        return result;
-    }
-}
-```
-
-10. new 过程
+10. new 实现
+通过Object.create(fun.prototype)创建一个空对象，然后把fun作为空对象的方法调用，主意返回值，如果函数返回了函数或者对象直接就返回，如果没有返回，那就是直接返回之前创建的空对象
 
 new 实现的原理： 就是自定义一个 new 函数， 然后参数是我们的构造函数和构造函数的参数， 创建一个最后返回的实例， 并将构造函数的原型对象设置给实例的原型，然后使用 call 调用 new 函数， 并将 this 指向设置为我们创建的实例， 函数的参数也设置为我们传入的参数，
 再有就是判断一下构造函数是否返回对象， 如果返回对象 new 函数直接返回这个对象， 我们没有返回对象， new 函数就返回我们创建的那个实例
@@ -313,310 +214,14 @@ const that = Object.create(fun.prototype);
 
 }
 
-```
-12. 判断 字符串是否如 {[()]} , [()]、{()} 等结构, 如果是就返回true， 不是就返回false, 这里栈中存的是对应括号的右侧部分 ， 不是右侧的索引
-
-这题的解题思路就是：正确的结构都是对称的， 当遍历完全部左侧部分的时候， 就会按照栈的特性遍历全部的右侧部分（后进先出），所以我们在遍历全部左侧部分的时候要要在一个数组中，从前边插入对应的右边部分， 等到全部左侧遍历完成，按照栈的原理遍历右侧的时候就从这个数组中一次获取值对比， 如果没有比上那就是结构不符合就是false， 一直到最后都比上了就是true
-
-诀窍就是要括号需要是挨着配对或者对称配对， 整好符合栈的特性
-```
-
-function isTrueString(str) {
-if(!str.length) {
-return false;
-}
-
-    let stack = [];
-    for (let i = 0; i < str.length; i++) {
-        const item = str[i];
-        if (item === '[') {
-            stack.push(']');
-            continue;
-        }
-        if (item === '{') {
-            stack.push('}');
-            continue;
-        }
-        if (item === '(') {
-            stack.push(')');
-            continue;
-        }
-
-        const last = stack.pop();
-        if (last !== item) {
-            return false;
-        }
-    }
-    return !stack.length
-
-}
-
-```
-12.1 有效字符串需满足：
-
-左括号必须用相同类型的右括号闭合。
-左括号必须以正确的顺序闭合。
-
-诀窍就是要括号需要是挨着配对或者对称配对， 整好符合栈的特性
-```
-
-题目要求的是紧挨着或者对称的位置有配对的才是对的
-
-所以就是循环将对称或者挨着的配对项消掉， 如果最后的数组不是空的就不对， 返回 false
-
-function isTrueString(string) {
-let stack = [];
-
-    for(let i = 0; i < string.length; i++) {
-        const item = string[i];
-
-        if (item === '(') {
-            stack.push(')')
-        }
-
-        if (item === '[') {
-            stack.push(']')
-        }
-
-        if (item === '{') {
-            stack.push('}')
-        }
-
-        if (item === ')') {
-            const popItem = stack.pop();
-            if (popItem !== ')') {
-                return false;
-            }
-        }
-
-        if (item === ']') {
-            const popItem = stack.pop();
-            if (popItem !== ']') {
-                return false;
-            }
-        }
-
-        if (item === '}') {
-            const popItem = stack.pop();
-            if (popItem !== '}') {
-                return false;
-            }
-        }
-
-    }
-
-    return !stack.length;
-
-}
-
-有效数字第二遍
-
-var isValid = function(string) {
-if (!string) {
-return false;
-}
-
-    const stack = [];
-    for(let i = 0; i < string.length; i++) {
-        const item = string[i];
-        if (item === '(') {
-            stack.push(')');
-        }
-        if (item === '[') {
-            stack.push(']');
-        }
-        if (item === '{') {
-            stack.push('}');
-        }
-
-        if (item === ')') {
-            const popitem = stack.pop();
-            if (popitem !== ')') {
-                return false;
-            }
-        }
-        if (item === ']') {
-            const popitem = stack.pop();
-            if (popitem !== ']') {
-                return false;
-            }
-        }
-        if (item === '}') {
-            const popitem = stack.pop();
-            if (popitem !== '}') {
-                return false;
-            }
-        }
-    }
-
-    return !stack.length;
-
-};
-
-```
-
-13. 12题的进阶，给定一个只包含三种字符的字符串：（ ，） 和 * ，写一个函数来检验这个字符串是否为有效字符串。有效字符串具有如下规则
-
-有效的括号字符串
-给定一个只包含三种字符的字符串：（ ，） 和 *，写一个函数来检验这个字符串是否为有效字符串。有效字符串具有如下规则：
-
-任何左括号 ( 必须有相应的右括号 )。
-任何右括号 ) 必须有相应的左括号 ( 。
-左括号 ( 必须在对应的右括号之前 )。
-
-可以被视为单个右括号 ) ，或单个左括号 ( ，或一个空字符串。
-一个空字符串也被视为有效字符串。
-
-'()(*)' 这种形式也是符合要求的
-
-解题思路： 这里是用两个栈存, 都是用栈但是和上边的那个存的方式完全不同， 这里是根据栈长度判断逻辑， 还有可能没有')'的情况，
-所以栈中存的是对应（和 *的索引，之后比较（和 *的索引大小也有帮助,
-
-因为 *还可以充当其他的还可以充当空， 括号这种需求用栈十分的合理， 和括号的行为非常的符合
-最后的思路， 就是遇到（ 和*就装进两个栈的 数组中，遇到）就优先从（（数组中去（的索引去和）消掉， 就像开心消消乐一样， 如果（数组空了，在去从 *数组取值去消）， 如果 （和 * 的数组都是空的，没有去消）的， 那就直接return false, 当）都消没有了，
-这个时候 （ 和*还剩的话， 那就比较 如果（的数量比 *的多那就直接return false因为肯定不够消了，如果是 *的数量多于(的数量那就在依次比较是不是所有的配对的（和 *， *都是在（后面的，如果不在后边就直接导致无法配对消除了直接返回false， 因为是用栈的所有后进先出， 越往后获取的是索引越靠前的，如果这些都过了, (数组也空了， 这个时候，就说明要么没有 *， 要么就剩 *了， 这个时候， 就说明字符串符合要求了 直接返回true
-
-这里的题目要求也是对称或者挨着配对的符合要求， 我们这要把符合的消掉， 最后处理* 就可以了， *是可以充当任何的， 随意最后 * 只要是在 （ 后边， 那就是可以保证全部挨着或者对称消掉
-
-诀窍就是要括号需要是挨着配对或者对称配对， 整好符合栈的特性
-
-function isTrueString(string) {
-    const stack = [];
-    const star = [];
-
-    // 将和）配对的消了, 多余的（ 和 * 存在数组中在处理
-    for(let i = 0; i < string.length; i++) {
-        const item = string[i];
-        if (item === '(') {
-            stack.push(i);
-        }
-
-        if (item === '*') {
-            star.push(i);
-        }
-
-        if (item === ')') {
-            // 如果 （ 和 * 都没有了，那就是错了， 直接返回false
-            if (!stack.length && !star.length) {
-                return false;
-            } else {
-                // 然后以为 * 可以替换任何， 并且自己就是空， 可以单独存在，所以先从（数组中取值
-                if (stack.length) {
-                    stack.pop();
-                } else {
-                    star.pop();
-                }
-            }
-        }
-    }
-
-    // 处理完）的情况，然后判断处理剩余的* 和 （
-
-    // 如果（的数量多余 *的数量，那直接就是返回false了， 不可能全部和（配对
-    if(stack.length > star.length) {
-        return false;
-    } else {
-        while(stack.length) {
-            // 如果（ 的索引有大于 *的对应的索引的， 那就说明有 （ 和 *不能配对的情况了， 就出现错误了， 就返回false了
-            if (stack.pop() > star.pop()) {
-                return false;
-            }
-        }
-    }
-
-    return true;
-}
-
-第二遍进阶字符串
-var checkValidString = function(string) {
-    if (!string) {
-        return false;
-    }
-
-    const stack = [];
-    const star = [];
-
-    for(let i = 0; i < string.length; i++) {
-        const item = string[i];
-
-        if (item === '(') {
-            stack.push(i);
-        }
-        if (item === '*') {
-            star.push(i);
-        }
-
-        if (item === ')') {
-            if (!stack.length && !star.length) {
-                return false;
-            }
-            if (stack.length) {
-                stack.pop();
-            } else {
-                star.pop();
-            }
-        }
-    }
-
-    if (stack.length > star.length) {
-        return false;
-    } else {
-        while(stack.length) {
-           if (stack.pop() > star.pop()) {
-               return false;
-           }
-        }
-    }
-
-    return true;
-};
-
-
-#### 实现一个观察者模式
+11. 观察者模式实现
 
 解题思路： 观察者模式就是发布订阅模式, 就是我们js中事件的实现原理， 我们要自己实现发布订阅模式就是先定义一个实例对象， 这个对象类似于dom对象， 拥有注册、移除、发布订阅的api，以为每个实例上可以注册多种观察类型， 所以特殊的在这个实例中需要有一个存储各种类型观察回调（事件回调）的字段， 因为每个被观察者（dom对象）的每种观察类型（类型）可以被订阅多次， 所以存储每种观察类型的观察回调（事件回调）的应该是数组， 然后发布订阅（触发事件）的时候循环执行对应类型的观察回调, 移除事件就是移除对象类型的一个回调， 因为相同类型的事件可能注册多个回调
 
 诀窍就是就是实现nodeEventEmitter 类
-```
 
-// 写算法就是写这个类， 然后在创建实例在去演示， 不直接写下边的实例
 class EventEmitter {
-constructor() {
-this.eventList = {}
-};
-subscribe(type, callback) {
-const eventList = this.eventList[type];
-if (eventList) {
-eventList.push(callback)
-} else {
-this.eventList[type] = [callback];
-}
-};
-unSubscribe(type, fn) {
-const eventList = this.eventList[type];
-if (eventList && eventList.length) {
-this.eventList[type] = eventList.filter((item) => {
-if(item !== fn) {
-return true;
-}
-return false;
-})
-}
-};
-// 这里 rest 是触发事件的时候可以向下传自定义的参数给回调
-publish(type, ...rest) {
-const eventList = this.eventList[type];
-if (eventList && eventList.length) {
-eventList.forEach((item) => {
-item(...rest);
-});
-}
-}
-}
-
-//观察者模式实现第二遍
-class EventEmitter {
-eventList = {}
+    eventList = {}
 
     addEvent = (eventName, callback) => {
         if (this.eventList[eventName]) {
@@ -640,8 +245,186 @@ eventList = {}
 
 }
 
-```
-#### 链表
+添加、出发、删除
+
+add、delete、emit
+
+12. JavaScript 把数组里的0放到后面
+
+口诀： 使用一个变量缓存0项的索引， 然后当循环遇到非0项时，在才自增， 时间复杂度n
+
+// 用一个标识表示为0项的索引，0项的时候 tmp不自增，遇到非0项， 通过tmp取到0项和非0项换位置，然后tmp 自增，寻找下一个可能实0项, 当item为0 tmp不自增， 这是为了遇到不为0的item0，可以通过tmp取到为0的item进行替换, 直到最后一个非0项， 都被替换为0， 结束。
+
+function lastZero(arr) {
+    let tmp = 0
+    for(let i = 0; i < arr.length; i++) {
+        const item = arr[i];
+        if (item !== 0) {
+            if (arr[tmp] === 0) {
+                arr[tmp] = arr[i];
+                arr[i] = 0;
+            }
+
+            tmp++;
+        }
+    }
+
+    return arr;
+}
+
+13. 深拷贝
+
+### 队列
+
+中等
+
+面试题 17.09. 第 k 个数
+有些数的素因子只有 3，5，7，请设计一个算法找出第 k 个数。注意，不是必须有这些素因子，而是必须不包含其他的素因子。例如，前几个数按顺序应该是 1，3，5，7，9，15，21, 就是找出和例子一样规律的数中的一个
+
+队列就是数据js中， 这个题就是利用队列就是数组存值， 然后就是将3、5、7分别定义一个所以变量，然后队列默认第一项是1，因为规律就是第一项从1开始，然后就循环从1开始， 找到队列中对应的3，5，7索引的值，和3，5，7相乘得到的结果中最小的值，赋值给遍历的当前项为索引的队列值，然后在用这个值和队列中3，5，7，索引变量值乘3，5，7，比较是否相等， 相等的那个所以变量就是加1，按这个规律遍历，
+最后取到数组中的我们要找的个数减1项， 就是我们要找的值
+
+var getKthMagicNumber = function(k) {
+    let result = [];
+    let p3 = 0;
+    let p5=0;
+    let p7=0;
+    result[0]=1;
+    for(let i= 1; i<k; i++) {
+    result[i]=Math.min(result[p3]*3, Math.min(result[p5]*5, result[p7]*7));
+    if(result[i] === result[p3]*3) {p3++};
+    if(result[i] === result[p5]*5) {p5++};
+    if(result[i] === result[p7]*7) {p7++};
+    }
+
+    return result[k-1];
+};
+
+### 栈
+
+1. leecode 316. 去除重复字母 就是去除重复字母的同时，在将能排序的元素从小到大排序就是这个意思
+
+var removeDuplicateLetters = function(s) {
+    let arr = [];
+    // 字典序最小就是字符串直接比较的从小到大的顺序，将能排序的元素
+    for(let i = 0; i < s.length; i++) {
+        const item = s[i];
+
+        // 这里主要是处理挨着的重复的元素， 和普通的重复元素， 因为下面已经排序完成了， 所有只要重复
+        // 直接就过滤掉就完事了
+        if(arr.includes(item)) {
+            continue;
+        }
+
+        // 这里关键， 只要不符合从小到大的顺序的， 并且是字符串后面还有的字符， 那就直接在数组中删除掉， 循环这个操作， 得到最符合条件的1. 数组内容
+        while(arr.length > 0 && arr[arr.length - 1] > item && s.indexOf(arr[arr.length - 1], i + 1) !== -1) {
+           arr.pop();
+        }
+
+        arr.push(item);
+    }
+
+    return arr.join('');
+};
+
+### 数组
+
+数组相关问题的诀窍， 就是使用中间数组变量和中间索引变量 协助处理for循环完成问题
+
+1. 两数之和
+
+给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 的那 两个 整数，并返回它们的数组下标。
+
+你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
+
+你可以按任意顺序返回答案。
+
+var twoSum = function(nums, target) {
+    for(let i = 0; i < nums.length; i++) {
+        const item = nums[i];
+
+        const filterItem = target - item;
+        const filterIndex = nums.findIndex((item, index) => {
+            return item === filterItem && index !== i;
+        });
+
+        if(filterIndex !== -1) {
+            return [i, filterIndex];
+        }
+    }
+};
+
+2.  给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在数组中的开始位置和结束位置。
+
+如果数组中不存在目标值 target，返回 [-1, -1]。
+
+进阶：
+
+你可以设计并实现时间复杂度为 O(log n) 的算法解决此问题吗？
+ 
+const searchRange = function(nums, target) {
+    if (!nums.length) {
+        return [-1, -1];
+    }
+    const arr = [];
+    for(let i = 0; i < nums.length; i++) {
+        const item = nums[i];
+        if (item === target) {
+            arr.push(i);
+        }
+    }
+
+    if (!arr.length) {
+        return [-1, -1];
+    }
+
+    if(arr.length === 1) {
+        arr.push(arr[0]);
+        return arr;
+    }
+
+    if(arr.length > 1) {
+        return [arr[0], arr[arr.length - 1]];
+    }
+};
+
+3. JavaScript 把数组里的0放到后面
+
+// 直接把0push到最后，然后把原位置上的0删除了， 最简单粗暴的方法, 没有引入第二个数字
+function lastZero(arr) {
+    for(let i = 0; i < arr.length; i++) {
+        const item = arr[i];
+        if (item === 0 || item === '0') {
+            arr.splice(i, 1);
+            arr.push(0);
+        }
+    }
+
+    return arr;
+}
+
+口诀： 使用一个变量缓存0项的索引， 然后当循环遇到非0项时，在才自增， 时间复杂度n
+
+// 用一个标识表示为0项的索引，0项的时候 tmp不自增，遇到非0项， 通过tmp取到0项和非0项换位置，然后tmp 自增，寻找下一个可能实0项, 当item为0 tmp不自增， 这是为了遇到不为0的item0，可以通过tmp取到为0的item进行替换, 直到最后一个非0项， 都被替换为0， 结束。
+
+function lastZero(arr) {
+    let tmp = 0
+    for(let i = 0; i < arr.length; i++) {
+        const item = arr[i];
+        if (item !== 0) {
+            if (arr[tmp] === 0) {
+                arr[tmp] = arr[i];
+                arr[i] = 0;
+            }
+
+            tmp++;
+        }
+    }
+
+    return arr;
+}
+
+### 链表
 使用js 实现一个链表的数据结构，是这样的
 
 const header = {
@@ -655,8 +438,6 @@ const header = {
 这个header 对象是整体的单链表也是，链表的头, 也就是链表的开始
 
 1. 链表相关题简单
-206. 反转链表
-
 解题思路：返回空的链表就是返回空就是返回null 在js中，解题思路就是递归，然后每一次都定义一个新的对象将每次递归的val赋值给新的对象的val， 将上一次存储的对象赋值给新对象的next属性，然后将新对象赋值给外部变量obj，最后将obj 返回就是最后的反转链表了， 注意需要判断输入空链表的情况，
 将obj初始化设置为null， 可以一举两得， 一是反转链表第一个是空可以直接用， 二是在空链表判断时直接返回空可以用
 
@@ -713,48 +494,6 @@ const reverseList = (head) => {
 
 2. 删除链表项
 解题思路， 设置两个变量， 分别存储整个链表， 和最新的next对象, 这是正向操作， 正向操作需要存储最后的next
-
-var deleteNode = function(head, val) {
-    let obj = null;
-    let next = null;
-
-    function deep(head) {
-        if(!head) {
-            return;
-        }
-
-        if (val !== head.val) {
-            if (obj) {
-                if (obj.next) {
-                    next.next = {
-                        val: head.val,
-                        next: null
-                    };
-                    next = next.next;
-                } else {
-                    obj.next =  {
-                        val: head.val,
-                        next: null
-                    }
-                    next = obj.next;
-                }
-            } else {
-                obj = {
-                    val: head.val,
-                    next: null
-                }
-            }
-        }
-
-        if(head.next) {
-            deep(head.next);
-        }
-    }
-
-    deep(head);
-    return obj;
-};
-
 const deleteList = (head, val) => {
    let obj = null;
    let next = null;
@@ -867,38 +606,7 @@ var detectCycle = function(head) {
     }
 };
 
-#### 栈
-
-1. 栈相关题简单
-
-2. 栈相关题中等
-
-leecode 316. 去除重复字母 就是去除重复字母的同时，在将能排序的元素从小到大排序就是这个意思
-
-var removeDuplicateLetters = function(s) {
-    let arr = [];
-    // 字典序最小就是字符串直接比较的从小到大的顺序，将能排序的元素
-    for(let i = 0; i < s.length; i++) {
-        const item = s[i];
-
-        // 这里主要是处理挨着的重复的元素， 和普通的重复元素， 因为下面已经排序完成了， 所有只要重复
-        // 直接就过滤掉就完事了
-        if(arr.includes(item)) {
-            continue;
-        }
-
-        // 这里关键， 只要不符合从小到大的顺序的， 并且是字符串后面还有的字符， 那就直接在数组中删除掉， 循环这个操作， 得到最符合条件的1. 数组内容
-        while(arr.length > 0 && arr[arr.length - 1] > item && s.indexOf(arr[arr.length - 1], i + 1) !== -1) {
-           arr.pop();
-        }
-
-        arr.push(item);
-    }
-
-    return arr.join('');
-};
-
-#### 哈希表
+### 哈希表
 
 哈希表在js中就是说的是map 数据结构
 
@@ -938,10 +646,9 @@ function onlyOne(arr) {
     }
 }
 
-2. 中等
 哈希表就是对象或者map， 就是使用键值对存储值， 然后根据存储值比较变化
 
-leecode 1679. K 和数对的最大数目
+2. leecode 1679. K 和数对的最大数目
 
 // 这里的逻辑就是在对象中存储这个对应值的出现次数， 没有配对的就保留，配对的就将对应的key的次数减/// 1，并且不将配对的值存入对象中， 起到过滤不重复的作用，得到结果
 var maxOperations = function(nums, k) {
@@ -958,7 +665,179 @@ var maxOperations = function(nums, k) {
     return ans;
 };
 
-#### 排序
+### 字符串
+// 滑窗算法
+1. function maxLength(s) {
+    let value = null;
+    let maxLength = 0
+    let set = new Set();
+    for(let i = 0; i < s.length; i++) {
+        if (set.size || set.has(s[i])) {
+            set.add(s[i]);
+            value = s[i];
+            maxLength = Math.max(maxLength, set.size);
+        } else {
+            set.clear();
+            set.add(s[i]);
+        }
+    }
+
+    return maxLength;
+}
+
+2. 有效字符串需满足：
+
+左括号必须用相同类型的右括号闭合。
+左括号必须以正确的顺序闭合。
+
+诀窍就是要括号需要是挨着配对或者对称配对， 整好符合栈的特性
+
+题目要求的是紧挨着或者对称的位置有配对的才是对的
+
+所以就是循环将对称或者挨着的配对项消掉， 如果最后的数组不是空的就不对， 返回 false
+
+function isTrueString(string) {
+    let stack = [];
+
+    for(let i = 0; i < string.length; i++) {
+        const item = string[i];
+
+        if (item === '(') {
+            stack.push(')')
+        }
+
+        if (item === '[') {
+            stack.push(']')
+        }
+
+        if (item === '{') {
+            stack.push('}')
+        }
+
+        if (item === ')') {
+            const popItem = stack.pop();
+            if (popItem !== ')') {
+                return false;
+            }
+        }
+
+        if (item === ']') {
+            const popItem = stack.pop();
+            if (popItem !== ']') {
+                return false;
+            }
+        }
+
+        if (item === '}') {
+            const popItem = stack.pop();
+            if (popItem !== '}') {
+                return false;
+            }
+        }
+
+    }
+    return !stack.length;
+}
+
+3. 2进阶，给定一个只包含三种字符的字符串：（ ，） 和 * ，写一个函数来检验这个字符串是否为有效字符串。有效字符串具有如下规则
+
+有效的括号字符串
+给定一个只包含三种字符的字符串：（ ，） 和 *，写一个函数来检验这个字符串是否为有效字符串。有效字符串具有如下规则：
+
+任何左括号 ( 必须有相应的右括号 )。
+任何右括号 ) 必须有相应的左括号 ( 。
+左括号 ( 必须在对应的右括号之前 )。
+
+可以被视为单个右括号 ) ，或单个左括号 ( ，或一个空字符串。
+一个空字符串也被视为有效字符串。
+
+'()(*)' 这种形式也是符合要求的
+
+解题思路： 这里是用两个栈存, 都是用栈但是和上边的那个存的方式完全不同， 这里是根据栈长度判断逻辑， 还有可能没有')'的情况，
+所以栈中存的是对应（和 *的索引，之后比较（和 *的索引大小也有帮助,
+
+因为 *还可以充当其他的还可以充当空， 括号这种需求用栈十分的合理， 和括号的行为非常的符合
+最后的思路， 就是遇到（ 和*就装进两个栈的 数组中，遇到）就优先从（（数组中去（的索引去和）消掉， 就像开心消消乐一样， 如果（数组空了，在去从 *数组取值去消）， 如果 （和 * 的数组都是空的，没有去消）的， 那就直接return false, 当）都消没有了，
+这个时候 （ 和*还剩的话， 那就比较 如果（的数量比 *的多那就直接return false因为肯定不够消了，如果是 *的数量多于(的数量那就在依次比较是不是所有的配对的（和 *， *都是在（后面的，如果不在后边就直接导致无法配对消除了直接返回false， 因为是用栈的所有后进先出， 越往后获取的是索引越靠前的，如果这些都过了, (数组也空了， 这个时候，就说明要么没有 *， 要么就剩 *了， 这个时候， 就说明字符串符合要求了 直接返回true
+
+这里的题目要求也是对称或者挨着配对的符合要求， 我们这要把符合的消掉， 最后处理* 就可以了， *是可以充当任何的， 随意最后 * 只要是在 （ 后边， 那就是可以保证全部挨着或者对称消掉
+
+诀窍就是要括号需要是挨着配对或者对称配对， 整好符合栈的特性
+
+function isTrueString(string) {
+    const stack = [];
+    const star = [];
+
+    // 将和）配对的消了, 多余的（ 和 * 存在数组中在处理
+    for(let i = 0; i < string.length; i++) {
+        const item = string[i];
+        if (item === '(') {
+            stack.push(i);
+        }
+
+        if (item === '*') {
+            star.push(i);
+        }
+
+        if (item === ')') {
+            // 如果 （ 和 * 都没有了，那就是错了， 直接返回false
+            if (!stack.length && !star.length) {
+                return false;
+            } else {
+                // 然后以为 * 可以替换任何， 并且自己就是空， 可以单独存在，所以先从（数组中取值
+                if (stack.length) {
+                    stack.pop();
+                } else {
+                    star.pop();
+                }
+            }
+        }
+    }
+
+    // 处理完）的情况，然后判断处理剩余的* 和 （
+
+    // 如果（的数量多余 *的数量，那直接就是返回false了， 不可能全部和（配对
+    if(stack.length > star.length) {
+        return false;
+    } else {
+        while(stack.length) {
+            // 如果（ 的索引有大于 *的对应的索引的， 那就说明有 （ 和 *不能配对的情况了， 就出现错误了， 就返回false了
+            if (stack.pop() > star.pop()) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+4. leecode 316. 去除重复字母 就是去除重复字母的同时，在将能排序的元素从小到大排序就是这个意思
+
+var removeDuplicateLetters = function(s) {
+    let arr = [];
+    // 字典序最小就是字符串直接比较的从小到大的顺序，将能排序的元素
+    for(let i = 0; i < s.length; i++) {
+        const item = s[i];
+
+        // 这里主要是处理挨着的重复的元素， 和普通的重复元素， 因为下面已经排序完成了， 所有只要重复
+        // 直接就过滤掉就完事了
+        if(arr.includes(item)) {
+            continue;
+        }
+
+        // 这里关键， 只要不符合从小到大的顺序的， 并且是字符串后面还有的字符， 那就直接在数组中删除掉， 循环这个操作， 得到最符合条件的1. 数组内容
+        while(arr.length > 0 && arr[arr.length - 1] > item && s.indexOf(arr[arr.length - 1], i + 1) !== -1) {
+           arr.pop();
+        }
+
+        arr.push(item);
+    }
+
+    return arr.join('');
+};
+
+
+### 排序
 
 1. 冒泡排序
 
@@ -979,116 +858,6 @@ function sort (arr) {
 }
 
 冒泡排序的时间复杂度是n2，就是两层循环嵌套, 原理就是两边循环都从0 开始这样才能将所有项排序正确
-
-## 数组中调换项的位置，并且不新增数组总结口诀
-要么第一个标识变量，一层for循环 就是给数组两个位置相互设值， 要么就是两层for循环，然后在第二层循环中将数组中两个位置相互设值
-
-
-2. 快速排序
-
-
-#### 数组
-
-数组相关问题的诀窍， 就是使用中间数组变量和中间索引变量 协助处理for循环完成问题
-
-1. 数组简单
-
-两数之和
-
-给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 的那 两个 整数，并返回它们的数组下标。
-
-你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
-
-你可以按任意顺序返回答案。
-
-var twoSum = function(nums, target) {
-    for(let i = 0; i < nums.length; i++) {
-        const item = nums[i];
-
-        const filterItem = target - item;
-        const filterIndex = nums.findIndex((item, index) => {
-            return item === filterItem && index !== i;
-        });
-
-        if(filterIndex !== -1) {
-            return [i, filterIndex];
-        }
-    }
-};
-
-
-2. 数组中等
-
-给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在数组中的开始位置和结束位置。
-
-如果数组中不存在目标值 target，返回 [-1, -1]。
-
-进阶：
-
-你可以设计并实现时间复杂度为 O(log n) 的算法解决此问题吗？
- 
-const searchRange = function(nums, target) {
-    if (!nums.length) {
-        return [-1, -1];
-    }
-    const arr = [];
-    for(let i = 0; i < nums.length; i++) {
-        const item = nums[i];
-        if (item === target) {
-            arr.push(i);
-        }
-    }
-
-    if (!arr.length) {
-        return [-1, -1];
-    }
-
-    if(arr.length === 1) {
-        arr.push(arr[0]);
-        return arr;
-    }
-
-    if(arr.length > 1) {
-        return [arr[0], arr[arr.length - 1]];
-    }
-};
-
-3. JavaScript 把数组里的0放到后面
-
-// 直接把0push到最后，然后把原位置上的0删除了， 最简单粗暴的方法, 没有引入第二个数字
-function lastZero(arr) {
-    for(let i = 0; i < arr.length; i++) {
-        const item = arr[i];
-        if (item === 0 || item === '0') {
-            arr.splice(i, 1);
-            arr.push(0);
-        }
-    }
-
-    return arr;
-}
-
-口诀： 使用一个变量缓存0项的索引， 然后当循环遇到非0项时，在才自增， 时间复杂度n
-
-// 用一个标识表示为0项的索引，0项的时候 tmp不自增，遇到非0项， 通过tmp取到0项和非0项换位置，然后tmp 自增，寻找下一个可能实0项, 当item为0 tmp不自增， 这是为了遇到不为0的item0，可以通过tmp取到为0的item进行替换, 直到最后一个非0项， 都被替换为0， 结束。
-
-function lastZero(arr) {
-    let tmp = 0
-    for(let i = 0; i < arr.length; i++) {
-        const item = arr[i];
-        if (item !== 0) {
-            if (arr[tmp] === 0) {
-                arr[tmp] = arr[i];
-                arr[i] = 0;
-            }
-
-            tmp++;
-        }
-    }
-
-    return arr;
-}
-
 
 #### 位运算   这是一个题型， 也是一种解法，就是使用位运算符解题但是这个位运算不好理解，可以用其他解法，比较简单好懂的就是哈希表或者叫字典， 就是使用一个对象存储， 或者使用一个map存储
 
@@ -1137,10 +906,8 @@ var swapNumbers = function(numbers) {
     return numbers;
 };
 
-#### 二分查找
-
-1. 简单
-这种是除了二分查找最快的方式
+### 二分查找
+1. 这种是除了二分查找最快的方式
 var search = function(nums, target) {
     let num = 0;
     for(let item of nums) {
@@ -1151,8 +918,7 @@ var search = function(nums, target) {
     return num;
 };
 
-2. 中等
-矩阵在js中就是每一个子数组都排过序的二维数组
+2. 矩阵在js中就是每一个子数组都排过序的二维数组
 
 // 查看矩阵的规则,根据规则判断做判断， 解决矩阵的问题
 var searchMatrix = function(matrix, target) {
@@ -1174,40 +940,119 @@ var searchMatrix = function(matrix, target) {
     return false;
 }
 
-### 队列
+### 动态规划
 
-中等
+动态规划，我理解就是一层循环， 然后通过变量存储之前的结果， 然后一次循环实现所有可能得到结果
 
-面试题 17.09. 第 k 个数
-有些数的素因子只有 3，5，7，请设计一个算法找出第 k 个数。注意，不是必须有这些素因子，而是必须不包含其他的素因子。例如，前几个数按顺序应该是 1，3，5，7，9，15，21, 就是找出和例子一样规律的数中的一个
+1. 面试题 16.17. 连续数列
+给定一个整数数组，找出总和最大的连续数列，并返回总和。
 
-队列就是数据js中， 这个题就是利用队列就是数组存值， 然后就是将3、5、7分别定义一个所以变量，然后队列默认第一项是1，因为规律就是第一项从1开始，然后就循环从1开始， 找到队列中对应的3，5，7索引的值，和3，5，7相乘得到的结果中最小的值，赋值给遍历的当前项为索引的队列值，然后在用这个值和队列中3，5，7，索引变量值乘3，5，7，比较是否相等， 相等的那个所以变量就是加1，按这个规律遍历，
-最后取到数组中的我们要找的个数减1项， 就是我们要找的值
+示例：
 
-var getKthMagicNumber = function(k) {
-let result = [];
-let p3 = 0;
-let p5=0;
-let p7=0;
-result[0]=1;
-for(let i= 1; i<k; i++) {
-   result[i]=Math.min(result[p3]*3, Math.min(result[p5]*5, result[p7]*7));
-   if(result[i] === result[p3]*3) {p3++};
-   if(result[i] === result[p5]*5) {p5++};
-   if(result[i] === result[p7]*7) {p7++};
-}
+输入： [-2,1,-3,4,-1,2,1,-5,4]
+输出： 6
+解释： 连续子数组 [4,-1,2,1] 的和最大，为 6。
 
-return result[k-1];
+// 第一两个变量，分别储存和，和最大值，然后用和加上下一项和和比， 大的，赋值给和， 然后在用这个和和最大值比， 大的赋值给最大值， 一个循环下来，得出结果
+var maxSubArray = function(nums) {
+   if (!nums) {
+       return null
+   }
+
+   let max = nums[0];
+   let sum = nums[0];
+
+   for(let i = 1; i < nums.length; i++) {
+       sum = Math.max(sum + nums[i], nums[i])
+       max = Math.max(sum, max)
+   }
+
+   return max;
 };
 
 
-### 深度遍历和广度遍历
-#### 简单
+2. 面试题 01.05. 一次编辑
+字符串有三种编辑操作:插入一个字符、删除一个字符或者替换一个字符。 给定两个字符串，编写一个函数判定它们是否只需要一次(或者零次)编辑。
 
-6. 二叉树求和, 就是求二叉树中所有值的和,就是使用递归，规定好第一层的逻辑， 其他深层的left和right， 都是调用递归函数，按照相同的逻辑让他自己执行，然后在递归函数中使用一个变量缓存和的数据， 最后返回这个变量， 得到总和的值
+比较两个东西是否相等，那就把两个东西搞成一样标准的比较， 就可以了
+
+
+var oneEditAway = function (first, second) {
+    if (first == null && second == null) {
+        return false;
+    }
+
+    const diff = first.length - second.length;
+
+    if (Math.abs(diff) > 1) {
+        return false;
+    }
+
+    let farr = Array.from(first)
+    let sarr = Array.from(second)
+
+    const maxLenth = diff > 0 ? first.length : second.length;
+
+    for(let i = 0; i < maxLenth; i++) {
+        if (farr[i] !== sarr[i]) {
+            if (diff === 0) {
+                farr.splice(i, 1, sarr[i]);
+            } else if (diff > 0) {
+                sarr.splice(i, 0, farr[i]);
+            } else {
+                farr.splice(i, 0, sarr[i]);
+            }
+            break;
+        }
+    }
+
+    return farr.join('') === sarr.join('')
+};
+### 二叉树
+
+1. 二叉树的前中后序遍历, 命名是根据root节点的位置定义的
+llet arr = [];
+let prev = (node) => {
+    if (node === null) {
+        return;
+    }
+
+    arr.push(node.val);
+    prev(node.left);
+    prev(node.right);
+
+}
+
+// prev(tree)
+const center = (node) => {
+  if(node === null) {
+    return;
+  }
+
+  center(node.left);
+  arr.push(node.val);
+  center(node.right);
+}
+
+// center(tree)
+console.log(arr)
+
+const after = (node) => {
+  if(node === null) {
+    return
+  }
+
+  after(node.left);
+  
+  after(node.right);
+  arr.push(node.val);
+}
+
+
+2. 二叉树求和, 就是求二叉树中所有值的和,就是使用递归，规定好第一层的逻辑， 其他深层的left和right， 都是调用递归函数，按照相同的逻辑让他自己执行，然后在递归函数中使用一个变量缓存和的数据， 最后返回这个变量， 得到总和的值
 
 诀窍背诵： 二叉树的结构就是val， left， right
-```
+
 
 function treeSum(tree) {
 let sum = 0;
@@ -1319,8 +1164,7 @@ function treeSum(tree) {
 
 }
 
-```
-11. 获得二叉树的最小深度
+3. 获得二叉树的最小深度
 
 给定一个二叉树，找出其最小深度。
 
@@ -1356,7 +1200,7 @@ var minDepth = function(root) {
 };
 
 leecode 面试题 04.02. 最小高度树
-1. 给定一个有序整数数组，元素各不相同且按升序排列，编写一个算法，创建一棵高度最小的二叉搜索树。
+4. 给定一个有序整数数组，元素各不相同且按升序排列，编写一个算法，创建一棵高度最小的二叉搜索树。
 
 首先理解二叉搜索树是啥，而是所有搜索树就是左边永远比根节点小，右边永远比根结点大，包括子节点也是这个规则的二叉树, 这个搜索二叉树的原理就是，写好一个每次分一半的逻辑，然后递归操作，left和right
 
@@ -1385,8 +1229,7 @@ var sortedArrayToBST = function(nums) {
     }
 };
 
-#### 中等
-求和路径
+5. 求和路径
 给定一棵二叉树，其中每个节点都含有一个整数数值(该值或正或负)。设计一个算法，打印节点数值总和等于某个给定值的所有路径的数量。注意，路径不一定非得从二叉树的根节点或叶节点开始或结束，但是其方向必须向下(只能从父节点指向子节点方向)。
 
 这道题我没有理解，完全是背下来的，还需要理解
@@ -1423,7 +1266,7 @@ var pathSum = function(root, sum) {
 
 同一道题可以使用深度优先也可以使用广度优先解， 深度优先适合结果是纵向，用深度优先比较合适， 如果结果是横向的用广度优先合适
 
-广度遍历解的题
+6. 广度遍历解的题
 剑指 Offer 32 - II. 从上到下打印二叉树 II
 
 const levelOrder = (root) => {
@@ -1473,322 +1316,9 @@ const levelOrder = (root) => {
 
 看看用递归能不实现，就不会用深度遍历， 就直接用两层循环广度遍历，广度遍历的定义的几个数组也都是差不多的
 
+### 深度遍历和广度遍历
 
-### 动态规划
-
-动态规划，我理解就是一层循环， 然后通过变量存储之前的结果， 然后一次循环实现所有可能得到结果
-#### 简单题
-
-面试题 16.17. 连续数列
-给定一个整数数组，找出总和最大的连续数列，并返回总和。
-
-示例：
-
-输入： [-2,1,-3,4,-1,2,1,-5,4]
-输出： 6
-解释： 连续子数组 [4,-1,2,1] 的和最大，为 6。
-
-// 第一两个变量，分别储存和，和最大值，然后用和加上下一项和和比， 大的，赋值给和， 然后在用这个和和最大值比， 大的赋值给最大值， 一个循环下来，得出结果
-var maxSubArray = function(nums) {
-   if (!nums) {
-       return null
-   }
-
-   let max = nums[0];
-   let sum = nums[0];
-
-   for(let i = 1; i < nums.length; i++) {
-       sum = Math.max(sum + nums[i], nums[i])
-       max = Math.max(sum, max)
-   }
-
-   return max;
-};
-
-中等难度
-
-面试题 01.05. 一次编辑
-字符串有三种编辑操作:插入一个字符、删除一个字符或者替换一个字符。 给定两个字符串，编写一个函数判定它们是否只需要一次(或者零次)编辑。
-
-比较两个东西是否相等，那就把两个东西搞成一样标准的比较， 就可以了
-
-
-var oneEditAway = function (first, second) {
-    if (first == null && second == null) {
-        return false;
-    }
-
-    const diff = first.length - second.length;
-
-    if (Math.abs(diff) > 1) {
-        return false;
-    }
-
-    let farr = Array.from(first)
-    let sarr = Array.from(second)
-
-    const maxLenth = diff > 0 ? first.length : second.length;
-
-    for(let i = 0; i < maxLenth; i++) {
-        if (farr[i] !== sarr[i]) {
-            if (diff === 0) {
-                farr.splice(i, 1, sarr[i]);
-            } else if (diff > 0) {
-                sarr.splice(i, 0, farr[i]);
-            } else {
-                farr.splice(i, 0, sarr[i]);
-            }
-            break;
-        }
-    }
-
-    return farr.join('') === sarr.join('')
-};
-
-失败重连
-const resetConnect = (callback, delay, time) => {
-    return new Promise((resolve, reject) => {
-        const fn = () => {
-            Promise.resolve(callback()).then((data) => {
-                resolve(data);
-            }).catch((err) => {
-                if (delay) {
-                    setTimeout(fn, time);
-                } else {
-                   reject(err)
-                }
-                delay--;
-            });
-        }
-        fn();
-}
-
-const tree = {
-    val: 'a',
-    left: {
-        val: 'b',
-        left: {
-            val: 'd',
-            left: null,
-            right: null
-        },
-        right: {
-            val: 'e',
-            left: null,
-            right: null
-        }
-    },
-    right: {
-        val: 'c',
-        left: {
-            val: 'f',
-            left: null,
-            right: null
-        },
-        right: {
-            val: 'g',
-            left: null,
-            right: null
-        }
-    }
-}
-
-const string = (tree) => {
-    const stack = [];
-    const result = [];
-
-    stack.push(tree);
-
-    while(stack.length) {
-        const item = stack.pop();
-        const val = item.val;
-        const left = item.left;
-        const right = item.right;
-
-        result.push(val);
-
-        if (right) {
-            stack.push(right);
-        }
-
-        if (left) {
-            stack.push(left);
-        }
-    }
-
-    return result;
-}
-
-
-
-const string = (tree) => {
-    const list = [tree];
-    let count = 0;
-    const result = [];
-
-    const showtree = () => {
-        const item = list[count];
-        const val = item.val;
-        const left = item.left;
-        const right = item.right;
-        result.push(val);
-        if (left) {
-           list.push(left)
-        }
-        if (right) {
-           list.push(right)
-        }
-        count++;
-        if (count === list.length) {
-            return;
-        }
-        showtree();
-    }
-    showtree();
-
-    return result;
-}
-
-
-function tryConnection(fun, times, delay) {
-    return new Promise((resolve, reject) => {
-        function callback() {
-            Promise.resolve(fun()).then((data) => {
-                resolve(data);
-            }).catch((err) => {
-                if (times) {
-                    setTimeout(callback, delay);
-                    times--;
-                    return;
-                }
-                reject(err);
-            });
-        }
-        callback();
-    });
-}
-```
-
-### 代码实现
-
-1. function maxLength(s) {
-    let value = null;
-    let maxLength = 0
-    let set = new Set();
-    for(let i = 0; i < s.length; i++) {
-        if (set.size || set.has(s[i])) {
-            set.add(s[i]);
-            value = s[i];
-            maxLength = Math.max(maxLength, set.size);
-        } else {
-            set.clear();
-            set.add(s[i]);
-        }
-    }
-
-    return maxLength;
-}
-
-
-2. 实现数组的flat 方法
-
-递归+ concat + reduce
-
-3. 给定一个二叉树和一个给定值，要求找到和为给定值的路径
-
-4. 手写_instanceof
-
-5. 手写valueof和toString的面试题
-
-数值隐式转化调用valueof ，字符隐式转化调用toString
-
-6. 截流防抖
-截流 一定时间内只能执行一次 Date.now() ,闭包
-防抖 每次执行都取消上一次执行 setTimeout , 闭包
-
-7. bind、apply、call实现
-
-作为传入的this的方法执行的时候内部this就是传入的this
-
-8. 失败重连
-promise.catch的时候重复调用方法，有一个数，重连一次就--，到0的时候直接返回error结果， 最终就是返回一个promise
-
-9. promise.all promise.allSettled
-最终返回一个promise，内部第一个数组缓存结果， allSettled结果有特殊结构，{value: 11, status: ''}
-
-10. new 实现
-通过Object.create(fun.prototype)创建一个空对象，然后把fun作为空对象的方法调用，主意返回值，如果函数返回了函数或者对象直接就返回，如果没有返回，那就是直接返回之前创建的空对象
-
-11. 观察者模式实现
-
-添加、出发、删除
-
-add、delete、emit
-
-12. JavaScript 把数组里的0放到后面
-
-口诀： 使用一个变量缓存0项的索引， 然后当循环遇到非0项时，在才自增， 时间复杂度n
-
-// 用一个标识表示为0项的索引，0项的时候 tmp不自增，遇到非0项， 通过tmp取到0项和非0项换位置，然后tmp 自增，寻找下一个可能实0项, 当item为0 tmp不自增， 这是为了遇到不为0的item0，可以通过tmp取到为0的item进行替换, 直到最后一个非0项， 都被替换为0， 结束。
-
-function lastZero(arr) {
-    let tmp = 0
-    for(let i = 0; i < arr.length; i++) {
-        const item = arr[i];
-        if (item !== 0) {
-            if (arr[tmp] === 0) {
-                arr[tmp] = arr[i];
-                arr[i] = 0;
-            }
-
-            tmp++;
-        }
-    }
-
-    return arr;
-}
-
-
-### 二叉树
-
-1. 二叉树的前中后序遍历, 命名是根据root节点的位置定义的
-llet arr = [];
-let prev = (node) => {
-    if (node === null) {
-        return;
-    }
-
-    arr.push(node.val);
-    prev(node.left);
-    prev(node.right);
-
-}
-
-// prev(tree)
-const center = (node) => {
-  if(node === null) {
-    return;
-  }
-
-  center(node.left);
-  arr.push(node.val);
-  center(node.right);
-}
-
-// center(tree)
-console.log(arr)
-
-const after = (node) => {
-  if(node === null) {
-    return
-  }
-
-  after(node.left);
-  
-  after(node.right);
-  arr.push(node.val);
-}
-
-
+### 数组中调换项的位置，并且不新增数组总结口诀
+要么第一个标识变量，一层for循环 就是给数组两个位置相互设值， 要么就是两层for循环，然后在第二层循环中将数组中两个位置相互设值
 
 
