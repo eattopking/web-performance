@@ -41,7 +41,12 @@ function fib(n) {
 
 2. 实现数组的flat 方法
 
-递归+ concat + reduce
+递归+ concat + reduce + 递归
+function flat(arr, num) {
+   return num > 0 ? arr.reduce((result, current) => {
+      return result.concat(Array.isArray(current) ? flat(current, num - 1) : current)
+   }, []) : arr;
+ }
 
 3. 给定一个二叉树和一个给定值，要求找到和为给定值的路径
 
@@ -424,6 +429,28 @@ function lastZero(arr) {
     return arr;
 }
 
+// 双指针做法最好用
+function afterZero(arr) {
+  if (!arr.length) {
+    return;
+  }
+
+  let j = -1;
+
+  for(let i = 0; i < arr.length; i++) {
+    if (arr[i] === 0 && j < 0) {
+      j = i;
+    }
+
+    if (arr[i] !== 0 && j >= 0) {
+      const n = arr[i];
+      arr[i] = arr[j];
+      arr[j] = n;
+      j++;
+    }
+  }
+}
+
 ### 链表
 使用js 实现一个链表的数据结构，是这样的
 
@@ -666,26 +693,81 @@ var maxOperations = function(nums, k) {
 };
 
 ### 字符串
-// 滑窗算法
-1. function maxLength(s) {
-    let value = null;
-    let maxLength = 0
-    let set = new Set();
-    for(let i = 0; i < s.length; i++) {
-        if (set.size || set.has(s[i])) {
-            set.add(s[i]);
-            value = s[i];
-            maxLength = Math.max(maxLength, set.size);
-        } else {
-            set.clear();
-            set.add(s[i]);
-        }
-    }
 
-    return maxLength;
+1. 获取字符串中连续次数字段的字符和次数, 双指针j一直保持不动，在i和j对应的值不等的时候统计次数更新，在i === str.length - 1时还相等的也要判断是否要更新最大值, 找连续相同和不相投的字符串就是使用双指针，定义两个存储索引的变量就是两个指针，然后注意i === str.length - 1和是否需要i--情况就是字符串的本来遍历后退一个
+function getCountMax (str) {
+  let result = {
+    value: '',
+    count: 0
+  }
+
+  if (!str.length) {
+    return result;
+  }
+
+  let j = 0;
+  let max = 0;
+  for(let i = 0; i < str.length; i++) {
+    if (str[i] === str[j]) {
+      max++;
+      if (i === str.length - 1) {
+        if (max > result.count) {
+            result.value = str[j];
+            result.count = max;
+        }
+      }
+    } else {
+      if (max > result.count) {
+        result.value = str[j];
+        result.count = max;
+        j = i;
+        i--;
+        max = 0;
+      }
+    }
+  }
+
+  return result;
 }
 
-2. 有效字符串需满足：
+2. 获取字符串中连续次数字段的字符和次数
+
+function maxLength(s) {
+  let value = '';
+  let maxLength = 0;
+  let j = 0;
+  let set = new Set();
+  for(let i = 0; i < s.length; i++) {
+    if (!set.has(s[i])) {
+      set.add(s[i])
+
+      if (i === s.length - 1) {
+        if (set.size > maxLength) {
+          maxLength = set.size;
+          value = Array.from(set).join('');
+        }
+      }
+    } else {
+      if (set.size > maxLength) {
+        maxLength = set.size;
+        value = Array.from(set).join('');
+      }
+     
+      while(set.has(s[i])) {
+        set.delete(s[j]);
+        j++;
+      }
+      i--
+    }
+  }
+
+  return {
+    maxLength,
+    value
+  };
+}
+
+3. 有效字符串需满足：
 
 左括号必须用相同类型的右括号闭合。
 左括号必须以正确的顺序闭合。
@@ -739,7 +821,7 @@ function isTrueString(string) {
     return !stack.length;
 }
 
-3. 2进阶，给定一个只包含三种字符的字符串：（ ，） 和 * ，写一个函数来检验这个字符串是否为有效字符串。有效字符串具有如下规则
+4. 2进阶，给定一个只包含三种字符的字符串：（ ，） 和 * ，写一个函数来检验这个字符串是否为有效字符串。有效字符串具有如下规则
 
 有效的括号字符串
 给定一个只包含三种字符的字符串：（ ，） 和 *，写一个函数来检验这个字符串是否为有效字符串。有效字符串具有如下规则：
@@ -811,7 +893,7 @@ function isTrueString(string) {
     return true;
 }
 
-4. leecode 316. 去除重复字母 就是去除重复字母的同时，在将能排序的元素从小到大排序就是这个意思
+5. leecode 316. 去除重复字母 就是去除重复字母的同时，在将能排序的元素从小到大排序就是这个意思
 
 var removeDuplicateLetters = function(s) {
     let arr = [];
@@ -970,7 +1052,6 @@ var maxSubArray = function(nums) {
    return max;
 };
 
-
 2. 面试题 01.05. 一次编辑
 字符串有三种编辑操作:插入一个字符、删除一个字符或者替换一个字符。 给定两个字符串，编写一个函数判定它们是否只需要一次(或者零次)编辑。
 
@@ -1008,6 +1089,10 @@ var oneEditAway = function (first, second) {
 
     return farr.join('') === sarr.join('')
 };
+
+3. 青蛙跳台阶
+
+这个就是斐波那契数列
 ### 二叉树
 
 1. 二叉树的前中后序遍历, 命名是根据root节点的位置定义的
@@ -1317,8 +1402,70 @@ const levelOrder = (root) => {
 看看用递归能不实现，就不会用深度遍历， 就直接用两层循环广度遍历，广度遍历的定义的几个数组也都是差不多的
 
 ### 深度遍历和广度遍历
+// 广度优先遍历二叉树
+function breadth(tree) {
+  let queue = [];
+  queue.unshift(tree);
+  while(queue.length) {
+    const current = queue.pop();
+    if (current) {
+
+      if (current.left) {
+        queue.unshift(current.left);
+      }
+
+      if (current.right) {
+        queue.unshift(current.right);
+      }
+    }
+  }
+}
+
+// 深度遍历二叉树
+
+function deep(tree) {
+    if (tree) {
+      console.log(tree.val)
+      if (tree.left) {
+        deep(tree.left)
+      }
+
+      if (tree.right) {
+        deep(tree.right)
+      }
+    }
+}
 
 ### 数组中调换项的位置，并且不新增数组总结口诀
 要么第一个标识变量，一层for循环 就是给数组两个位置相互设值， 要么就是两层for循环，然后在第二层循环中将数组中两个位置相互设值
 
 
+### 双指针
+1. 斐波那契数列
+斐波那契数，指的是这样一个数列 0、1、1、2、3、5、8、13、21 ,求第n个返回啥
+// 双指针移动 实现
+function getSum(n) {
+  if (n <= 0) {
+    return 0
+  }
+
+  if (n === 1) {
+    return 1;
+  }
+  let num1 = 0;
+  let num2 = 1;
+  let result = 0;
+  for(let i = 2; i <= n; i++)  {
+    result = num1 + num2;
+    num1 = num2;
+    num2 = result;
+  }
+
+  return result;
+}
+
+// 动态规划实现
+
+### 算法方式
+
+双指针、双变量、单变量、哈希表、贪心、动态规划、二分、栈、队列、set
