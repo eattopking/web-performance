@@ -192,23 +192,45 @@ no-transform: 不转换请求资源
 css 和页面适配
 
 1. bfc
+块级格式化上下文，它就是一块渲染区域，
+在一个bfc中的元素，会出现边距重叠，解决方法是将一个元素放到另一个bfc中
+bfc计算高度时候会算上浮动元素的高度
+bfc元素不和浮动元素重叠
+创建bfc的方式 position absolute、fixed、overflow不为visible、display: flex
 2. 页面适配
+rem vh vw
+rem首先知道1rem等于什么， clientWidth、resize，视口
 3. width: 100%和 width: auto
 4. 定位有几种
+5种定位
 5. 盒子模型的理解
 6. link和@import的区别
+link是在html中加载css文件的，@import是在css文件中加载css文件的
+link会在浏览器加载页面的同步加载css文件、而@import会在页面加载完毕之后才加载css文件
+link的优先级大于@import
 7. 三栏布局
 8. 两栏布局
 9. 伪类和伪元素的区别
 10. 水平垂直居中
 11. 移动端1px问题
 12. 高性能css
+异步加载css link的media一开始设置为noexist， 然后加载完毕后设置为all，这样css加载不会影响页面渲染
+避免重排重绘， gpu
+避免calc
+使用class选择器
+利用继承 color， font-size
+避免使用@import下载css文件，因为这样css文件的下载会滞后不能并行下载
+
 
 js原生和es6复习
 1. 事件队列，宏任务微任务
+js的特性js是单线程
 2. 原型链理解
+实例查找属性的过程
 3. 作用域链理解
+查找变量的过程
 4. 箭头函数和普通函数的区别
+箭头函数没有原型对象
 5. js计算的精度问题 IEEE754标准来定义整数和浮点数，使用双精度存储，计算的以后转成二进制相加之后转成十进制就会多一点
 6. 作用域的种类和区别
 7. 闭包的概念
@@ -222,11 +244,17 @@ js原生和es6复习
 15. reflect 重写了一些操作对象的方法
 16. promise
 17. === 和 ==，object.is 区别
-18. dom事件相关自定义事件， new Event('eventName'), new CustomEvent('eventName',  {}) 
+18. dom事件相关自定义事件， const event = new Event('eventName'), const event = new CustomEvent('eventName',  {}) el.dispatchEvent(event)
 19. 如何判断数据类型
+typeof instanceof Object.prototype.toString.call() [object Array]
 20. valueOf和toString，js隐式转换
 21. requestAnimationFrame和 requestIdleCallback区别和使用这个还没看呢
-22. 
+
+每个屏幕都有固定刷新率，就是一秒绘制多少帧 60hz(1秒绘制60次，每帧绘制时间16ms)，也就有了每帧最多的绘制时间
+为了让页面流畅页面绘制一帧的最长时间是确定的，如果页面绘制完一帧所用时间小于最长时间，这个时候剩余的时间就会用来执行requestIdleCallback，这样做不会影响页面渲染，如果绘制一帧一直没有剩余时间，requestIdleCallback第二个参数绘有一个超时时间，超过这个时间没有被执行就是自动执行， 取消requestIdleCallback
+使用cancelIdleCallback(id)
+
+requestAnimationFrame 注册会在下一次重绘执行，注册的回调返回有一个参数，就是执行的时候当前的毫秒数时间，注册一次只能执行一次，下次重新还想执行那就要在回调中再次注册，cancelAnimationFrame(id)可以取消requestAnimationFrame的注册
 
 
 ts复习
