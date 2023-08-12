@@ -277,7 +277,26 @@ function lastZero(arr) {
     return arr;
 }
 
+
+
 13. 深拷贝
+
+14. promisify 
+
+function promisify (fn) {
+    return function(...rest) {
+        return new Promise((resolve, reject) => {
+            rest.push((error,data) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(data);
+                }
+            });
+            fn.apply(null, rest);
+        });
+    }
+}
 
 ### 队列
 
@@ -1022,6 +1041,44 @@ var searchMatrix = function(matrix, target) {
     return false;
 }
 
+数字在升序数组中出现的次数js解法(数组、二分)
+
+0 arr.length first + 1/2就是一半， 不够加一个接着二分够了，last设置为二分结果接着二分
+
+function getCount (arr, k) {
+  let first = 0;
+  let last = arr.length;
+
+  while(last > first) {
+    const mid = first + Math.floor((last - first) / 2);
+    if (arr[mid] < k) {
+      first = mid + 1;
+    } else {
+      last = mid;
+    }
+  }
+
+  let left = first;
+
+  first = 0;
+  last = arr.length;
+
+  while(last > first) {
+    const mid = first + Math.floor((last - first) / 2);
+    if (arr[mid] > k) {
+      last = mid;
+    } else {
+      first = mid + 1;
+    }
+  }
+
+  let right = last;
+
+  return right - left;
+}
+
+console.log(getCount([1,2,3,3,4,5,6],3))
+
 ### 动态规划
 
 动态规划，我理解就是一层循环， 然后通过变量存储之前的结果， 然后一次循环实现所有可能得到结果
@@ -1436,6 +1493,67 @@ function deep(tree) {
     }
 }
 
+
+二叉树路径求和1、2、3
+1. 给你二叉树的根节点 root 和一个表示目标和的整数 targetSum 。判断该树中是否存在 根节点到叶子节点 的路径，这条路径上所有节点值相加等于目标和 targetSum 。如果存在，返回 true ；否则，返回 false。
+
+var hasPathSum = function(root, targetSum) {
+  if (!root) {
+      return false;
+  }
+
+  if (root.left === null && root.right === null) {
+      return root.val === targetSum;
+  }
+
+  return hasPathSum(root.left, targetSum - root.val) || hasPathSum(root.right, targetSum - root.val);
+};
+
+2. 给你二叉树的根节点 root 和一个整数目标和 targetSum ，找出所有 从根节点到叶子节点 路径总和等于给定目标和的路径。
+
+var pathSum = function(root, targetSum) {
+    const result = [];
+    let currentSum = 0;
+    const getPath = (root, sum, arr, currentSum, result) => {
+        arr.push(root.val);
+        currentSum += root.val;
+        if (root.left === null && root.right === null) {
+            if (sum === currentSum) {
+                result.push(arr);
+                return;
+            }
+        }
+
+        if (root.left) {
+             getPath(root.left, targetSum, [...arr], currentSum, result);
+        }
+
+        if (root.right) {
+             getPath(root.right, targetSum, [...arr], currentSum, result);
+        }
+    }
+
+    if (root) {
+        getPath(root, targetSum, [], currentSum, result);
+    }
+    return result;
+};
+
+3. 给定一个二叉树的根节点 root ，和一个整数 targetSum ，求该二叉树里节点值之和等于 targetSum 的 路径 的数目。
+var pathSum = function(root, targetSum) {
+    if (!root) {
+        return 0;
+    }
+    function dfs(root, sum) {
+        if (!root) {
+            return 0;
+        }
+        sum -= root.val;
+        return (sum === 0 ? 1 : 0) + dfs(root.left, sum) + dfs(root.right, sum);
+    }
+
+    return pathSum(root.left, targetSum) + pathSum(root.right, targetSum) + dfs(root, targetSum);
+};
 ### 数组中调换项的位置，并且不新增数组总结口诀
 要么第一个标识变量，一层for循环 就是给数组两个位置相互设值， 要么就是两层for循环，然后在第二层循环中将数组中两个位置相互设值
 

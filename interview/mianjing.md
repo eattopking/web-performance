@@ -259,24 +259,46 @@ requestAnimationFrame 注册会在下一次重绘执行，注册的回调返回�
 
 ts复习
 1. 数据类型
+null undefiend number string boolean never any enum function array object 元祖 unknown void
 2. ts的优点
+强类型 ts是js的超级，它有跟多的类型，可以更好的类型约束，让代码更加严谨
+ts让代码的可读性更强
 3. implements 和extends区别
+一个用之前的可以直接用，一个用之前的需要实现
 4. type和interface区别
 5. pick和omit区别
 6. 多态的意思
+重载
+覆盖
 
 react 复习
 
-1. react 更新三种方式
+1. react 更新四种方式
 
-state、props、context
+state、props、context， useReducer
 
 2. 如何优化组件的多次刷新
+
+class组件
+
+pureComponent
+shouldComponentUpdate
+
+函数组件
+memo
+
+使用全局数据时，哪里需要用就在哪里获取，避免上层组件更新
+
+在这个原则下做好组件拆分，便于实现如上优化
+
+通过react dev tools观测组件刷新
 
 因为 react 是单向数据流的所以，如果从父组件向下传递数据，就会导致所有子节点都更新，
 所以我们在哪里用这个数据的时候就在那里引用，这样就保证只有对应的组件更新，
 
 所以我们在拆分组件的时候要根据更新的需要进行拆分
+
+
 
 3. fiber 架构理解
 
@@ -284,22 +306,66 @@ state、props、context
 执行时间过长的时候可能会导致页面卡顿，react16 之前的版本，react 的 vdom 是树形结构，所以当触发出发更新的时候会进行递归操作，如果递归的层级过深，导致 js 执行时间过长，就会影响页面渲染导致页面出现卡顿，
 为了解决这个问题，react16 之后就提出了 fiber 架构，主要就是原来树形结构的 vdom，改为链表结构，在更新的时候时候循环替换取代递归，然后还有时间片和任务优先级的概念，同步任务的优先级会高于异步任务，例如 input 框输入内容，这就是同步任务，同步任务不能被中断，如果是异步任务会进行异步任务调度，每个异步任务有个过期时间，过期时间越小的一步任务优先级越高，时间片就是在浏览器执行完同步任务之后，没有消耗完一帧的时间，剩余的时间可以执行 react 异步任务调用中的任务，根据链表的结构特性如果没有执行完异步任务在剩余的时间中就会保存当前异步任务的，等下次浏览器空闲时继续执行
 
+fiber架构中有两个概念一个是任务优先级、scheduler 任务调度
+任务分为同步任务和异步分为，expirationTime为sync的表示同步任务理解执行，expirationTime为数值的是异步任务数值越小优先级越高
+
+
+一个fiber对象
+
+{
+return: 父节点
+
+  child: 第一个子节点
+
+  sibling: 右侧的兄弟节点
+
+  updateQueue: 存储更新队列,
+  expirationTime: 当前组件上优先级最高的任务的过期时间, 当组件没有更新的时候, expirationTime为null
+}
+
+fiber 查找节点的规则就是， 先找到自己的第一个子节点，如果自己点还有子节点就接着往下找， 找到没有子节点的了就看有没有兄弟节点， 如果兄弟节点有子节点接着找兄弟节点的子节点， 如果没有子节点就看看有没有兄弟节点，有兄弟节点接着找兄弟节点， 没有兄弟节点直接返回父节点， 在父节点按照这个规则继续查找，一直找到fiberRoot
+
+react 如何实现的requestIdleCallback
+
+通过在requestAnimationFrame回调中触发window.postMessage事件, 将react处理的事件放到异步队列中, 等浏览器的一些渲染用户输入的同步任务处理完成之后,计算出时间片, 如果浏览器的操作已经超出了一帧的时间, 并且任务的过期时间还没有过这个时候, react的任务将在下一帧处理, 如果react任务的过期时间已经过了, 那就会直接处理react的任务, 这就是react 模拟requestIdleCallback的方式
+
 4. setState 执行的原理和什么时候是同步的
    内部执行了 setState 的函数, 会在 react 内部的 batchedUpdates 中被执行, batchedUpdates 函数中一开始会将全局变量 isBatchingUpdates(默认值是 false) 设置为 true, 不能进行同步更新和异步调度更新了, 只有在 try {} 中将包含 setState 的函数执行完毕后,才能在 finally{} 中将 isBatchingUpdates 设置为 false, 然后将 state 进行同步更新，
    因为 settimeout 和原生事件都属于异步, 所以会被加入异步队列, 在调用 setState 的时候回调不会被传入 batchdUpdates 中执行,
    所以不会在一开始将 isBatchingUpdates 设置为 true, 所有每次调用 setstate 都会触发同步更新, 还有就是 isBatchingUpdates 已经从 true 变为 false 了, 这个异步的回调中的 setState 才执行, 所以也是同步更新, isBatchingUpdates 就是控制 state 批量更新的全局变量
    http
+
+   react 中18之后都可以批量更新， 然后通过react-dom flushsync(() => {
+    setstate()
+   })
 5. react hooks的实现原理
 
 6. react生命周期和常用hooks
+getDerivedStateFromProps
+shoudComponentUpdate()
+render
+didmount
+getSnapshotBeforeUpdate f返回值作为参数传给didupdate
+didupdate
+componentWillUnmount()
+
 
 7. react的性能优化
+1. 主要就是react 组件刷新优化
+
 
 8. react服务端渲染
+同构
+注水脱水
+
+客户端使用hydrateRoot
+
+服务端使用renderToPipeableStream、renderToReadableStream、renderToString、 renderToStaticMarkup、renderToStaticNodeStream、
 
 9. react17和18的新功能
 
 10. react hooks原理，
+hooks存储是链表顺序存储
 useState原理
 fiberNode = {
    memorizedState: list,
@@ -307,8 +373,34 @@ fiberNode = {
    queue: 保存过度值
 }
 
-通过 Hooks 调用的顺序来与实际保存的数据结构来关联
-useEffect原理
+hooks的状态是在链表中顺序存储的，所以要保证hooks的顺序执行
+
+usestate 模拟实现
+let memoizedState = [];
+let cursor = 0;
+function useState(initialValue) {
+  // 初次调用时，传入的初始值作为 state，后续使用闭包中保存的 state
+  let state = memoizedState[cursor] ?? initialValue;
+  // 对游标进行闭包缓存，使得 setState 调用时，操作正确的对应状态
+  const _cursor = cursor;
+  const setState = (newValue) => (memoizedState[_cursor] = newValue);
+  // 游标自增，为接下来调用的 hook 使用时，引用 memoizedState 中的新位置
+  cursor += 1;
+  return [state, setState];
+}
+
+useEffect模拟实现
+function useEffect(cb, depArray) {
+  const oldDeps = memoizedState[cursor];
+  let hasChange = true;
+  if (oldDeps) {
+    // 对比传入的依赖数组与闭包中保存的旧依赖数组，采用浅比较算法
+    hasChange = depArray.some((dep, i) => !Object.is(dep, oldDeps[i]));
+  }
+  if (hasChange) cb();
+  memoizedState[cursor] = depArray;
+  cursor++;
+}
 
 以链表的形式挂载在 FiberNode.updateQueue
 
@@ -326,10 +418,36 @@ http 相关的问题
    请求头自动携带 cookie 字段
    cookie 限制字段
    cors 跨域携带 cookie
-   withCredentials，samesite
+   withCredentials，samesite（Strict、Lax、none）
 3. 请求类型、状态码，九种请求方式
-4. 三次挥手、四次握手和为什么是三次和四次
+head、options、get、post、delete、put、connect、patch、trace
+
+http 常见的状态码 200 响应成功并返回响应数据， 204 响应成功，没有返回响应数据， 206 响应成功， 分段响应数据， 会返回响应数据的大小，301 永久重定向 302 暂时重定向 304 协商缓存状态码 404 没有发现请求的资源 500 服务端错误
+
+4. 三次握手、四次挥手和为什么是三次和四次
+三次握手ack报文
+客户端发起请求，并将自己的状态设置为待连接状态；
+服务端接收到请求，并返回响应，同时也将自己的状态设置为待连接状态；
+客户端接收到响应之后，发出信息告诉服务端自己已经接收到请求，同时将自己的状态设置为已连接；
+服务端接收到信息后，将自己的状态设置为已连接；
+客户端和服务端可以正式开始通信。
+四次挥手
+客户端发送请求，通知服务端将要断开连接，同时将自己的状态设置为待断开状态；
+服务器接收到请求之后，通知客户端，当前可能还有响应没有发送完；
+服务端发送完所有响应之后，通知客户端所有响应均已发送，可以断开连接，同时将自己状态设置为待断开状态；
+客户端接收到通知后，将自己的状态设置为断开状态，同时通知服务端自己已经断开；
+服务端接收到通知后，也将自己的状态设置为断开状态；
+服务端和客户端通信正式断开。
+
 5. 强缓存、协商缓存
+
+public：客户端和代理服务器都可以缓存，响应可以被中间任何一个节点缓存
+private：这个是 Cache-Control 的默认取值，只有客户端可以缓存，中间节点不允许缓存
+no-cache：表示不进行强缓存验证，而是用协商缓存来验证
+no-store：所有内容都不会被缓存，既不使用强缓存，也不使用协商缓存
+max-age：表示多久时间之后过期
+
+
 6. 浏览器获取缓存位置的优先级
 7. http2 和 http3 有什么特点
    二进制传输
@@ -340,12 +458,41 @@ http 相关的问题
    http3 使用 udp 协议更加的快速，不会考虑丢包，udp 主要在直播中使用
 
 8. 大文件传输方式
-9. csrf 和 xss
+1. 分段传输
+2. 通过类似于 node 中的 stream 流的形式传输
+3. 通过设置 content-type : multipart/form-data, 进行二进制数据传输, 然后在使用像 protocal buffer 对二进制进行压缩后在传输
 
-分段传输
-通过类似于 node 中的 stream 流的形式传输
-gzip 压缩后传输
-通过设置 content-type : multipart/form-data, 进行二进制数据传输, 然后在使用像 protocal buffer 对二进制进行压缩后在传输
+9. csrf 和 xss
+csrf 
+登录A网站， 然后再去b网站，b网站给app网站后端发请求利用a网站下的cookie信息，csrf 攻击过程
+
+1. 同源策略和设置samesite，
+2. 验证refer
+3. 使用token 替换 cookie
+
+xss
+
+存储型
+
+攻击者将恶意代码存储到目标服务器中
+然后用户访问目标网站的时候恶意代码拼接到html被返回并执行
+窃取用户信息发送到攻击者服务器
+
+反射型
+目标网站原来url上的参数会被后端获取到并拼到html中返回，攻击者将这个参数替换成恶意代码
+恶意代码返回到浏览器中执行，获取用户信息，发送给攻击者的客户端
+
+
+DOM型
+
+前端js代码中有直接获取url中的参数，并通过innerHtml、或者documen.write插入到html中这个时候，攻击者就可以构造一个url将参数换成恶意代码进行攻击
+
+就是
+
+1. 对于修改html的xss攻击，我们可以使用动态渲染的方式防范，还可以转义html
+
+2. 谨慎使用innerhtml, outerHTML、dangerouslySetInnerHTML，不插入有风险的数据，不直接获取url参数插到html
+
 
 浏览器
 
@@ -356,6 +503,8 @@ gzip 压缩后传输
 5. web worker
 6. 地址栏输入url的全过程
 
+dns、 tcp链接、请求资源、浏览器渲染过程、js执行
+
 小程序
 实现原理
 逻辑层、渲染层、jscore， 通过 jsbrige 利用 native 通信
@@ -364,18 +513,17 @@ gzip 压缩后传输
 
 优化
 
-首先使用微信开发者工具中 audits 中的性能分析工具进行分析，一开始的性能分析,
-一开始只有 50 多分，然后根据性能指标分析
+首先使用微信开发者工具中体验评分插件 audits 进行性能评分
+一开始只有 60 多分，然后根据性能指标分析
 
-1. 第一个问题是首屏的时间过长，要解决解决这个问题首先要知道首屏加载过程中都做了什么
+主要问题就是首屏的时间过长
 
-   下载小程序代码包
-   加载小程序代码包
-   渲染小程序的过程
+导致首屏时间过长主要有几个因素
 
-   所以针对下载过程，在上传代码的时候勾选压缩，针对下载阶段
-
-   针对下载和加载，进行分包加载，将首屏需要加载的包内容放在主包里面，
+1. 下载小程序的代码包时间过长
+ 所以针对下载过程，在上传代码的时候勾选压缩，针对下载阶段
+2. 加载小程序代码包时间过长
+针对下载和加载，进行分包加载，将首屏需要加载的包内容放在主包里面，
    其他的放在子包里面进行按需下载和加载，子包设置了预加载，会在加载首页后，对包进行预下载
    让首屏加载在 5s 以内
 
@@ -385,10 +533,11 @@ gzip 压缩后传输
    子包名称
    }
    ]
+3. 图片加载时间长
+将图片压缩放到 cdn
 
-渲染方面
-将图片都放到 cdn
-有的接口请求时间过长
+4. 有的接口请求时间过长
+优化接口
 
 前端页面的优化
 
@@ -413,17 +562,25 @@ webpack 构建优化
 首先我们根据 webpack 的构建过程考虑， 查询过程、解析转化过程、压缩过程
 所以从这几个过程着手优化
 
+webpack的构建主要分为两种场景开发环境和构建环境
+
+开发环境的优化主要是针对首次构建速度和热更新速度
+
+
 1. 优化之前先通过 speed-measure-webpack-plugin 确定优化之前的构建时间
 
 2. 然后针对查询过程 是指 alias 别名，来减小查询时间
 
 3. 针对转化过程设置 exclude 和 include 避免不必要的转化
 
-4. 针对于解析转化过程，通过 dllplugin 对 node_modules 中的包进行预编译，较少构建时间，使用webpack-bundle-analyzer分析webpack包体积
+4. 针对于解析转化过程，通过 dllplugin 对 node_modules 中的包进行预编译，较少构建时间，
 
 5. 并且通过 thread-loader 开启多线程较少构建时间
 
 6. 使用 cache-loader，减少热更新时间
+
+生产环境主要是想减小打包时间和包体积
+生产环境在上面优化的基础上使用webpack-bundle-analyzer分析webpack包体积，通过splitchunks分包
 
 7. 压缩使用 terser-webpack-plugin 并开启多线程较少压缩时间
 
@@ -435,7 +592,6 @@ webpack 构建优化
 
 3. conmonjs和esmodule的区别
 
-4. 
 
 ### 异常监控
 1. try {} catch {} 运行
