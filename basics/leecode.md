@@ -52,6 +52,22 @@ function flat(arr, num) {
 
 4. 手写_instanceof
 
+function _instanceof(left, right) {
+  let proto = left.__proto__;
+  const prototype = right.prototype;
+
+  while(true) {
+    if (proto === prototype) {
+      return true;
+    }
+
+    if (proto === null) {
+      return false;
+    }
+    proto = left.__proto__;
+  }
+}
+
 5. 手写valueof和toString的面试题
 
 数值隐式转化调用valueof ，字符隐式转化调用toString
@@ -296,6 +312,62 @@ function promisify (fn) {
             fn.apply(null, rest);
         });
     }
+}
+
+15. 写算法：
+a_b_ccc_D_EEE_f ==> aBCccdeEEF
+移除下划线
+第一个单词不变
+后面所有单词首字母大小写翻转
+
+const reverseFirstCode = (str) => {
+  const arr = str.split('_');
+  let result = arr[0];
+  for(let i = 1; i < arr.length; i++) {
+    let item = arr[i];
+    const first = item[0];
+    // 65 - 90大写 charCodeAt
+    // 90 - 122 小写
+    const isLower = first.charCodeAt(0) >= 65 && first.charCodeAt(0) <= 90;
+    if (!isLower) {
+      item = first.toUpperCase() + item.slice(1);
+    } else {
+      item = first.toLowerCase() + item.slice(1);
+    }
+    result += item;
+  }
+  return result;
+}
+
+16. 实现一个pipe函数 让所有函数都处理一个值并返回结果 使用reduce
+
+function pipe(...fns) {
+  return (params) => {
+    return fns.reduce((result, current) => {
+      return current(result);
+    }, params);
+  }
+}
+
+17. 反转字符串
+1. 利用字符串split方法 数组reverse方法， 数组join方法实现
+2. 从后往前遍历字符串，拼接字符返回
+3. 双指针 // 因为字符串不可变必须转成数组之后在反转
+const reverString = (str) => {
+  str = str.split('');
+  let left = 0;
+  let right = str.length - 1;
+
+  while(left < right) {
+    const leftItem = str[left];
+    const rightItem = str[right];
+    str[left] = rightItem;
+    str[right] = leftItem;
+    left++;
+    right--;
+  }
+
+  return str.join('');
 }
 
 ### 队列

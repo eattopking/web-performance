@@ -237,19 +237,20 @@ js的特性js是单线程
 8. this的理解
 9. js变量提升函数提升
 10. js数据类型
-11. es6中的weakmap和weakset的作用
-12. Generator和async函数的区别
-13. bigInt是用来表达大于2^53-1的数
-14. promise
-15. reflect 重写了一些操作对象的方法
-16. promise
+11. 字面量创建对象和new一个有什么区别
+   1. 不需要调用Object构造函数
+   2. 字面量创建对象更快，因为不需要查找Object构造函数
+12. es6中的weakmap和weakset的作用
+13. Generator和async函数的区别
+14. bigInt是用来表达大于2^53-1的数
+15. promise
+16. reflect 重写了一些操作对象的方法
 17. === 和 ==，object.is 区别
 18. dom事件相关自定义事件， const event = new Event('eventName'), const event = new CustomEvent('eventName',  {}) el.dispatchEvent(event)
 19. 如何判断数据类型
 typeof instanceof Object.prototype.toString.call() [object Array]
 20. valueOf和toString，js隐式转换
 21. requestAnimationFrame和 requestIdleCallback区别和使用这个还没看呢
-
 每个屏幕都有固定刷新率，就是一秒绘制多少帧 60hz(1秒绘制60次，每帧绘制时间16ms)，也就有了每帧最多的绘制时间
 为了让页面流畅页面绘制一帧的最长时间是确定的，如果页面绘制完一帧所用时间小于最长时间，这个时候剩余的时间就会用来执行requestIdleCallback，这样做不会影响页面渲染，如果绘制一帧一直没有剩余时间，requestIdleCallback第二个参数绘有一个超时时间，超过这个时间没有被执行就是自动执行， 取消requestIdleCallback
 使用cancelIdleCallback(id)
@@ -376,33 +377,63 @@ fiberNode = {
 hooks的状态是在链表中顺序存储的，所以要保证hooks的顺序执行
 
 usestate 模拟实现
-let memoizedState = [];
-let cursor = 0;
-function useState(initialValue) {
-  // 初次调用时，传入的初始值作为 state，后续使用闭包中保存的 state
-  let state = memoizedState[cursor] ?? initialValue;
-  // 对游标进行闭包缓存，使得 setState 调用时，操作正确的对应状态
-  const _cursor = cursor;
-  const setState = (newValue) => (memoizedState[_cursor] = newValue);
-  // 游标自增，为接下来调用的 hook 使用时，引用 memoizedState 中的新位置
-  cursor += 1;
-  return [state, setState];
+let memorizedState = [];
+let index = -1;
+
+const useState = (initValue) => {
+    const currentIndex = ++index;
+    if (memorizedState[currentIndex]) {
+      return memorizedState[currentIndex];
+    }
+    
+    const setState = (value) => {
+      memorizedState[currentIndex][0] = value;
+      index = -1;
+    }
+
+    let arr = [initValue, setState];
+    memorizedState[currentIndex] = arr;
+    return arr;
 }
 
 useEffect模拟实现
-function useEffect(cb, depArray) {
-  const oldDeps = memoizedState[cursor];
-  let hasChange = true;
-  if (oldDeps) {
-    // 对比传入的依赖数组与闭包中保存的旧依赖数组，采用浅比较算法
-    hasChange = depArray.some((dep, i) => !Object.is(dep, oldDeps[i]));
-  }
-  if (hasChange) cb();
-  memoizedState[cursor] = depArray;
-  cursor++;
+let _memoizedState = []; // 多个 hook 存放在这个数组
+let _idx = 0; // 当前 memoizedState 下标
+function useEffect(callback, deps) {
+    // 没有依赖项，则每次都执行 callback
+    if(!deps) {
+        callback();
+    } else {
+        // 先根据当前下标获取到存储在全局 hooks 列表中当前位置原本的依赖项
+        const memoizedDeps = _memoizedState[_idx];
+        if(deps.length === 0) {
+            // 通过当前 _memoizedState 下标位置是否有 deps 来判断是不是初次渲染
+            !memoizedDeps && callback();
+            // 同时也要更新全局 hooks 列表当前下标的依赖项的数据
+            _memoizedState[_idx] = deps;
+        } else {
+            // 如果是初次渲染就直接调用 callback
+            // 否则就再判断依赖项有没有更新
+            memoizedDeps && deps.every((dep, idx) => dep === memoizedDeps[idx]) || callback();
+            // 更新当前下标的依赖项的数据
+            _memoizedState[_idx] = deps;
+        }
+        _idx++;
+    }
 }
 
 以链表的形式挂载在 FiberNode.updateQueue
+
+11. react. angular. vue 区别和应用场景
+1. angular 比react和vue功能更全面，react和vue主要是在UI层面的
+
+2. angular 使用真实dom，react和vue使用虚拟dom
+
+3. angular和vue都有指令， react没有指令
+
+4. vue和angular、 react相比善守上手难度低一些
+
+5. 至于技术选型，需要结合团队情况，成员对框架的熟悉程度，框架的社区活跃情况选择
 
 rn复习
 
@@ -567,7 +598,7 @@ webpack的构建主要分为两种场景开发环境和构建环境
 开发环境的优化主要是针对首次构建速度和热更新速度
 
 
-1. 优化之前先通过 speed-measure-webpack-plugin 确定优化之前的构建时间
+1. 优化之前先通过 speed-measure-webpack-plugin 确定优化之前的构建时间, 30多秒
 
 2. 然后针对查询过程 是指 alias 别名，来减小查询时间
 
@@ -578,6 +609,7 @@ webpack的构建主要分为两种场景开发环境和构建环境
 5. 并且通过 thread-loader 开启多线程较少构建时间
 
 6. 使用 cache-loader，减少热更新时间
+优化完之后首次构建时间为5s多
 
 生产环境主要是想减小打包时间和包体积
 生产环境在上面优化的基础上使用webpack-bundle-analyzer分析webpack包体积，通过splitchunks分包
@@ -590,20 +622,89 @@ webpack的构建主要分为两种场景开发环境和构建环境
 
 2. webpack的工作流程
 
+初始化参数
+从配置文件和 Shell 语句中读取并合并参数，得出最终的配置参数。
+
+开始编译
+从上一步得到的参数初始化 Compiler 对象，加载所有配置的插件，执行对象的 run 方法开始执行编译。
+
+确定入口
+根据配置中的 entry 找出所有的入口文件。
+
+编译模块
+从入口文件出发，调用所有配置的 loader 对模块进行翻译，再找出该模块依赖的模块，这个步骤是递归执行的，直至所有入口依赖的模块文件都经过本步骤的处理。
+
+完成模块编译
+经过第 4 步使用 loader 翻译完所有模块后，得到了每个模块被翻译后的最终内容以及它们之间的依赖关系。
+
+输出资源
+根据入口和模块之间的依赖关系，组装成一个个包含多个模块的 chunk，再把每个 chunk 转换成一个单独的文件加入到输出列表，这一步是可以修改输出内容的最后机会。
+
+输出完成
+在确定好输出内容后，根据配置确定输出的路径和文件名，把文件内容写入到文件系统。
+
 3. conmonjs和esmodule的区别
 
 
 ### 异常监控
 1. try {} catch {} 运行
-2. object.onerror 和 img.onerror
+2. promise.catch
+2. img.onerror script.onerror 和 window.onerror
 3. sentry 异常上报
 
 
 做过的比较印象深刻的项目
 
+一个是对有道云笔记桌面端的搜索功能重构，因为云笔记要支持离线搜索， 所以整个的搜索功能都由前端来实现的本地搜索
+
+在没有进行重构之前，主要存在两点问题，一个是搜索速度慢，还有一个是搜索到的笔记不全
+
+然后我先对这两个问题的原因进行了分析
+1. 搜索速度慢的问题是由于之前搜索的实现是通过将本地sqlite数据中的笔记全部获取到，然后再通过filter筛选返回结果，这样做在笔记量大时候就非常慢，导致搜索速度慢，一开始测试2000条笔记搜索时间大概为20s
+
+2. 还有笔记时搜索不全的问题，是因为笔记搜索是在每篇笔记的摘要中搜索关键字，而不是在整篇笔记中搜索关键，所以当关键字不在摘要中时，那篇笔记就不能被搜到
+
+确认了问题原因，我就确定了解决问题的方向
+
+首先就要通过在内存中循环查找关键词太慢，我应该改成在数据库中直接查找关键词获取笔记
+
+然后我做了一些调研
+1. 搜索我首先elasticSearch，这是我们后端最常用的搜索引擎
+
+优点：存取性能高, 搜索快速, 提供分词存储
+
+需要部署服务, 不能打包到安装包中, 无法集成在 electron 中
+
+现有问题: 没有实现全内容搜索, 搜索功能不完全, 需要补全功能,
+
+2. search-index 结合 nodejieba 分词实现全文搜索
+nodejieba 分词, 目前发现最好的中文分词
+search-index 倒排索引数据库, 底层依赖的数据库是 levelDB
+优点: 实现了分词存储和索引
+缺点: 和当前存储方式不统一, 当前存储是 sqlite
+
+3. 使用https://github.com/wangfenjin/simple
+node sqlite3 结合 fts5 插件。实现分词和倒排索引
+
+写demo性能也是很好
+
+所以最后选择 sqlite3 + fts5 + simple 实现全文搜索
+
+针对搜索不全的问题，将每篇笔记的全部内容存到数据库中，从每篇笔记的全部内容中搜索关键字
+
+2000 条笔记,优化之后是700ms左右
+
+问题： 
+
+1. sqlite 中的批量插入有条数限制, 上限是 999 条, 一次插入超过这么多条, 会报错 too many sql variables
+
+2. simple插件 只提供了windows和mac x64的版本，没有提供arm64版本，所以我做了向下加兼容并且给我提了一个
+
+
+
 ### 建站项目总结
 
-1. 由于我们项目比较紧急所以选择现有的页面编辑器，h5-Dooring，craft、tmagic-editor，都不是很适合，最后发现了一个 ant landing，他的交互还有整体代码的书写都很好，所以最后选择了这个， 也进行了 ts 和 hooks 的改造，redux 进行全局数据管理
+1. 由于我们项目比较紧急所以选择现有的页面编辑器，h5-Dooring、tmagic-editor，都不是很适合，最后发现了一个 ant landing，他的交互还有整体代码的书写都很好，所以最后选择了这个， 但是由于项目比较老了，所以我对它进行了 ts 和 hooks 的改造，redux 进行全局数据管理
 2. 首先在外贸通中有一个入口，然后会有一个页面列表，根据不同的页面进入到对应的编辑页面
 3. 建站这个项目是一个 menorepo 的项目，分为编辑器、模块组件库、首页项目，是通过 pnpm 构建的 menorepo，通过 pnpm 的 workspace 协议实现的模块组件库在编辑器中和首页中的应用，组件库的 package.json 中的 main 可以被 conmon.js 和 esmodule 引用
 4. 最后页面编辑器是产生一个 json 数据，模块按照顺序放在数组中，然后 config 中有根据数组中的内容作为 key 的配置，
