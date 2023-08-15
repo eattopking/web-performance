@@ -370,6 +370,69 @@ const reverString = (str) => {
   return str.join('');
 }
 
+18. getVal实现
+// console.log(getValue1({a: {c: {d: [1]}}}, 'a.c.d[0]'))
+
+const getValue = (obj, path) => {
+  const paths = path.split('.');
+  const key = paths.shift();
+  let result = '';
+
+  const _getValue = (val, paths) => {
+    if (paths.length > 0 && val !== null && val !== undefined) {
+      result = getValue1(val, paths.join('.'));
+    }
+  }
+
+  const reg1 = /^\[\d+\]$/;
+  const reg2 = /^[a-zA-Z]+$/;
+  const reg3 = /^([a-zA-Z]+)(\[\d+\])$/;
+
+  if (reg1.test(key)) {
+    const index = key.slice(1, key.length - 1);
+    const value = obj[index];
+    result = value;
+    _getValue(value, paths);
+  } else if(reg2.test(key)) {
+    const value = obj[key];
+    result = value;
+    _getValue(value, paths);
+  } else if(reg3.test(key)) {
+    const { $1, $2 } = RegExp;
+    const prevValue = obj[$1];
+    if (prevValue) {
+      const index = $2.slice(1, $2.length - 1);
+      const value = prevValue[index];
+      result = value;
+      _getValue(value, paths);
+    }
+  }
+  return result;
+};
+
+19. 并发任务函数
+
+const asyncPool = async (limit, array, callback) => {
+  let result = [];
+  const working = [];
+
+  for(let item of array) {
+    const p = Promise.resolve(callback(item));
+    result.push(p);
+
+    if (array.length >= limit) {
+      const w = p.then(() => working.splice(working.indexOf(w), 1));
+      working.push(w);
+
+      if (working.length >= limit) {
+        await Promise.race(working);
+      }
+    }
+  }
+
+  return Promise.all(result);
+}
+
 ### 队列
 
 中等
