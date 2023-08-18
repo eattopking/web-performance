@@ -221,6 +221,28 @@ link的优先级大于@import
 利用继承 color， font-size
 避免使用@import下载css文件，因为这样css文件的下载会滞后不能并行下载
 
+13. CSS 内容，一个简单的 sticky footer 布局。大致内容就是当页面高度不够时，页脚固定在页面底部；当页面高度足够时，页脚被页面内容推送下去。
+<header>
+ <h1>Header</h1>
+</header>
+<main>
+  <p>Bacon Ipsum dolor sit amet...</p>
+</main>
+<footer>
+  <p>Footer</p>
+</footer>
+html {
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+main {
+  flex: 1;
+}
+
 
 js原生和es6复习
 1. 事件队列，宏任务微任务
@@ -256,6 +278,8 @@ typeof instanceof Object.prototype.toString.call() [object Array]
 使用cancelIdleCallback(id)
 
 requestAnimationFrame 注册会在下一次重绘执行，注册的回调返回有一个参数，就是执行的时候当前的毫秒数时间，注册一次只能执行一次，下次重新还想执行那就要在回调中再次注册，cancelAnimationFrame(id)可以取消requestAnimationFrame的注册
+
+22. 通过es5如何实现es6的类
 
 
 ts复习
@@ -433,11 +457,112 @@ function useEffect(callback, deps) {
 
 4. vue和angular、 react相比善守上手难度低一些
 
-5. 至于技术选型，需要结合团队情况，成员对框架的熟悉程度，框架的社区活跃情况选择
+5. 还有说的vue 适合小项目，react适合大项目，我理解主要是react开发自由度更高，更便于优化性能，还有react提倡更加细粒度的封装，可以提高组件复用
+
+6. 至于技术选型，需要结合团队情况，成员对框架的熟悉程度选择
+
+
 
 rn复习
+1. react Native 架构原理
+
+1.1. metro将react-native代码编译成jsbundle或者hermes bytecode，
+
+1.2 然后通过hermes js引擎执行 hermes bytecode， hermes也可以执行js，v8和jsc引擎只能执行js
+
+1.2.1 在打包的时候将js转换为 hermes byteccode，较小包整体体积， 可以缩短首屏启动时间
+
+1.2.2 hermes js引擎 是0.64版本之后在ios和安卓中都可以使用的，之前只可以在安卓中使用， 之前的ios使用的jsc 引擎，使用hermes引擎需要在原生代码里设置 enableHermes 为true
+
+1.2.3 0.7版本版本之后安卓和ios都默认使用hermes引擎
+
+2. rn应用启动流程
+
+1. 启动app
+
+2. 加载全部native模块
+
+3. 加载执行jsbundle
+
+4. 在逻辑层将虚拟dom传递给native渲染层后,将虚拟dom转换为shadow tree
+
+6. yoga将shadow tree中的flex布局转换为原生布局
+
+7. 渲染原生内容
+
+
+3. jsbrige 通信是如何实现的
+
+1. jsBridge 是通过native 代码实现的, 通过将全局对象作为媒介实现逻辑层和渲染层的通信, native端可以获取js的全局对象,实现了native端可以获取js全局对象上的方法进而可以操作js, 应用初始化的时候 bridge就将原生模块通过Json的形式传递给逻辑层, 然后挂载到js的全局对象上
+
+2. jsbridge是异步的
+
+3. 还可以通过jsi实现逻辑层和渲染层通信，是同步的，jsi通过c++实现
+
+4. rn新架构的变化有哪些
+
+1. 使用fabric渲染渲染层, 然后通过fabric将native原生模块导出为js，可以通过jsi被逻辑层引用到，渲染层也可以通过jsi获取逻辑层方法
+
+2. turbomodule 实现native模块的按需加载, 在初始化的时候只加载首页需要的native模块, 
+
+3. CodeGen 将ts转换为原生代码
+
+4. rn 做了哪些工程化改造
+
+异常上报 sentry
+自动化测试
+热更新
+
+5. rn 优化
+    使用fast-image加载图片和做图片懒加载
+
+6. rn 如何实现热更新
+
+首先全局安装code-push-cli
+
+然后注册code-push账号，分别添加安卓app和ios app，然后会生成对应app的测试环境和生产环境的key，将测试环境和生产环境的key分别添加到安卓和ios的代码中去
+
+然后在rn中安装react-native-code-push，在app.js中初始化
+
+然后把app包发布过一次之后
+
+然后就可以通过code-push release 指令更新rn代码了
+
+6. rn 和flutter有什么区别， 还有哪些混合开发方案
+
+1. rn 和 flutter用的语言不一样，rn是js而flutter是dart
+2. rn和flutter所用的引擎不同，rn是hermes引擎，flutter是自己的dart引擎
+3. Flutter 在自己的画布上渲染所有组件， React Native 将 JavaScript 组件转换为原生组件。
+4. React Native 和 Flutter 都是支持插件开发， React Native 开发的是 npm 插件，而 Flutter 开发的是 pub 插件。
+
+7. rn webview 原理
+1. webview加载的页面可以通过postMessage和rn通信
+2. webview 就是通过WebKit
 
 electron复习
+
+1. electron日志上报如何上报
+
+1. 本地日志
+2. sentry上传错误
+
+2. electron如何增量更新
+1. 使用electron-updater更新
+2. 在electron-updater更新的基础上，更新yaml文件，添加stagingPercentage字段，字段的取值是0-100
+
+3. electron如何打包
+
+node 复习
+1. pm2负载均衡
+
+pm2通过node cluster 集群模块
+
+
+2. node创建进程， 子进程
+创建子进程铜通过child_process 的fork方法可以创建
+
+进行进程操作可以使用process
+
 
 http 相关的问题
 
@@ -470,7 +595,26 @@ http 常见的状态码 200 响应成功并返回响应数据， 204 响应成�
 服务端接收到通知后，也将自己的状态设置为断开状态；
 服务端和客户端通信正式断开。
 
-5. 强缓存、协商缓存
+5. response body相关的header
+200 OK
+Access-Control-Allow-Origin: *
+Connection: Keep-Alive
+Content-Encoding: gzip
+Content-Type: text/html; charset=utf-8
+Date: Mon, 18 Jul 2016 16:06:00 GMT
+Etag: "c561c68d0ba92bbeb8b0f612a9199f722e3a621a"
+Keep-Alive: timeout=5, max=997
+Last-Modified: Mon, 18 Jul 2016 02:36:04 GMT
+Server: Apache
+Set-Cookie: mykey=myvalue; expires=Mon, 17-Jul-2017 16:06:00 GMT; Max-Age=31449600; Path=/; secure
+Transfer-Encoding: chunked
+Vary: Cookie, Accept-Encoding
+X-Backend-Server: developer2.webapp.scl3.mozilla.com
+X-Cache-Info: not cacheable; meta data too large
+X-kuma-revision: 1085259
+x-frame-options: DENY
+
+6. 强缓存、协商缓存
 
 public：客户端和代理服务器都可以缓存，响应可以被中间任何一个节点缓存
 private：这个是 Cache-Control 的默认取值，只有客户端可以缓存，中间节点不允许缓存
@@ -479,8 +623,8 @@ no-store：所有内容都不会被缓存，既不使用强缓存，也不使用
 max-age：表示多久时间之后过期
 
 
-6. 浏览器获取缓存位置的优先级
-7. http2 和 http3 有什么特点
+7. 浏览器获取缓存位置的优先级
+8. http2 和 http3 有什么特点
    二进制传输
    header 压缩
    多路复用
@@ -488,12 +632,12 @@ max-age：表示多久时间之后过期
 
    http3 使用 udp 协议更加的快速，不会考虑丢包，udp 主要在直播中使用
 
-8. 大文件传输方式
+9. 大文件传输方式
 1. 分段传输
 2. 通过类似于 node 中的 stream 流的形式传输
 3. 通过设置 content-type : multipart/form-data, 进行二进制数据传输, 然后在使用像 protocal buffer 对二进制进行压缩后在传输
 
-9. csrf 和 xss
+10. csrf 和 xss
 csrf 
 登录A网站， 然后再去b网站，b网站给app网站后端发请求利用a网站下的cookie信息，csrf 攻击过程
 
@@ -523,6 +667,7 @@ DOM型
 1. 对于修改html的xss攻击，我们可以使用动态渲染的方式防范，还可以转义html
 
 2. 谨慎使用innerhtml, outerHTML、dangerouslySetInnerHTML，不插入有风险的数据，不直接获取url参数插到html
+
 
 
 浏览器

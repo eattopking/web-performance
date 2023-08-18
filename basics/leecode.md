@@ -180,6 +180,8 @@ function wrongConnect(fun, times, delay) {
     });
 }
 
+
+
 promise.resolve 将函数执行结果统一转换一下， 写一个函数， 在下面执行， 然后在catch 中进行settimeout 递归调用定义的函数， 在catch 中判断次数， 然后没有次数了返回失败状态
 
 9. promise.all promise.allSettled
