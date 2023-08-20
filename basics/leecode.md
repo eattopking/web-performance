@@ -1630,6 +1630,48 @@ function deep(tree) {
     }
 }
 
+### 取到二叉树中的第K小值， 使用中序遍历
+function getMin (tree, k) {
+  let result = [];
+  function getValue(tree) {
+    if (!tree) {
+      return;
+    }
+  
+    getValue(tree.left);
+    result.push(tree.val)
+    getValue(tree.right);
+  }
+
+  getValue(tree);
+
+  return result[k - 1];
+}
+
+let tree = {
+  val: 5,
+  left: {
+    val: 3,
+    left: {
+      val: 2
+    },
+    right: {
+      val: 4
+    }
+  },
+  right: {
+    val: 7,
+    left: {
+      val: 6
+    },
+    right: {
+      val: 8
+    }
+  }
+}
+
+console.log(getMin(tree, 2))
+
 
 二叉树路径求和1、2、3
 1. 给你二叉树的根节点 root 和一个表示目标和的整数 targetSum 。判断该树中是否存在 根节点到叶子节点 的路径，这条路径上所有节点值相加等于目标和 targetSum 。如果存在，返回 true ；否则，返回 false。
