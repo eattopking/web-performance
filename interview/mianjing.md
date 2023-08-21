@@ -389,6 +389,14 @@ componentWillUnmount()
 
 9. react17和18的新功能
 
+createRoot hydateRoot
+
+useTransation 非紧急任务 紧急任务
+
+批量更新优化 flushSync
+
+react.lazy 支持服务端渲染
+
 10. react hooks原理，
 hooks存储是链表顺序存储
 useState原理
@@ -461,6 +469,12 @@ function useEffect(callback, deps) {
 
 6. 至于技术选型，需要结合团队情况，成员对框架的熟悉程度选择
 
+12. redux和mobx的区别
+ redux 是一个store， mobx是多个store
+
+ redux 状态不可变，mobx状态可变，可以直接修改
+
+ redux 是函数式思想，mobx是面向对象思想
 
 
 rn复习
@@ -541,16 +555,39 @@ rn复习
 
 electron复习
 
-1. electron日志上报如何上报
+1. electron是什么
 
-1. 本地日志
-2. sentry上传错误
+electron是内部封装了chromium和node，创建跨平台桌面端应用的框架
 
-2. electron如何增量更新
+2. 主进程和渲染进程的作用
+
+1. 主进程的程序的入口，用于创建窗口， 处理程序的生命周期等
+2. 渲染进程是由主进程创建的，用于渲染窗口页面，每个进程间是独立的
+3. 渲染进程和主进程间可以进行ipc通信
+
+3. electron日志上报如何上报
+
+1. 本地日志, 通过ensurefile和appendFile写入本地数据
+2. sentry在发生代码错误的时候上传错误
+
+4. electron如何增量更新
 1. 使用electron-updater更新
 2. 在electron-updater更新的基础上，更新yaml文件，添加stagingPercentage字段，字段的取值是0-100
 
-3. electron如何打包
+5. electron如何打包
+
+通过electron-builder进行打包
+
+6. electron 进程间如何通信
+渲染进程给主进程发消息通过ipcRenderer 发消息，主进程通过ipcMain监听
+
+主进程通过win.webContents.send()给渲染进程发消息，渲染进程通过ipcRenderer进行监听
+
+主进程通过ipcMain.emit发消息， 主进程通过ipcMain.on监听
+
+渲染进程通过ipcRenderer.sendTo(win2.webContents.id)发消息， 然后渲染进程通过ipcRenderer.on监听
+
+
 
 node 复习
 1. pm2负载均衡
@@ -668,6 +705,15 @@ DOM型
 
 2. 谨慎使用innerhtml, outerHTML、dangerouslySetInnerHTML，不插入有风险的数据，不直接获取url参数插到html
 
+11. https 建立连接的过程
+
+tcp三次握手 + 建立TLS连接（建立连接的时候时候非对称加密）完成连接，连接建立之后传输数据使用对称加密
+
+因为非对称加密算法复杂效率低，在建立连接之后使用对称加密既可以保证效率，又可以增加安全性
+
+对称加密就是加密和解密都用一个密钥， 非对称加密，加密用公钥，解密用私钥
+
+SSL是TLS的前身，TLS是SSL3.1
 
 
 浏览器
@@ -845,6 +891,25 @@ node sqlite3 结合 fts5 插件。实现分词和倒排索引
 
 2. simple插件 只提供了windows和mac x64的版本，没有提供arm64版本，所以我做了向下加兼容并且给我提了一个
 
+
+
+electron更新重构
+
+没重构之前的更新，更新非常的简陋就是手动触发下载一个安装包，然后需要用户手动安装替换之前的安装包
+
+所以我们需要提升用户体验，可以让用户自动更新，不需要手动安装
+
+我正对这个问题进行调用，发现electron中提供了更新方式，就是通过electron-updater实现更新
+
+找到了方案，通过electron-updater，可以对更新的各个阶段进行处理，然后给出不同的提示文案，下载中、下载完成等，
+
+最后重构了更新流程，实现了检查更新、安装后自动安装这个更新流程
+
+提高了用户体验
+
+并且增加了增量更新，添加stagingPercentage字段，字段的取值是0-100
+
+继续准备云笔记做过的事
 
 
 ### 建站项目总结
