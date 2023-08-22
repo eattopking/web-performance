@@ -295,9 +295,56 @@ function lastZero(arr) {
     return arr;
 }
 
-
-
 13. 深拷贝
+
+function deepClone(val) {
+  let isObj = (val) => Object.prototype.toString.call(val).slice(8, -1) === 'Object';
+  let isDate = (val) => Object.prototype.toString.call(val).slice(8, -1) === 'Date';
+  let isReg = (val) => Object.prototype.toString.call(val).slice(8, -1) === 'RegExp';
+
+  const _deepClone = (vlaue) => {
+    if (Array.isArray(vlaue)) {
+      const source = vlaue;
+  
+      return source.reduce((result, current) => {
+        return result.push(deepClone(current))
+      }, [])
+    }
+  
+    if (Array.isArray(vlaue)) {
+      const source = vlaue;
+  
+      return source.reduce((result, current) => {
+        result.push(deepClone(current))
+        return result;
+      }, [])
+    }
+  
+    if (isObj(vlaue)) {
+      const source = vlaue;
+  
+      return Object.keys(source).reduce((result, key) => {
+        result[key] = deepClone(source[key]);
+        return result;
+      }, {})
+    }
+
+    if(isDate(vlaue)) {
+      return new Date(vlaue.valueOf());
+    }
+
+    if(isReg(vlaue)) {
+      const source = vlaue;
+      const result = new RegExp(source.source, source.flags);
+      result.lastIndex = source.lastIndex;
+      return result;
+    }
+  
+    return vlaue;
+  }
+  
+  return _deepClone(val);
+}
 
 14. promisify 
 
