@@ -482,6 +482,29 @@ const asyncPool = async (limit, array, callback) => {
   return Promise.all(result);
 }
 
+20. 用JS实现数字千分位格式化
+
+function getStrNum(num) {
+    num = Math.floor(num);
+    const str = num.toString();
+    let res = '';
+    const length = str.length;
+    for(let i = length - 1; i >= 0; i--) {
+      const count = length - i;
+      if (count % 3 === 0) {
+        if (i === 0) {
+          res = str[i] + res;
+        } else {
+          res = ',' + str[i] + res;
+        }
+      } else {
+        res = str[i] + res;
+      }
+    }
+
+    return res;
+}
+
 ### 队列
 
 中等
