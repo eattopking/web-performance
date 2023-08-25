@@ -715,6 +715,12 @@ tcp三次握手 + 建立TLS连接（建立连接的时候时候非对称加密�
 
 SSL是TLS的前身，TLS是SSL3.1
 
+12. 当连接不安全外网时，可能会遇到页面注入广告信息等，该怎么解决
+1. 我们可以使用https协议
+2. 可以meta禁用iframe <meta http-equiv="X-Frame-Options" content="DENY"> deny 不允许网页被iframe嵌套， sameorigin 允许相同域名网页被iframe嵌套
+3. js禁用iframe if(top!=self)top.location=self.location;      
+4. 获取页面所以iframe标签然后移除
+
 
 浏览器
 
