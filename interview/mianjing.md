@@ -295,6 +295,7 @@ ts让代码的可读性更强
 6. 多态的意思
 重载
 覆盖
+7. ts工具类型的实现
 
 react 复习
 
@@ -490,6 +491,8 @@ rn复习
 
 1.2.3 0.7版本版本之后安卓和ios都默认使用hermes引擎
 
+rn分为渲染层和逻辑层，渲染层使用fabric作为渲染器，他的优点是性能更好，扩展性更强，使用hermes作为引擎，优点是hermes bytecode代码体积更小，hermes执行速度更快
+
 2. rn应用启动流程
 
 1. 启动app
@@ -515,7 +518,7 @@ rn复习
 
 4. rn新架构的变化有哪些
 
-1. 使用fabric渲染渲染层, 然后通过fabric将native原生模块导出为js，可以通过jsi被逻辑层引用到，渲染层也可以通过jsi获取逻辑层方法
+1. 使用fabric渲染渲染层, 可以通过jsi实现渲染层和逻辑层通信了
 
 2. turbomodule 实现native模块的按需加载, 在初始化的时候只加载首页需要的native模块, 
 
@@ -545,9 +548,12 @@ rn复习
 6. rn 和flutter有什么区别， 还有哪些混合开发方案
 
 1. rn 和 flutter用的语言不一样，rn是js而flutter是dart
-2. rn和flutter所用的引擎不同，rn是hermes引擎，flutter是自己的dart引擎
-3. Flutter 在自己的画布上渲染所有组件， React Native 将 JavaScript 组件转换为原生组件。
-4. React Native 和 Flutter 都是支持插件开发， React Native 开发的是 npm 插件，而 Flutter 开发的是 pub 插件。
+2. Flutter 在自己的画布上渲染所有组件， React Native 将 JavaScript 组件转换为原生组件。
+3. React Native 和 Flutter 都是支持插件开发， React Native 开发的是 npm 插件，而 Flutter 开发的是 pub 插件。
+
+rn和flutter相同点
+
+都是开发应用的跨平台框架
 
 7. rn webview 原理
 1. webview加载的页面可以通过postMessage和rn通信
@@ -587,7 +593,23 @@ electron是内部封装了chromium和node，创建跨平台桌面端应用的框
 
 渲染进程通过ipcRenderer.sendTo(win2.webContents.id)发消息， 然后渲染进程通过ipcRenderer.on监听
 
+7. electron 有什么优缺点
+优点
+1. 可以跨平台
+2. 开发上手简单，前端就可以开发
+3. 社区完善
 
+缺点
+1. 打包过大，因为需要把chromium和node的运行环境打包进去
+2. 包过大导致应用启动慢，因为包体积过大依赖的插件多导致启动慢
+
+8. electron 启动慢原因
+
+1. 初始化启动electron需要加载大量文件，文件过大导致启动慢，可以拆包避免启动加载不必要的文件
+
+2. 硬件限制，电脑硬件配置不高，导致启动慢，更换性能更好的硬件设备
+
+3. 包体积过大依赖的插件过多导致启动变慢，可以尝试移除不必要的插件
 
 node 复习
 1. pm2负载均衡
@@ -643,6 +665,9 @@ Etag: "c561c68d0ba92bbeb8b0f612a9199f722e3a621a"
 Keep-Alive: timeout=5, max=997
 Last-Modified: Mon, 18 Jul 2016 02:36:04 GMT
 Server: Apache
+// 设置多个cookie需要设置多个Set-Cookie，可以重复的
+Set-Cookie: mykey=myvalue; expires=Mon, 17-Jul-2017 16:06:00 GMT; Max-Age=31449600; Path=/; secure
+Set-Cookie: mykey=myvalue; expires=Mon, 17-Jul-2017 16:06:00 GMT; Max-Age=31449600; Path=/; secure
 Set-Cookie: mykey=myvalue; expires=Mon, 17-Jul-2017 16:06:00 GMT; Max-Age=31449600; Path=/; secure
 Transfer-Encoding: chunked
 Vary: Cookie, Accept-Encoding
@@ -651,6 +676,8 @@ X-Cache-Info: not cacheable; meta data too large
 X-kuma-revision: 1085259
 x-frame-options: DENY
 
+前端设置多个cookie是多次调用document.cookie, 调一次只能设置一个cookie
+
 6. 强缓存、协商缓存
 
 public：客户端和代理服务器都可以缓存，响应可以被中间任何一个节点缓存
@@ -658,21 +685,26 @@ private：这个是 Cache-Control 的默认取值，只有客户端可以缓存�
 no-cache：表示不进行强缓存验证，而是用协商缓存来验证
 no-store：所有内容都不会被缓存，既不使用强缓存，也不使用协商缓存
 max-age：表示多久时间之后过期
+no-transform: 告诉中间代理不要改变资源的格式
 
 
 7. 浏览器获取缓存位置的优先级
 8. http2 和 http3 有什么特点
    二进制传输
    header 压缩
-   多路复用
+   多路复用  多路复用因为网络带宽和服务器资源的限制容易导致请求超时， 还有队头阻塞问题，就是同一个TCP连接中的请求一个丢包等待了，其他请求都得等待，不能传输数据了
+
    服务端推送
 
-   http3 使用 udp 协议更加的快速，不会考虑丢包，udp 主要在直播中使用
+   http3 实现QUIC协议，依赖udp协议，使用0RTT 快速建立连接，并且QUIC也实现了丢包重发等，弥补了udp的缺点，
+   并且实现多路复用同一个连接的多个请求数据传输是独立的，一个请求丢包了等待重发了，其他请求正常传输。
+   
 
 9. 大文件传输方式
 1. 分段传输
-2. 通过类似于 node 中的 stream 流的形式传输
-3. 通过设置 content-type : multipart/form-data, 进行二进制数据传输, 然后在使用像 protocal buffer 对二进制进行压缩后在传输
+3. 通过设置 content-type : multipart/form-data, 进行二进制流传输, 然后在使用像 protocal buffer 对二进制进行压缩后在传输
+
+流都是二进制的
 
 10. csrf 和 xss
 csrf 
@@ -717,9 +749,12 @@ SSL是TLS的前身，TLS是SSL3.1
 
 12. 当连接不安全外网时，可能会遇到页面注入广告信息等，该怎么解决
 1. 我们可以使用https协议
-2. 可以meta禁用iframe <meta http-equiv="X-Frame-Options" content="DENY"> deny 不允许网页被iframe嵌套， sameorigin 允许相同域名网页被iframe嵌套
-3. js禁用iframe if(top!=self)top.location=self.location;      
-4. 获取页面所以iframe标签然后移除
+2. 可以meta禁用iframe <meta http-equiv="X-Frame-Options" content="DENY"> deny 不允许网页中的iframe加载页面， sameorigin 允许相同域名网页被iframe嵌套  
+3. 获取页面所以iframe标签然后移除
+
+
+禁止页面在iframe中加载
+js禁用iframe if(top!=self)top.location=self.location;    
 
 
 浏览器
@@ -727,8 +762,13 @@ SSL是TLS的前身，TLS是SSL3.1
 1. 浏览器渲染过程
 2. 重排重绘
 3. 垃圾回收机制
-4. 浏览器如何离线操作，service worker
+4. 浏览器如何离线操作，service worker， 使用navigator.serviceWorker 操作
 5. web worker
+
+通过let obj = new Worker(js文件路径)创建work线程实例， 通过obj.on('message',() => {}), 监听work进程消息， 通过obj.postMessage('1111')给worker进程发消息，worker进程通过全局对象self.postMessage给主进程发消息，通过self.on('message',() => {})接收主进程的消息
+
+work进程中获取不到window、document， 只能获取自己的全局对象 WorkerGlobalScope， WorkerGlobalScope 中包含window中的部分内容，  WorkerGlobalScope 中包含的对象self，self是work线程的顶级对象
+
 6. 地址栏输入url的全过程
 
 dns、 tcp链接、请求资源、浏览器渲染过程、js执行
@@ -785,9 +825,21 @@ dns、 tcp链接、请求资源、浏览器渲染过程、js执行
     代码注入优化：减少启动过程中同步调用、按需加载lazyCodeLoading: 'requiredComponents'
     页面渲染优化：提前首屏数据请求、数据预拉取、周期性更新、骨架屏、缓存请求数据、精简首屏数据
 
+### 小程序的登录流程
+ 用户登录的时候， 后端将根据微信login 返回的code+session_Key生成的token设置成无限期， 然后前端只判断checkSession是否过期， 在token存在情况下, 需要使用wx.getsetting获取， 是否有各种权限， 没有的话，主要我们弹出获取权限页面， 如果需要手动触发的话， 不要手动触发的话，直接弹出获取权限弹窗
+
 ### Taro 
 
-taro3是运行时框架， taro运行时代码用小程序api实现了bom、dom等，我们的写的react和vue代码正常编译为js代码，然后在运行时调用taro运行时的api实现不同框架都可以开发小程序，taro实现taro-react 是小程序版本的react-dom，就是将react根页面和taro用小程序api实现的dom实例绑定在一下，并处理react中的事件
+taro1、2都是编译时框架，将taro 代码编译成小程序代码，使用babel
+
+这里就会有问题，
+1. 不能100%支持jsx语法，之前taro只是穷举适配可能的jsx这个工作很繁重
+2. 不支持source-map，taro对源码进行一系列转换操作之后就不支持source-map了
+3. 由于编译只支持了react框架，支持其他框架增加了维护成本和工作量
+
+
+taro3是运行时框架， 在小程序端实现是一个模拟的浏览器环境，实现了bom、dom api等，实现dom是根据小程序中<template>可以引用其他的<template>的特性，把taro的dom树渲染成<template>相互引用的形式实现在小程序端渲染，
+我们的写的react和vue代码正常编译为js代码，然后在运行时调用taro运行时的api实现不同框架都可以开发小程序，taro实现taro-react 是小程序版本的react-dom，就是将react根页面和taro用小程序api实现的dom实例绑定在一下，并处理react中的事件
 
 前端页面的优化
 
@@ -863,7 +915,9 @@ webpack的构建主要分为两种场景开发环境和构建环境
 在确定好输出内容后，根据配置确定输出的路径和文件名，把文件内容写入到文件系统。
 
 3. conmonjs和esmodule的区别
-
+1. 语法不同
+2. conmonjs是运行时加载，esmodule是编译时加载
+3. conmonjs加载的是值的拷贝，内存地址变了，esmodule加载的是值的引用，内存地址相同
 
 ### 异常监控
 1. try {} catch {} 运行

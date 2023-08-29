@@ -98,13 +98,62 @@ console.log(isNumber(true)) //false
 
 1. in， 判断一个字段是否在对象中， 比如 let a = {c: 1111}, c in a 就是true
 
+### extends作用
+
+1. 用于接口继承
+
+2. 用于类型中条件判断， 判断一个接口是否继承自另一个接口，可以用于类型判断的三元表达式中，返回true或者false
+
+ interface Animal {
+    eat(): void
+  }
+  
+  interface Dog extends Animal {
+    bite(): void
+  }
+  
+  // A的类型为string
+  type A = Dog extends Animal ? string : number
+
+3. 用于条件判断，就说a是不是b的子类型
+
+type A1 = 'x' extends 'x' ? string : number; // string
+type A2 = 'x' | 'y' extends 'x' ? string : number; // number
+
+4. 联合类型作为泛型参数传递进去，这个时候判断a是否是b的子类型，作为条件判断返回类型，会有分配条件判断
+type P<T> = T extends 'x' ? string : number;
+type A3 = P<'x' | 'y'>  // A3的类型是 string | number;
+
+5. 作为参数的泛型参数的约束条件，是子类型是true传入参数就是正确，否则报错
+type Pcik<T, K extends keyof T> = {
+    [k in K]: T[k];
+}
+
+
+
 ### 工具类型，就是处理类型产生新的类型
 
 1. Partial<T>, 将传入的对象类型变成全部可选的类型并返回
+
+type Partial<T> = {
+    [k in keyof T]? : T[k]
+}
 2. Required<T>, 将传入的对象类型变成全部必选的类型并返回
+
+type Required<T> = {
+    [k in keyof T]: T[k]
+}
 3. Readonly<T>, 将传入的对象类型变成全部只读的类型并返回
+
+type Readonly<T> = {
+    readonly [k in keyof T]: T[k]
+}
 4. Record<K, T>, K（传入keyof 取出的 ｜拼接的联合类型），T是任意类型，返回结果是一个Key值都是T类型的对象类型
 将对象类型中的字段都替换成一个类型， 返回一个新的对象类型
+
+type Record<K, T> = {
+    [k in K]: T
+}
 
 参数是一个联合类型和一个任意类型
 
@@ -115,6 +164,10 @@ type Object = Record<Test, number>, Object最后的结果就是type Object = {
 }
 5. Pick<K, T>, 就是取出一个对象类型中一部分组成一个新的对象类型
 从对象类型中挑选类型
+
+type Pick<K, T extends keyof K> = {
+    [k in T]: K[k]
+}
 
 将K这个对象类型中通过T类型取出指定的对象类型， T必须是keyof K 中的一部分
 
@@ -131,10 +184,16 @@ type Test = Pick<Object, a | b>, 结果是type Test = {
 }
 
 6. Omit<T,K>, 提出对象类型中属性返回新类型
+
+type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
+
 提出类型中的字段返回新的对象类型
 type Test = Omit<{a: string; b: number}, 'a'>， 结果是type Test = {b: number}
 
 7. Exclude<T, U>, 剔除T联合类型中的U类型
+
+type Exclude<T, U> = T extends U ? never : T;
+
 从类型中剔除类型，并改变原类型
 数字
 type Test = 1 | 2 | 3;
@@ -154,6 +213,9 @@ type obj1 = { name: 1 }
 type objProps = Exclude<obj, obj1> // nerver
 
 8. Extract<T,K>, 在T类型中提取K类型中包含的类型返回
+
+type Extract<T,K> = T extends K ? T : never;
+
 从联合类型中提取出重合类型
 type Test = Extra<1 ｜ 2 ｜ 3, 1｜4>， 结果是type Test = 1；
 
@@ -161,7 +223,7 @@ type Test = Extra<1 ｜ 2 ｜ 3, 1｜4>， 结果是type Test = 1；
 去掉undefind和null类型
 type Test = Omit<1｜2｜null>， 结果是type Test = 1｜2;
 10. ReturnType<T>, 获取T函数类型的返回值类型
-type Props = ReturnType<() => string>，结果为type Props = string；
+type Props = ReturnType<() => string>，结果为type Props = string;
 type Props2 = ReturnType<any>; // any
 type Props3 = ReturnType<never>; // any
 
