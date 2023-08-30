@@ -48,6 +48,32 @@ function flat(arr, num) {
    }, []) : arr;
  }
 
+
+ flat 升级
+
+ // 编写一个程序将数组、对象扁平化并去重（值相同即为重复），最终得到一个升序的数组（不允许使用 Array.flat()）。
+// // 输入以下值
+var arr = [15, [1, new Number(10), 2], { a: 3, b: [4, 7, 8] }, [6, 7, 8, 9, [11, 12, [12, 13, [14]]]]]
+// // 返回下面的值
+// [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+
+
+function flat(arr) {
+  const isObj = (obj) => Object.prototype.toString.call(obj).slice(8, -1) === 'Object';
+  const _flat = (arr) => {
+    return arr.reduce((res, cur) => {
+      const list = Array.isArray(cur) ? flat(cur) : isObj(cur) ? flat(Object.values(cur)) : cur.valueOf();
+      return res.concat(list);
+    }, [])
+  }
+
+  let result = _flat(arr);
+
+  result = [...new Set(result)];
+
+  return result.sort((a, b) => a - b);
+}
+
 3. 给定一个二叉树和一个给定值，要求找到和为给定值的路径
 
 4. 手写_instanceof
