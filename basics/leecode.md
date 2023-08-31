@@ -333,14 +333,6 @@ function deepClone(val) {
       const source = vlaue;
   
       return source.reduce((result, current) => {
-        return result.push(deepClone(current))
-      }, [])
-    }
-  
-    if (Array.isArray(vlaue)) {
-      const source = vlaue;
-  
-      return source.reduce((result, current) => {
         result.push(deepClone(current))
         return result;
       }, [])
