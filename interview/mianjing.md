@@ -281,6 +281,27 @@ requestAnimationFrame 注册会在下一次重绘执行，注册的回调返回�
 
 22. 通过es5如何实现es6的类
 
+23. 如何实现一个iterator,可迭代，它和generator有什么关系
+只要是不是箭头函数，其他的函数当作对象的属性执行的时候其内部this都是指向这个对象，跟函数的作用无关（比如generator函数或是async 函数）
+
+generator 函数就是生成迭代器的
+
+generator的执行就是通过迭代的next函数调用触发的，每次next()触发generator函数都是在遇到yield或者return的时候停止并返回他们之后的运行结果，遇到return之后函数执行就是结束了，再次调用就不会往下执行了，遇到yield之后，再次调用next()还会继续往下执行，如果过后面没有return或者yield了就执行执行往并返回 {value: undefiend, done: true},结束函数的执行
+
+数据结构的迭代器属性，其实是一个迭代器生成函数，属性名称是Symbol.iterator(这个一特定的值可以比较的值，Symbol.iterator 是全等于 Symbol.iterator的)，所以我们可以使用generator实现数据结构的迭代器属性
+
+数据结构的迭代器属性就是用来做for ...of遍历的，for...of 取到迭代器属性然后生成迭代器实例，用这个实例进行遍历，而不是直接遍历数据结构
+
+yield* 就是将其他迭代器，或者调用其他数据结构的迭代器函数生成迭代器，然后将迭代器的执行过程中的yield合并到这个generater中一起执行
+
+generator的next函数的参数会作为上一个yield的返回值，可以在执行下面代码的时候用到，利用generator配合promise实现类似await的功能就是利用这个原理，返回promise，然后.then之后的结果在调用next的时候作为参数传下去这样yiled下面的代码就可以获取请求后的结果在继续执行了，就实现了和await类似的结果
+
+
+
+24. promise和async await的关系
+
+promise可以处理异步，async await是通过promise和generator实现的，根据generator延迟执行遇到yield会停止的特性，还有next的参数会作为上一个yield的返回值的特性实现的await效果
+
 
 ts复习
 1. 数据类型
@@ -477,6 +498,10 @@ function useEffect(callback, deps) {
 
  redux 是函数式思想，mobx是面向对象思想
 
+13. react异常展示展位组件
+
+创建ErrorBoundary组件 包裹正常组件，报错之后展示预设的占位组件， 通过getDerivedStateFromError监听子组件报错
+
 
 rn复习
 1. react Native 架构原理
@@ -558,6 +583,10 @@ rn和flutter相同点
 7. rn webview 原理
 1. webview加载的页面可以通过postMessage和rn通信
 2. webview 就是通过WebKit
+
+8. rn做过哪些构建优化
+
+9. rn做过哪些优化
 
 electron复习
 
@@ -862,6 +891,8 @@ taro和rn相同点
 
 
 前端页面的优化
+主要是做了一些首屏性能优化和一些非首屏优化
+
 
 1. 首先根据 lightHouse 进行性能分析，然后进行对应的性能优化
 
@@ -875,9 +906,13 @@ taro和rn相同点
 
 5. 请求开启 gzip 压缩
 
-6. 其他的非首屏优化有react性能优化，和performance记录之后的代码性能点优化
+6. DNS预解析
+link标签的rel属性设置dns-prefetch，提前获取域名对应的IP地址
 
+7. 使用缓存
+开启强缓存
 
+8. 其他的非首屏优化有react性能优化，和performance记录之后的代码性能点优化
 
 webpack 构建优化
 
@@ -906,6 +941,9 @@ webpack的构建主要分为两种场景开发环境和构建环境
 生产环境在上面优化的基础上使用webpack-bundle-analyzer分析webpack包体积，通过splitchunks分包
 
 7. 压缩使用 terser-webpack-plugin 并开启多线程较少压缩时间
+#### tree shaking为什么必须用esmodule
+
+因为esmodule的编译时加载，webpack在编译的时候就可以判断哪些模块没有被使用就可以shaking掉
 
 工程化模块化
 
@@ -949,8 +987,11 @@ webpack的构建主要分为两种场景开发环境和构建环境
 ### 异常监控
 1. try {} catch {} 运行
 2. promise.catch
-2. img.onerror script.onerror 和 window.onerror
-3. sentry 异常上报
+2. img.onerror script.onerror 和 window.onerror只能获取到代码错误，window.addEventLister('error')可以获取到请求加载错误和代码错误
+3. sentry 异常上报，sentry因为可以上传sourcemap，所以可以定位源码
+4. window.addEventListener("unhandledrejection", (event) => {
+  console.warn(`UNHANDLED PROMISE REJECTION: ${event.reason}`);
+}); 当promise的reject没有被catch处理的时候会触发
 
 
 做过的比较印象深刻的项目
@@ -1023,6 +1064,12 @@ electron更新重构
 
 ### 建站项目总结
 
+#### 为什么要做这个建站，想到达什么目的
+
+网易外贸通是一个sass系统，提供了一些功能，像发营销邮件、做数据整理分析、建站等
+
+建站功能是在外贸通中的一个功能，用户有快速建站的诉求，为了满足用户需求，增加外贸通的销售量，所以开发了建站功能
+
 1. 由于我们项目比较紧急所以选择现有的页面编辑器，h5-Dooring、tmagic-editor，都不是很适合，最后发现了一个 ant landing，他的交互还有整体代码的书写都很好，所以最后选择了这个， 但是由于项目比较老了，所以我对它进行了 ts 和 hooks 的改造，redux 进行全局数据管理
 2. 首先在外贸通中有一个入口，然后会有一个页面列表，根据不同的页面进入到对应的编辑页面
 3. 建站这个项目是一个 menorepo 的项目，分为编辑器、模块组件库、首页项目，是通过 pnpm 构建的 menorepo，通过 pnpm 的 workspace 协议实现的模块组件库在编辑器中和首页中的应用，组件库的 package.json 中的 main 可以被 conmon.js 和 esmodule 引用
@@ -1070,3 +1117,8 @@ ssr 首页实现
 ### 学习了什么有什么理解
 
 最近学了xstate
+
+
+#### 带人是如何带人的
+
+首先了解小伙伴的特点和经验，然后在分配任务的结合这些去分配，在工作中帮助它们解决建立好的习惯， 包括设计文档的编写共同讨论确定合理的开发方案，对需求的拆分，提高排期的准确率，带头养成分享的习惯，共同成长，营造良好的工作氛围，增强团队的凝聚力，增强团队的战斗力
