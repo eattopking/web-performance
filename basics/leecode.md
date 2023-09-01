@@ -523,6 +523,40 @@ function getStrNum(num) {
     return res;
 }
 
+21. 代理属性和对象、js隐式转换取值
+
+let obj = {};
+
+Object.defineProperty(obj, 'x', {
+  set: function(val) {
+    this.b = val;
+  },
+  get: function() {
+    return this.b++;
+  }
+})
+let c = obj;
+
+obj = new Proxy(obj, {
+  get: function(target, key) {
+   
+    if(key === 'x') {
+      return this.b++;
+    }
+  },
+  set: function(target, key, value) {
+    if(key === 'x') {
+      this.b = value;
+    }
+  }
+})
+obj.x = 0;
+obj.valueOf = function() {
+  this.x++
+}
+
+console.log(obj.x == 0 && obj.x == 1 && obj.x == 2)
+
 ### 队列
 
 中等
