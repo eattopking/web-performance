@@ -243,6 +243,22 @@ main {
   flex: 1;
 }
 
+14. transform为什么是不占cpu，而是占用的GPU
+
+首先cpu是单控制流单数据流的，Gpu是单控制流多数据流的
+
+cpu擅长处理复杂困难的计算，gpu擅长处理简单重复的计算， cpu就像一个大学生可以计算复杂的题，Gpu就像是一个班级的小学生可以计算大量的1+1的计算
+
+因为transform动画和opcity都属于是简单重复的计算，所以适合使用GPU计算，效率更高
+
+gup渲染需要创建一个新的图层，然后把元素移到新的图层上之后在操作，最后合并图层
+
+will-change 就是让浏览器提前为执行某些属性做准备， 比如transform就是会提前创建图层，然后直接叫GPU渲染了
+
+只有重复的简单的渲染浏览器默认通过GPU渲染的（像 transform、opacity、filter等），其他的还是使用cpu渲染的
+
+过度使用 will-change 将导致内存使用过多，并导致更复杂的渲染发生，因为浏览器试图为可能的更改做准备。这将导致更差的性能。
+
 
 js原生和es6复习
 1. 事件队列，宏任务微任务
@@ -301,6 +317,8 @@ generator的next函数的参数会作为上一个yield的返回值，可以在�
 24. promise和async await的关系
 
 promise可以处理异步，async await是通过promise和generator实现的，根据generator延迟执行遇到yield会停止的特性，还有next的参数会作为上一个yield的返回值的特性实现的await效果
+
+25. 使用promise 和generator实现 async await 
 
 
 ts复习
@@ -479,17 +497,13 @@ function useEffect(callback, deps) {
 以链表的形式挂载在 FiberNode.updateQueue
 
 11. react. angular. vue 区别和应用场景
-1. angular 比react和vue功能更全面，react和vue主要是在UI层面的
+1. angular 比react和vue功能更全面，包含UI、路由、请求等，react和vue就是在UI层面的
 
 2. angular 使用真实dom，react和vue使用虚拟dom
 
 3. angular和vue都有指令， react没有指令
 
-4. vue和angular、 react相比善守上手难度低一些
-
-5. 还有说的vue 适合小项目，react适合大项目，我理解主要是react开发自由度更高，更便于优化性能，还有react提倡更加细粒度的封装，可以提高组件复用
-
-6. 至于技术选型，需要结合团队情况，成员对框架的熟悉程度选择
+4. vue和react都可以实现相同的功能，区别在于数据传递 react单向数据流，vue是双向绑定、模版渲染react是使用jsx、vue是使用模版（vue3也支持jsx了）
 
 12. redux和mobx的区别
  redux 是一个store， mobx是多个store
@@ -502,21 +516,86 @@ function useEffect(callback, deps) {
 
 创建ErrorBoundary组件 包裹正常组件，报错之后展示预设的占位组件， 通过getDerivedStateFromError监听子组件报错
 
+14. 函数式组件和类组件的区别
 
-rn复习
+函数式组件是函数式编程思想，主打的是immutable（不可变的）、没有副作用、引用透明等特点；而类组件是面向对象编程思想，它主打的是继承、生命周期等核心概念。
+
+#### vue复习
+
+1. vue2的生命周期 和react生命周期有何不同
+beforecreate（初始化事件和生命周期函数之后执行）、createed（data、props、methods创建好后执行，但是模版结构还没有创建好），beforemount（挂载之前，模版结构创建完了但是没有挂载）、mounted（挂载完毕，vue实例初始化完毕）、beforeUpdate（页面更新之前之前, 数据和虚拟dom更新了页面还没更新）、Updatetd（页面更新之后）、beforeDestroy（组件卸载之前）、destroyed（组件卸载之后）
+
+vue2的生命周期比react多了两个创建之前和创建之后
+
+2. vue的虚拟dom和react的有何不同， vue diff和react有何不同
+
+react虚拟dom diff算法是从顶向下全部diff，然后创建一个新的虚拟dom和旧的虚拟dom比较，找到变化，只更新变化的dom
+
+vue会跟踪每个组件的依赖关系，局部更新组件树，而不是重新diff整个组件树
+
+3. vue3 完全组合式生命周期，在设置成<script setup>之后使用的
+
+onBeforeMount、onMounted、onBeforeUpdate、onUpdated（父组件更新后，它的这个生命周期会在子组件的这个生命周期执行后执行）、onBeforeUnmount、onUnmounted、onErrorCaptured（子组件报错夫组件执行这个生命周期）
+
+4. vue组合式api和选项式api区别
+
+选择式api就是vue2的老语法，data，methods、created这种
+
+组合式api是vue3提供的新写法，使用setup 配合 ref，实现了vue2中的data、methods的功能，还可以对methods中的逻辑提取成多个小函数在引用到setup中，方便复用，类似react的自定义hooks
+
+5. vue2和vue3双向绑定的实现，双向绑定就是用的响应式，它们是一个原理
+
+vue2使用Object.defineProperty实现双向绑定, 
+
+let obj = {x: 1}
+Object.defineProperty(obj, 'x', {
+    set: function(value) {
+        this.value = value
+    },
+    get: function() {
+        return this.value;
+    }
+})
+
+vue3通过Proxy和Reflect实现双向绑定
+
+let obj = {x: 1}
+
+new Proxy(obj, { 
+    set: function(target, key ,value) {
+        Reflect.set(target, key, vlaue);
+    },
+    get: function(target, key) {
+        return Reflect.get(target, key);
+    },
+    deleteProperty: function(target, key) {
+        Reflect.deleteProperty(target, key)
+    }
+})
+
+6. vue的响应式是什么意思
+
+vue的响应式指的就是通过this.value,更新data中的数据或者setup返回的数据会导致dom重新渲染，并且data中或者通过ref定义的响应式对象的值也跟着更新了
+
+7. vue jsx使用
+
+vue2中使用jsx，是在render函数里面使用，render函数和data是并列的，vue3需要被difineComponent包裹之后，然后在setup中retuen jsx，把setup当render
+
+
+#### rn复习
 1. react Native 架构原理
 
-1.1. metro将react-native代码编译成jsbundle或者hermes bytecode，
+1.1. 开启hermes引擎之后，metro 编译react-native代码的时候hermes会有个预编译把metro编译出来的jsbundle转换成hermes bytecode，（原来的js引擎搜边转换边执行的，js引擎最后都是执行的字节码，hermes也可以边转换边执行，但是速度要比v8和jscode慢，以为hermes移除了JIT编译器，就是去掉了边转换边执行的优化，这样带来的好处就是减小了hermes引擎的体积，优化了内存大小，还有JIT在启动时需要预热，影响app启动时间， hermes有针对移动端的垃圾回收策略）
 
-1.2 然后通过hermes js引擎执行 hermes bytecode， hermes也可以执行js，v8和jsc引擎只能执行js
+1.2 然后通过hermes js引擎执行，hermes bytecode
 
-1.2.1 在打包的时候将js转换为 hermes byteccode，较小包整体体积， 可以缩短首屏启动时间
+1.2.1 hermes预编译将js转换为 hermes byteccode文件大小比单纯的js文件大
 
 1.2.2 hermes js引擎 是0.64版本之后在ios和安卓中都可以使用的，之前只可以在安卓中使用， 之前的ios使用的jsc 引擎，使用hermes引擎需要在原生代码里设置 enableHermes 为true
 
 1.2.3 0.7版本版本之后安卓和ios都默认使用hermes引擎
 
-rn分为渲染层和逻辑层，渲染层使用fabric作为渲染器，他的优点是性能更好，扩展性更强，使用hermes作为引擎，优点是hermes bytecode代码体积更小，hermes执行速度更快
+rn工作有这个几部分组成，native端、jsbridge或者jsi、渲染层使用fabric作为渲染器，他的优点是性能更好，扩展性更强，使用hermes作为引擎，优点是体积小，执行速度快
 
 2. rn应用启动流程
 
@@ -526,7 +605,7 @@ rn分为渲染层和逻辑层，渲染层使用fabric作为渲染器，他的优
 
 3. 加载执行jsbundle
 
-4. 在逻辑层将虚拟dom传递给native渲染层后,将虚拟dom转换为shadow tree
+4. 在逻辑层将虚拟dom传递给渲染层后,将虚拟dom转换为shadow tree
 
 6. yoga将shadow tree中的flex布局转换为原生布局
 
@@ -537,9 +616,9 @@ rn分为渲染层和逻辑层，渲染层使用fabric作为渲染器，他的优
 
 1. jsBridge 是通过native 代码实现的, 通过将全局对象作为媒介实现逻辑层和渲染层的通信, native端可以获取js的全局对象,实现了native端可以获取js全局对象上的方法进而可以操作js, 应用初始化的时候 bridge就将原生模块通过Json的形式传递给逻辑层, 然后挂载到js的全局对象上
 
-2. jsbridge是异步的
+2. jsbridge是异步的，需要序列化反序列化， 通信效率低
 
-3. 还可以通过jsi实现逻辑层和渲染层通信，是同步的，jsi通过c++实现
+3. 还可以通过jsi实现逻辑层和渲染层通信，是同步的，jsi通过c++实现，提高通信效率
 
 4. rn新架构的变化有哪些
 
@@ -549,16 +628,7 @@ rn分为渲染层和逻辑层，渲染层使用fabric作为渲染器，他的优
 
 3. CodeGen 将ts转换为原生代码
 
-4. rn 做了哪些工程化改造
-
-异常上报 sentry
-自动化测试
-热更新
-
-5. rn 优化
-    使用fast-image加载图片和做图片懒加载
-
-6. rn 如何实现热更新
+5. rn 如何实现热更新
 
 首先全局安装code-push-cli
 
@@ -568,7 +638,7 @@ rn分为渲染层和逻辑层，渲染层使用fabric作为渲染器，他的优
 
 然后把app包发布过一次之后
 
-然后就可以通过code-push release 指令更新rn代码了
+然后就可以通过code-push release 指令更新rn代码了，需要输入更新的版本和环境
 
 6. rn 和flutter有什么区别， 还有哪些混合开发方案
 
@@ -584,9 +654,24 @@ rn和flutter相同点
 1. webview加载的页面可以通过postMessage和rn通信
 2. webview 就是通过WebKit
 
-8. rn做过哪些构建优化
+8.  rn做过哪些构建优化
+1. 拆包
+1.1 首先要确定如何拆包，我们根据用途拆分为common包（项目中公共依赖打成一个包，跟随app版本下发，因为common包体积太大，动态下发成本太大）和业务逻辑包（动态下发，热更新），
+common公共代码包只加载一次，biz包是业务包按需加载
 
-9. rn做过哪些优化
+1.2 需要两个metro配置文件，一个构建common包，一个构建业务逻辑包，通过配置createModuleIdFactory（传入module的绝对路径返回打包时生成的id）和processModuleFilter（传入module信息，通过返回boolean判断是否打到包里面，返回true就表示打到包里）来配置打包文件
+
+1.3 分包之后每个业务包加载都会起一个新的react-native容器，不同的react-native容器需要通信这个我们在看如何通信
+
+2. code push 热更新
+
+9.  rn做过哪些优化
+1. react的优化，减少组件刷新
+2. 使用fast-image加载图片
+3. 使用虚拟列表
+4. 开启hermes引擎
+
+
 
 electron复习
 
@@ -785,6 +870,28 @@ SSL是TLS的前身，TLS是SSL3.1
 禁止页面在iframe中加载
 js禁用iframe if(top!=self)top.location=self.location;    
 
+13. cdn 实现的原理
+cdn 叫做内容分发网路
+
+静态资源适合使用cdn优化，动态资源不适合，动态资源值的相同域名和path的不同参数获取的内容是不同的，比如api接口，数据库操作请求这些就是动态资源
+
+cdn是通过源服务和很多个缓存服务器组成的
+
+向cdn上传资源是上传到源服务器， 有两种更新方式的cdn服务器，一种是主动推动更新的（阿里云就支持主动推送更新，使用的是websorket），一种是使用回源更新
+
+1. 用户通过域名请求资源，将域名发到本地dns，然后本地dns向dsn服务器获取对应域名的ip，dns服务器chame（chame就是在dns服务器上配置请求的域名执行另一个域名返回，如果返回的是cdn域名，本地dns就去请求这个cdn域名）到这个域名对应的域名是cdn域名，然后dns服务器把真实的cdn域名返回给本地dns，然后本地dns再去请求真实cdn域名，然后cdn返回给本地dns最优的缓存服务器ip（就是和请求位置最近的缓存服务器的ip），然后本地dns将这个ip返回给用户，然后用户请求这个ip去获取资源，获取资源的时候如果缓存服务器已经缓存过这个资源那就直接返回，如果没有缓存过，需要向源服务获取资源后在返回给用户（这个就是cdn回源，回到源服务器获取数据，回源是cdn中更新缓存服务器最常用的策略使）
+
+2. 为什么cdn不支持websocket协议，主要是受监管要求不能支持，有人用cdn的ws翻墙， 还有一个原因就是成本高，websocket要一直比保持长连接， 还有就是水平扩展成本高（就是做负载均衡扩展），不只是增加一个机器，因为需要推送，比如数据库发生变化，想向客户端推动数据，这个时候就需要知道哪个websocket服务和客户端建立了连接，所以这个需要一个消息订阅服务（比如一个redis集群），而我们正常的http服务器只需要加一个机器就行了不需要消息订阅服务
+
+3. 只有缓存服务器没有数据、数据过期，或者这个数据不被允许缓存才会回源
+
+4. cdn缓存服务器通过回源方式获取资源的时候都是通过http协议， cdn自定义缓存策略，也可以使用源服务返回的缓存策略（就是强缓存策略），如果不用前两个的话，cdn也会有一个默认缓存规则，比如： 缓存200-400 状态码的时间默认是8天 301默认是两个小时 302默认是20分钟 ，400、404、416、500、502、504状态码3s，其他4XX、5XX状态码不缓存，浏览器获取cdn数据后，会进行强缓存， cache-control， expries，不同cdn的默认缓存机制是不同的
+
+5. 回源的cdn服务器在源服务器更新了数据之后，可以调用缓存刷新接口更新所有缓存服务器的缓存时间，让它过期，再次获取这个资源的时候缓存服务器需要从源服务器重新获取
+
+6. cdn如何判断是否缓存是通过url，所以cdn只适合get请求
+
+7. 如何计算使用那个缓存服务器的IP：CDN根据用户的地理位置分配距离最近的节点
 
 浏览器
 
@@ -863,7 +970,7 @@ taro1、2都是编译时框架，将taro 代码编译成小程序代码，使用
 
 这里就会有问题，
 1. 不能100%支持jsx语法，之前taro只是穷举适配可能的jsx这个工作很繁重
-2. 不支持source-map，taro对源码进行一系列转换操作之后就不支持source-map了
+2. 不支持source-map，taro对源码进行一系列AST转换操作之后就不能生成source-map了
 3. 由于编译只支持了react框架，支持其他框架增加了维护成本和工作量
 
 
@@ -914,6 +1021,15 @@ link标签的rel属性设置dns-prefetch，提前获取域名对应的IP地址
 
 8. 其他的非首屏优化有react性能优化，和performance记录之后的代码性能点优化
 
+9. js预加载如何做的： 通过 <link rel="prefetch" as="script" href="./b.js"> 或者 <link rel="preload" as="script" href="./b.js">，prefetch和preload都是只加载不执行，preload是高优先级加载执行到就加载，prefetch是低优先级加载等其他高优先级加载完毕在加载，
+正常加载进行着预加载的文件的，如果没有加载完，等预加载完毕之后在加载，如果预加载完毕了，如果是通过preload预加载的，再次正常加载就不会发请求了，如果是通过prefetch预加载的，那会发一个请求，但是不会发出去，会直接走强缓存（prefetch cache）， prefetch和preload都不会阻止dom解析
+
+DOMContentLoaded 是dom解析完毕生成dom树了， load页面上全部资源都加载完毕，解析完毕
+
+h5页面使用的测试工具
+
+webpageTest在线的h5测试工具，然后分析测试的
+
 webpack 构建优化
 
 首先我们根据 webpack 的构建过程考虑， 查询过程、解析转化过程、压缩过程
@@ -941,11 +1057,59 @@ webpack的构建主要分为两种场景开发环境和构建环境
 生产环境在上面优化的基础上使用webpack-bundle-analyzer分析webpack包体积，通过splitchunks分包
 
 7. 压缩使用 terser-webpack-plugin 并开启多线程较少压缩时间
-#### tree shaking为什么必须用esmodule
+8.  tree shaking为什么必须用esmodule
 
 因为esmodule的编译时加载，webpack在编译的时候就可以判断哪些模块没有被使用就可以shaking掉
 
-工程化模块化
+9. loader和plugin的实现方式
+
+loader 本质就是一个函数，接收文件内容处理之后再返回处理后的结果
+
+plugin就是一个包含apply方法的类，可以在apply函数中直接执行一些逻辑， 或者通过它的参数compiler监听生命周期去执行一些逻辑
+
+10. antd如何实现按需加载
+
+通过babelrc 中配置插件babel-plugin-import，在构建时候实现按需加载只会把通过import引用的Botton等组件打到包中
+
+还有就是通过antd/Botton这种直接制定了路径的webpack就会按照路径打包只会打包button，这是正常的
+
+11. webpack 热更新是如何实现的
+
+
+#### vite 理解
+
+开发环境
+1. vite 开发环境启动的时候会把代码进行分类，分为依赖和源码两类，通过esbuild进行预构建，就是将不变的依赖包和不变的项目代码，将不是esmole模块化的都转成esmodule模块化放在node_modules/.vite下缓存起来，并且设置很长的强缓存时间，这里如果没有变化那就直接不变了，以后直接引用，
+将其他业务代码单独放置，对初始化引用的文件进行esmodule 转化放到html中，利用浏览器支持的Native esmodule能力，加载入口文件，入口文件中的import 在浏览器中可以直接被使用，入口文件需要被<script type='module' src='入口文件'>加载，其他的文件vite启动的时候是不做esmodule转化操作的，然后只有在后面执行到了这个文件才会按需加载，然后vite服务器对这个请求进行拦截，对请求的文件进行处理都处理成esmodule格式的然后在返回，文件中引用node_modules的包会被在文件中处理成/@modules开头的引用（ 比如import vue from '/@/modules/vue.js'，这个是使用ES Module Lexer实现的）, 所以在启动的时候只进行了预处理和初始化加载js文件的转化就启动服务了，所以vite启动很快，webpack为啥慢，以为webpack会把所有文件都编译完在起服务所以很慢
+
+
+2. vite开发环境的时候支持热更新
+
+3. vite开发环境的时候es6不转成es5
+
+4. 因为需要预构建， 所以首次启动慢一点，后面不需要编译，就快了
+
+生产环境
+
+1. vite生产环境的时候使用rollup构建，保证代码打包后的模块化，所以浏览器都支持、es6转成es5
+2. 生产环境使用rollup，是因为esbuild 对css和代码分割不友好
+
+vite4的优化
+
+1. vite4新增了swc，swc是rust写的替代babel的库，vite4编译react可以选择@vitejs/plugin-react，@vitejs/plugin-react-swc
+
+2. vite4中正式环境构建升级到rollup3
+
+#### esbuild的理解 
+esbuild为什么快
+
+1. 使用go实现，语言更快
+
+2. 支持多线程
+
+3. 做的事少
+
+#### 工程化模块化
 
 1. babel过程，将es6生成ast抽象语法树,对抽象语法书进行编译生成新的ast，然后将新的ast转成es5
 
@@ -983,6 +1147,15 @@ webpack的构建主要分为两种场景开发环境和构建环境
 给我们的开发提效的，提高我们开发体验
 
 比如 js模块化、css module、组件化、前端规范化、自动化
+
+4. AST 什么意思， 知道recast吗
+AST是抽象语法树， babel就是根据AST将es6转为es5
+
+recast是词法分析库，可以将js代码转成语法树，并生成sourcemap
+
+5. 什么是依赖树
+
+我理解就是项目中不同模块的依赖关系
 
 ### 异常监控
 1. try {} catch {} 运行
@@ -1059,6 +1232,14 @@ electron更新重构
 
 并且增加了增量更新，添加stagingPercentage字段，字段的取值是0-100
 
+#### nginx
+
+#### docker
+
+#### jenkins
+
+#### 阿里云服务器申请
+
 继续准备云笔记做过的事
 
 
@@ -1118,7 +1299,46 @@ ssr 首页实现
 
 最近学了xstate
 
+arcGIS是地理相关的软件，开发地图的时候可能会用到
 
 #### 带人是如何带人的
 
 首先了解小伙伴的特点和经验，然后在分配任务的结合这些去分配，在工作中帮助它们解决建立好的习惯， 包括设计文档的编写共同讨论确定合理的开发方案，对需求的拆分，提高排期的准确率，带头养成分享的习惯，共同成长，营造良好的工作氛围，增强团队的凝聚力，增强团队的战斗力
+
+### 给产品提过哪些建议或者自己发现过哪些问题点对用户改善很大， 自己发现过什么小的点但是解决了大问题
+就是之前的有道云笔记的更新没做自动更新，每次还需要下载新的包然后在手动安装替换，我也问了一些用户的反馈感觉这个体验不好，所有我就可产品提了这个建议，然后最后也是由我实现了有道云笔记的自动更新，最后也回访了用户，用户也表示自动更新功能体验很好
+
+#### 已有的准备的在深入点， 简历在写的牛逼一点，更突出点做的东西重要
+
+#### 为什么离职这里好好想一个合理的理由
+
+公司的总部在杭州，入职之前没说要出差，入职之后频繁的要出差， 听说要合并到杭州那边，不太适合我，所以选择了离职 
+
+### 职业规划
+
+如果我们能加入咱们公司，首先短期内，我要熟悉开发流程、和业务逻辑上手工作，并继续了解更多的业务逻辑，让自己可以独挡一面，中期的计划就是有时间继续拓展的知识面，和自己的技术深入，为公司更好的服务，长期的计划就是在我对公司业务很好的掌握之后如果有机会带人我也回抓住这个机会
+
+### 如何跨部门沟通，解决问题
+首先我感觉跨部门的沟通这种，不能用一种索取的态度去沟通， 因为每个人都有自己的okr，如果这件事和他不相关的话别人内心里可能也不是想帮忙的，所以要以一个双赢的态度去沟通，要想着能给对方也带来什么收获，比如技术影响力或者一次很好的技术实践，这样可能让对方也是内心有这个意向的，还有就是在平时营造比较好的关系，比如有机会加上对方的好友，有时间一起打打游戏，私下拉近关系，都说熟人好办事嘛，这样在有求于人的时候别人可能也更愿意帮忙，在就是找人帮忙的时候顺道带一杯奶茶咖啡之类的，表现出自己诚意，这样别人有的时候也不好太意思拒绝，我感觉这样可以比较正向的进行跨部门沟通协作
+
+
+### 通过什么方式学习
+
+1. 公众号文章（前端早读课、奇舞精选），最近看了turborepo这个项目管理工具，它比之前的lerna更快，因为turborepo是并行构建，lerna是串行构建，turborepo可以对构建结果进行缓存，只构建最新的修改，之前没有修改的构建可以复用，实现了增量构建，turborepo可以生成性能文件，倒入浏览器中，看看具体的性能损耗，turborepo有一个核心概念pipeline（关系），turborepo就是通过管道来处理各个任务和它们之间的依赖关系的，turborepo通过显示的声明优化任务的执行，充分利用多核CPU，之前的lerna它的执行方式可能导致CPU核心被闲置，就会影响性能，
+还有最近也学到了新的构建工具turbopack他的速度号称比vite快10倍，因为turbopack是使用rust开发的，rust比js性能高，使用swc替代了babel，swc也是使用rust开发的性能更好，turbopack使用了缓存增量构建提高性能
+
+2. 前端社区网站掘金
+3. 看书（你不知道的javascript、深入浅出nodejs）
+4. 然后通过看一下文章感觉不够全面的时候，想进行一些实践的时候，我有的时候也会看一些课程，像慕课网上的一些课程，比如之前我对react ssr的原理和好奇，想自己实践一下，感觉看一些文章不够全面，我当时就找了一个react ssr的课程，自己跟着实现了一个原生的react ssr项目，包括阿里云的申请、docker配置、nginx、还有jenkins发布整个这套流程自己跑了一遍，感觉收获还是很大的，然后把我这些经验也都总结到了我的github上，这样等需要用到也避免走弯路
+
+
+#### 如何技术选型， 怎么考虑
+1. 首先还是从业务出发，看业务诉求，比如当时在开发小程序的时候需要兼容h5，需要当时就考虑多平台适配的这种方案
+
+2. 还有要考虑团队的技术特点，也是开发小程序技术选型时，因为团队是react技术栈，所以在uniapp和taro中选择了taro
+
+3. 在有就是考虑选型的社区的活跃程度，这样在出现问题的时候也比较容易解决
+
+4. 还有就是可控性，这个我感觉也比较重要，比如之前遇到过项目使用Umi构建，umi对于开发人员来说就是黑盒的，做一些优化只能依赖于文档，并且文档还不是很全，就是十分费劲，所以umi对于我们来说就不可控，导致开发过程中遇到问题就不容易被解决
+
+5. 还有稳定性，比如用到一些库，在升级的时候要向下兼容，保证稳定
