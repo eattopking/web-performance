@@ -1024,7 +1024,19 @@ link标签的rel属性设置dns-prefetch，提前获取域名对应的IP地址
 9. js预加载如何做的： 通过 <link rel="prefetch" as="script" href="./b.js"> 或者 <link rel="preload" as="script" href="./b.js">，prefetch和preload都是只加载不执行，preload是高优先级加载执行到就加载，prefetch是低优先级加载等其他高优先级加载完毕在加载，
 正常加载进行着预加载的文件的，如果没有加载完，等预加载完毕之后在加载，如果预加载完毕了，如果是通过preload预加载的，再次正常加载就不会发请求了，如果是通过prefetch预加载的，那会发一个请求，但是不会发出去，会直接走强缓存（prefetch cache）， prefetch和preload都不会阻止dom解析
 
+10. css 预请求也是通过<link rel="prefetch" as="style" href="./b.css">或者<link rel="preload" as="style" href="./b.css">
+
+11. 图片的预加载也是可以通过在登录页let image = new Image() image.src = 'http://aaaa.jpg'或者<link rel="prefetch" as="image" href="./b.jpg">、<link rel="preload" as="image" href="./b.jpg">实现
+
 DOMContentLoaded 是dom解析完毕生成dom树了， load页面上全部资源都加载完毕，解析完毕
+
+10. 有哪些造成内存泄漏的方式、如何检测内存泄漏、如何优化内存泄漏
+
+11. 本地存储有哪些方式，存储的类型有什么不同、哪些缓存的内存缓存、那些事硬盘缓存、indexdB的使用（非关系型数据库）
+
+12. 前端缓存有哪些、有什么区别 server worker、memory cache、disk cache、 push cache 、（prefetch cache是属于强缓存，那它属于前面哪种缓存）
+
+13. redis 集群缓存如何更新，redis缓存什么原理
 
 h5页面使用的测试工具
 
@@ -1234,11 +1246,15 @@ electron更新重构
 
 #### nginx
 
-#### docker
+nginx是网关，可以转发、负载均衡
 
+#### docker
+docker有镜像，可以通过镜像创建容器
 #### jenkins
+可以发布项目
 
 #### 阿里云服务器申请
+阿里云是一个云服务器，可以在它上边部署东西
 
 继续准备云笔记做过的事
 
@@ -1342,3 +1358,13 @@ arcGIS是地理相关的软件，开发地图的时候可能会用到
 4. 还有就是可控性，这个我感觉也比较重要，比如之前遇到过项目使用Umi构建，umi对于开发人员来说就是黑盒的，做一些优化只能依赖于文档，并且文档还不是很全，就是十分费劲，所以umi对于我们来说就不可控，导致开发过程中遇到问题就不容易被解决
 
 5. 还有稳定性，比如用到一些库，在升级的时候要向下兼容，保证稳定
+
+#### 为啥离开用友
+
+当时感觉处在一个舒适区，想离开舒适区突破一下自己
+
+#### 对于新工作会看重哪些方面呢
+我可能会比较看重一是团队的氛围（愉悦、顺畅）、还有一个就是我承担的角色，需要负责的工作（我希望为公司创造更多的价值）
+
+
+

@@ -141,7 +141,7 @@ type Partial<T> = {
 2. Required<T>, 将传入的对象类型变成全部必选的类型并返回
 
 type Required<T> = {
-    [k in keyof T]: T[k]
+    [P in keyof T]-?: T[P]
 }
 3. Readonly<T>, 将传入的对象类型变成全部只读的类型并返回
 
@@ -183,7 +183,7 @@ type Test = Pick<Object, a | b>, 结果是type Test = {
    b: string;
 }
 
-6. Omit<T,K>, 提出对象类型中属性返回新类型
+6. Omit<T,K>, 剔除对象类型中属性返回新类型
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
 
@@ -217,7 +217,7 @@ type objProps = Exclude<obj, obj1> // nerver
 type Extract<T,K> = T extends K ? T : never;
 
 从联合类型中提取出重合类型
-type Test = Extra<1 ｜ 2 ｜ 3, 1｜4>， 结果是type Test = 1；
+type Test = Extract<1 ｜ 2 ｜ 3, 1｜4>， 结果是type Test = 1；
 
 9. NonNullable<T>, 去掉T联合类型中的undefind和null返回新的类型
 去掉undefind和null类型
@@ -403,6 +403,8 @@ function aaa(value:number|string):User|User[]|undefined{
 为了在调用函数的时候获取正确参数类型和返回类型
 
 4. 类中的构造函数重载，和函数重载想相同
+
+#### 分配律、逆变位置、逆变和协变
 
 
 ### React 涉及的Ts
