@@ -881,7 +881,7 @@ cdn是通过源服务和很多个缓存服务器组成的
 
 1. 用户通过域名请求资源，将域名发到本地dns，然后本地dns向dsn服务器获取对应域名的ip，dns服务器chame（chame就是在dns服务器上配置请求的域名执行另一个域名返回，如果返回的是cdn域名，本地dns就去请求这个cdn域名）到这个域名对应的域名是cdn域名，然后dns服务器把真实的cdn域名返回给本地dns，然后本地dns再去请求真实cdn域名，然后cdn返回给本地dns最优的缓存服务器ip（就是和请求位置最近的缓存服务器的ip），然后本地dns将这个ip返回给用户，然后用户请求这个ip去获取资源，获取资源的时候如果缓存服务器已经缓存过这个资源那就直接返回，如果没有缓存过，需要向源服务获取资源后在返回给用户（这个就是cdn回源，回到源服务器获取数据，回源是cdn中更新缓存服务器最常用的策略使）
 
-2. 为什么cdn不支持websocket协议，主要是受监管要求不能支持，有人用cdn的ws翻墙， 还有一个原因就是成本高，websocket要一直比保持长连接， 还有就是水平扩展成本高（就是做负载均衡扩展），不只是增加一个机器，因为需要推送，比如数据库发生变化，想向客户端推动数据，这个时候就需要知道哪个websocket服务和客户端建立了连接，所以这个需要一个消息订阅服务（比如一个redis集群），而我们正常的http服务器只需要加一个机器就行了不需要消息订阅服务
+2. 为什么cdn不支持websocket协议，主要是受监管要求不能支持，有人用cdn的ws翻墙， 还有一个原因就是成本高，websocket要一直比保持长连接， 还有就是websorket是动态数据不能缓存，每次请求都需要回源
 
 3. 只有缓存服务器没有数据、数据过期，或者这个数据不被允许缓存才会回源
 
@@ -1030,13 +1030,81 @@ link标签的rel属性设置dns-prefetch，提前获取域名对应的IP地址
 
 DOMContentLoaded 是dom解析完毕生成dom树了， load页面上全部资源都加载完毕，解析完毕
 
+
+#### 缓存总结
+请求接口这个过程和其他非服务器资源的过程
+1. 数据库缓存（使用redis，用户请求的时候请求到redis，如果没有需要请求的数据的话，就去数据库拉取，然后返回给用户并把数据缓存在redis上，如果数据库数据更新了，在数据库和redis中间建立消息订阅，通知redis将缓存失效，下次用户在请求重新去数据库拉取， redis是一个内存数据库，数据是存在内存中的，所以请求才那么快，不过redis会定期存到硬盘中）
+
+2. 应用服务器（tomcat，可以创建web容器，执行java代码）
+
+3. 反向代理服务器缓存（nginx是反向代理服务器，可以代理转发、负载均衡、缓存请求数据（js文件、css文件），接口数据这种经常变化的就不缓存在nginx代理服务器了，nginx设置自动清除缓存的时间默认是10s，nginx也可以选择缓存哪些数据， 通过proxy_no_cache设置是否开启缓存，不为空或者不为0时不开启缓存，我们正常是nginx代理请求别的服务器上的js或者css或图片的时候才缓存，正常先缓存在内存中，内存中缓存不下就缓存到指定的缓存文件中就是硬盘中）
+
+4. 浏览器缓存：包括浏览本地存储（cookie（cookie可以存在内存和磁盘中，设置了expires的cookie存在磁盘中，没有设置的存在内存中，称为会话cookie，在页签的页面关闭后cookie就会消失）、sessionStrrage（存在内存中，当这个一个会话就是这个页面关闭后就会消失）、localStrorage（存在磁盘中）、indexDB（存在磁盘中））、浏览器其他缓存（http缓存（强缓存、协商缓存）、servise worker、push cache、prefetch cache）
+
+5. 从缓存优先级来说分为 servise worker（缓存的内容存在磁盘中、必须是https协议，但是本地可以使用http://localhost或者http://127.0.0.1, sevice work是在js主线程之外另外开辟的一个js线程这个js线程是全异步, 注册这个sevice work的线程被关闭了，这个sevice线程还是存在的，sevice work不支持window、document localStrong这些同步的api）
+> memory cache（请求下来的js 脚本、图片、css样式、不同的浏览器都有自己的设置内存缓存的策略，把比较小的放在内存中，都是通过强缓存协商缓存获取的） 
+> disk cache 
+> push cache
+
+6. 从缓存的存储位置来说就是两种内存或者磁盘，存储在磁盘的缓存有：servise worker、强缓存和协商缓存、prefetch cache、localStrorage、cookie
+存在内存中缓存有：cookie（没有设置expires，存在会话内存中）、push cache（存在session内存中）、 memory cache（请求下来的js 脚本、图片、css样式、不同的浏览器都有自己的设置内存缓存的策略，把比较小的放在内存中，都是通过强缓存协商缓存获取的） 
+
+请求cdn资源数据缓存
+
+1. cdn缓存
+
+2. 浏览器缓存
+
+3. indexdB的使用（非关系型数据库）
+const dbName = "the_name";
+
+const request = indexedDB.open(dbName, 2);
+
+request.onerror = (event) => {
+  // 错误处理
+};
+request.onupgradeneeded = (event) => {
+  const db = event.target.result;
+
+  // 创建一个对象存储来存储我们客户的相关信息，我们将“ssn”作为键路径
+  // 因为 ssn 可以保证是不重复的——或至少在启动项目的会议上我们是这样被告知的。
+  const objectStore = db.createObjectStore("customers", { keyPath: "ssn" });
+
+  // 创建一个索引以通过姓名来搜索客户。名字可能会重复，所以我们不能使用 unique 索引。
+  objectStore.createIndex("name", "name", { unique: false });
+
+  // 使用邮箱建立索引，我们想确保客户的邮箱不会重复，所以我们使用 unique 索引。
+  objectStore.createIndex("email", "email", { unique: true });
+
+  // 使用事务的 oncomplete 事件确保在插入数据前对象存储已经创建完毕。
+  objectStore.transaction.oncomplete = (event) => {
+    // 将数据保存到新创建的对象存储中。
+    const customerObjectStore = db
+      .transaction("customers", "readwrite")
+      .objectStore("customers");
+    customerData.forEach((customer) => {
+      customerObjectStore.add(customer);
+    });
+  };
+};
+
 10. 有哪些造成内存泄漏的方式、如何检测内存泄漏、如何优化内存泄漏
+1. 被遗忘的全局变量
+2. 被遗忘的定时器
+3. 不被使用的闭包
+4. 被遗忘的dom结构存储
 
-11. 本地存储有哪些方式，存储的类型有什么不同、哪些缓存的内存缓存、那些事硬盘缓存、indexdB的使用（非关系型数据库）
+测试是否有内存泄漏： performance.monitor,实时看内存变化，呈现成梯度内存，手动触发垃圾回收之后，还没有变化的就说明出现内存泄漏
 
-12. 前端缓存有哪些、有什么区别 server worker、memory cache、disk cache、 push cache 、（prefetch cache是属于强缓存，那它属于前面哪种缓存）
+最终确定内存泄漏的点还是需要通过memory生成内存快照比对，确定内存泄漏位置解决问题
 
-13. redis 集群缓存如何更新，redis缓存什么原理
+共享闭包概念： 外部函数里定义的所有函数共享一个闭包，也就是 b 函数使用外部函数 a 变量，即使 c 函数没使用，但 c 函数仍旧会存储 a 变量，这就叫共享闭包
+
+memory有不同内存的定义要搞懂
+
+Shallow Size 表示对象自己真是占用内存大小
+Retained Size 表示对象自己真实大小和引用的对象大小的总和
+
 
 h5页面使用的测试工具
 
@@ -1086,6 +1154,7 @@ plugin就是一个包含apply方法的类，可以在apply函数中直接执行�
 还有就是通过antd/Botton这种直接制定了路径的webpack就会按照路径打包只会打包button，这是正常的
 
 11. webpack 热更新是如何实现的
+
 
 
 #### vite 理解
