@@ -78,20 +78,18 @@ function flat(arr) {
 
 4. 手写_instanceof
 
-function _instanceof(left, right) {
-  let proto = left.__proto__;
-  const prototype = right.prototype;
-
-  while(true) {
-    if (proto === prototype) {
+function _instanceof (child, parent) {
+  let childPrototype = child.__proto__;
+  const parentPrototype = parent.prototype;
+  while(childPrototype) {
+    if (childPrototype === parentPrototype) {
       return true;
+    } else {
+      childPrototype = childPrototype.__proto__;
     }
-
-    if (proto === null) {
-      return false;
-    }
-    proto = left.__proto__;
   }
+
+  return false;
 }
 
 5. 手写valueof和toString的面试题
@@ -133,16 +131,16 @@ call实现: 使用的原理就是函数当作为谁属性调用的时候，这�
 
 诀窍： 就是函数作为一个对象的方法调用时，函数内部 this 指向就是这个对象
 
-Function.prototype.call = function(newThis, ...test) {
-    if (newThis === null || newThis === undefiend) {
-        return newThis(...test);
-    }
-    
-    newThis = Object(newThis);
-    newThis.fn = this;
-    const result = newThis.fn(...test);
-    delete newThis.fn;
-    return result;
+Function.prototype.call = function (scope, ...rest) {
+  if (scope === null || scope === undefined) {
+    return this(...rest);
+  }
+
+  scope = Object(scope);
+  scope.fn = this;
+  const result = scope.fn(...rest);
+  Reflect.deleteProperty(scope, 'fn');
+  return result.valueOf();
 }
 
 
@@ -151,31 +149,33 @@ apply 实现: 使用的原理就是函数当作为谁属性调用的时候，这
 诀窍： 就是函数作为一个对象的方法调用时，函数内部 this 指向就是这个对象
 
 
-Function.prototype.apply = function(newThis, arr) {
-    if (newThis === undefiend || newThis === null) {
-        return this(...arr);
-    }
-    newThis = Object(newThis);
-    newThis.fn = this;
-    const result = newThis.fn(...rest);
-    delete newThis.fn;
-    return result;
+Function.prototype.apply = function (scope, rest) {
+  if (scope === null || scope === undefined) {
+    return this(...rest);
+  }
+
+  scope = Object(scope);
+  scope.fn = this;
+  const result = scope.fn(...rest);
+  Reflect.deleteProperty(scope, 'fn');
+  return result.valueOf();
 }
 
 bind 实现: 使用的原理就是函数当作为谁属性调用的时候，这个函数的 this 指向就是谁， 还有只有 null 和 undefined == null， 内置构造函数创建实例， 用不用 new 都可以， Object 类似于 Promise.resolve, 如果参数是对象直接解构， 返回这个对象，如果参数不是对象，将这个参数转成对象， 返回这个值的包装对象，然后这个对象的原始值是那个参数, valueOf 方法是获取对象的原始值的方法, 对象的 toString 方法返回对象的字符串，根据不同对象的实现返回的字符串规则也是不同的, 还是使用了闭包的原理缓存 rest
 
 诀窍： 就是函数作为一个对象的方法调用时，函数内部 this 指向就是这个对象
 
-Function.prototype.bind = function (newThis, ...rest) {
+Function.prototype.bind = function (scope, ...rest) {
     return (...params) => {
-        if (newThis == null) {
-            return this(...[...rest, ...params]);
-        }
-        const currentThis = Object(newThis);
-        currentThis.fun = this;
-        const result = currentThis.fun(...[...rest, ...params]);
-        delete currentThis.fun;
-        return result;
+      if (scope === null || scope === undefined) {
+        return this(...[...rest, ...params]);
+      }
+      
+      scope = Object(scope);
+      scope.fn = this;
+      const result = scope.fn(...[...rest, ...params]);
+      Reflect.deleteProperty(scope, 'fn');
+      return result.valueOf();
     }
 }
 
@@ -270,28 +270,44 @@ const that = Object.create(fun.prototype);
 诀窍就是就是实现nodeEventEmitter 类
 
 class EventEmitter {
-    eventList = {}
+  eventList = {};
 
-    addEvent = (eventName, callback) => {
-        if (this.eventList[eventName]) {
-            this.eventList[eventName].push(callback);
-            return;
-        }
-        this.eventList[eventName] = [callback];
+  addEvent = (eventName, callback) => {
+    if (this.eventList[eventName]) {
+      this.eventList[eventName].push(callback);
+    } else {
+      this.eventList[eventName] = [callback];
     }
+  };
 
-    removeEvent = (eventName, callback) => {
-        if (this.eventList[eventName]) {
-            this.eventList[eventName] = this.eventList[eventName].filter((item) => item !== callback);
-        }
+  removeEvent = (eventName, callback) => {
+    if (this.eventList[eventName]) {
+      this.eventList[eventName] = this.eventList[eventName].filter((item) => {
+        return callback !== item;
+      });
     }
-
-    emit = (eventName, ...rest) => {
-        if (this.eventList[eventName]) {
-            this.eventList[eventName].forEach((item) => item(...rest));
-        }
+  }
+  
+  emitterEvent = (eventName, params) => {
+    if (this.eventList[eventName]) {
+      this.eventList[eventName].forEach((item) => {
+        item(params);
+      });
     }
+  }
 
+  onceEvent = (eventName, callback) => {
+    const handle = (params) => {
+      callback(params);
+      this.removeEvent(eventName, callback);
+    };
+
+    if (this.eventList[eventName]) {
+      this.eventList[eventName].push(handle);
+    } else {
+      this.eventList[eventName] = [handle];
+    }
+  }
 }
 
 添加、出发、删除
@@ -333,7 +349,7 @@ function deepClone(val) {
       const source = vlaue;
   
       return source.reduce((result, current) => {
-        result.push(deepClone(current))
+        result.push(_deepClone(current))
         return result;
       }, [])
     }
@@ -342,7 +358,7 @@ function deepClone(val) {
       const source = vlaue;
   
       return Object.keys(source).reduce((result, key) => {
-        result[key] = deepClone(source[key]);
+        result[key] = _deepClone(source[key]);
         return result;
       }, {})
     }
@@ -550,12 +566,17 @@ obj = new Proxy(obj, {
     }
   }
 })
-obj.x = 0;
-obj.valueOf = function() {
-  this.x++
-}
 
-console.log(obj.x == 0 && obj.x == 1 && obj.x == 2)
+
+let obj = {value: 0, valueOf() {
+    return this.value++;
+} };
+
+console.log(obj == 0 && obj == 1 && obj == 2)
+22. 将对象拍平，输入{a: [1], b: { c: 1 }} ，输出 {
+   a.[0]: 1,
+   b.c: 1
+}
 
 ### 队列
 

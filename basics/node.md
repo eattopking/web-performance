@@ -482,6 +482,8 @@ node --max-new-space-size=1024 test.js // 单位为KB  设置新生代内存最�
 
 * buffer和其他对象不同， buffer占用的堆外内存， 所有内存过大不会导致进程崩溃
 
+* 内存统计占用大小排名 VSS >= RSS >= PSS >= USS
+
 8. node中的缓存
 
 * node进程中的对象缓存要慎重，要控制大小和清空机制， 否则容易内存泄漏，导致进程崩溃
@@ -497,7 +499,7 @@ node --max-new-space-size=1024 test.js // 单位为KB  设置新生代内存最�
 kill -USR2 进程id），这命令就可以抓取进程中的堆内存快照，到一个
 heapdump-<sec>.<usec>.heapsnapshot 文件中，然后我们在浏览器控制台的Profiles（内存）右键加载这个文件，就可以看到快照了，根据快照，快照中显示的leak部分就是内存泄漏的部分
 
-* npm安装 node-memwatch ，npm install memwatch，然后在然后在需要排查代码引入var heapdump = require('heapdump');，然后在要排查的代码前面调用 var hd = new memwatch.HeapDiff();，
+* npm安装 node-memwatch（内存观察） ，npm install memwatch，然后在然后在需要排查代码引入var heapdump = require('heapdump');，然后在要排查的代码前面调用 var hd = new memwatch.HeapDiff();，
 然后在想要排查的代码执行完之后执行var diff = hd.end();， 这样就可以拿到要代码代码执行完之后的内存变化了，就可以排查内存泄漏了
 
 10. 大内存应用
