@@ -407,6 +407,9 @@ function aaa(value:number|string):User|User[]|undefined{
 #### 分配律、逆变位置、逆变和协变
 
 
+##### 如何定义一个对象类型让这个对象类型可以兼容多种对象
+
+
 ### React 涉及的Ts
 
 React.FC

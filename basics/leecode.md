@@ -516,6 +516,27 @@ const asyncPool = async (limit, array, callback) => {
   return Promise.all(result);
 }
 
+// 优化版本, 兼容了报错情况
+const asyncPool = async (limit, array, callback) => {
+  let result = [];
+  const working = [];
+
+  for(let item of array) {
+    const p = Promise.resolve(callback(item));
+    result.push(p);
+
+    if (array.length >= limit) {
+      const w = p.then(() => working.splice(working.indexOf(w), 1)).catch(() => working.splice(working.indexOf(w), 1));
+      working.push(w);
+
+      if (working.length >= limit) {
+        await Promise.race(working);
+      }
+    }
+  }
+
+  return Promise.allSettled(result);
+}
 20. 用JS实现数字千分位格式化
 
 function getStrNum(num) {
