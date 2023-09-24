@@ -135,15 +135,13 @@ yield* 就是将其他迭代器，或者调用其他数据结构的迭代器函�
 
 generator的next函数的参数会作为上一个yield的返回值，可以在执行下面代码的时候用到，利用generator配合promise实现类似await的功能就是利用这个原理，返回promise，然后.then之后的结果在调用next的时候作为参数传下去这样yiled下面的代码就可以获取请求后的结果在继续执行了，就实现了和await类似的结果
 
-
-
 24. promise和async await的关系
 
 promise可以处理异步，async await是通过promise和generator实现的，根据generator延迟执行遇到yield会停止的特性，还有next的参数会作为上一个yield的返回值的特性实现的await效果
 
 25. 使用promise 和generator实现 async await 
 26. 函数柯理化有啥好处
-
+1. 可以多个参数分步处理，解开耦合
 27. 使用事件代理有哪些好处
 1. 避免注册多个事件占用过多内存，影响性能
 2. 统一处理代码简洁，新增元素不用在注册事件
@@ -174,7 +172,7 @@ ts总结中已经有了，到那去看
 
 9. ts 协变、逆变概念
 
-
+10. ts更多的东西
 #### react 复习
 
 1. react 更新四种方式
@@ -201,8 +199,6 @@ memo
 所以我们在哪里用这个数据的时候就在那里引用，这样就保证只有对应的组件更新，
 
 所以我们在拆分组件的时候要根据更新的需要进行拆分
-
-
 
 3. fiber 架构理解
 
@@ -259,14 +255,28 @@ componentWillUnmount()
 
 
 8. react服务端渲染
-1. 同构、注水脱水
+    1. 同构、数据注水脱水
+    同构就是react代码在服务端运行一遍，然后通过renderToPipeableStream生成hmtl流，返回给浏览器做静态页面展示，然后进行数据注水（就是将数据存在window上），react代码 通过hydateRoot注册之后编译之后在浏览器在运行一遍完成完成对事件注册，然后完成数据的脱水（将window上的数据，作为初始化数据初始化redux的store），这种react代码在客户端执行一次，在服务端也执行一次的方式就是叫做同构
 
-2. 客户端使用hydrateRoot
+    看一下初始化state，在useeffect didmount里面是否可以取到？？？？？？， 或者redux初始化在useeffect didmount里面是否可以取到？？？
 
-3. 服务端使用renderToPipeableStream、renderToReadableStream、renderToString、 renderToStaticMarkup、renderToStaticNodeStream、
-renderToPipeableStream是如何实现的， 使用ssr react有哪些注意事项，为什么 useLoayoutEffect react.lazy 不能使用啊 ？？？
+    2. 客户端使用hydrateRoot进行dom事件的绑定
 
-4. 使用流展示的页面和正常字符串穿的页面有什么不同呢？？？
+    3. 服务端使用renderToPipeableStream（node环境用这个）、renderToReadableStream（像deno这种支持web流的，就是ReadableStream和WritableStream这种就要使用）、renderToString（返回字符串）、 renderToStaticMarkup（返回静态页面字符串）、renderToStaticNodeStream（返回静态页面流）， renderToPipeableStream
+
+    react18之前的流方式是 renderToNodeStream  此方法会等待所有 Suspense 边界 完成后才返回输出。
+
+    从 React 18 开始，此方法会缓冲所有输出，因此实际上它并没有提供任何流式传输的好处（这里是啥意思再看看）
+
+    4. renderToPipeableStream是如何实现的，通过buffer实现的流式传输
+
+    5. 使用ssr react有哪些注意事项，为什么 useLoayoutEffect react.lazy 不能使用啊 ？？？
+
+    主要是useLoayoutEffect执行顺序顺序问题，会在node环境被执行引发报错？？？
+
+    6. 使用流展示的页面和正常字符串穿的页面有什么不同呢？？？
+      1. 正常ssr的页面展示，是后端处理好所有的内容，一次性返回html字符串，会增加服务器的负担内存占用过大，传输量过大，并且页面展示要全部传输完了一起展示， renderTostring 将组件转成html字符串， 然后通过hydrate绑定事件， 之前也是有流式的就是renderToNodeStream,但是它要等Suspense边界全部完成才返回输出
+      2. 流ssr，renderToPipeableStream 和 Suspense组件实现流式ssr， 返回html整体结构，然后完成一个Suspense边界就返回这一部分的内容，不用等所有Suspense边界都完成才返回输出，实现增量的页面展示
 
 9. react17和18的新功能 还得看
 
@@ -274,11 +284,28 @@ renderToPipeableStream是如何实现的， 使用ssr react有哪些注意事项
 
 2. useTransation 非紧急任务 紧急任务， 原理是什么
 
+const [isPending, startTransition] = useTransition();
+isPending如果是true表示还有没有处理的非紧急任务，可以用这个判断非紧急任务没完成的时候展示一些占位的东西
+
+startTransition 在这个方法的回调中执行的更新就是非紧急更新
+
+import { startTransition } from 'react'; 这个startTransition和 useTransition()返回的startTransition是一样的
+
 3. 批量更新优化 flushSync
 
 4. react.lazy 支持服务端渲染 为什么支持，怎么支持的
 
-5. react18 新的概念都是啥，有啥作用， 如何解决Effect初始化要执行一次， 如何设置effect 有两个参数，但是只受一个参数控制，还有其他的react案例
+5. react18 新的概念都是啥，有啥作用， 
+
+6. react提供的情况案例，如何解决Effect初始化要执行一次， 如何设置effect 有两个参数，但是只受一个参数控制
+
+7. react18并发渲染概念
+并发渲染最终的是可以中断更新，然后在继续更新，获取直接取消更新，实现这一点是由于在所有dom树被计算完成之前没有更新dom，只有计算完成了才更新dom
+
+react的过渡更新、Suspense可以服务端渲染实现按需加载、流ssr可以搭配Suspense实现增量展示、useDeferredValue 来节流处理开销巨大的重新渲染。，都是依靠react并发渲染实现的
+
+
+8. react cloneElement的替代api是啥
 
 10. react hooks原理，
 hooks存储是链表顺序存储
@@ -363,13 +390,14 @@ function useEffect(callback, deps) {
 
 函数式组件是函数式编程思想，主打的是immutable（不可变的）、没有副作用、引用透明等特点；而类组件是面向对象编程思想，它主打的是继承、生命周期等核心概念。
 
-
 15. 如何用hooks实现didupdate
+
 16. react 合成事件
 
-17. 并发更新概念
-18. 纯函数有啥好处
+17. 纯函数有啥好处
 1. 输入和输出是确定的，可以做缓存
+
+18. react17之后 react/jsx-runtimne 运行时将jsx转为虚拟dom， 是通过babel编译之后自动引入react-runtime的，不是我们每次开发都引入react了
 #### vue复习
 
 1. vue2的生命周期 和react生命周期有何不同
@@ -862,23 +890,23 @@ dns、 tcp链接、请求资源、浏览器渲染过程、js执行
 优化接口
 
 7. 骨架屏如何实现
-## 小程序的分包逻辑是啥
+8. 小程序的分包逻辑是啥
 
     每个包不能大于2M，最多可以分10个包
     小程序配置文件subPackages字段配置
     分包里面可以使用independent: true,设置为独立分包，只打开独立分包的话不会加载主包，主要用来承载广告页之类的
     还可以通过preloadRule字段设置分包预加载条件
 
-## 小程序的优化手段主要是启动优化
+9. 小程序的优化手段主要是启动优化
 
     代码包大小：分包加载、分包预加载、独立分包、减少图片资源、代码优化
     代码注入优化：减少启动过程中同步调用、按需加载lazyCodeLoading: 'requiredComponents'
     页面渲染优化：提前首屏数据请求、数据预拉取、周期性更新、骨架屏、缓存请求数据、精简首屏数据
 
-### 小程序的登录流程
+10. 小程序的登录流程
  用户登录的时候， 后端将根据微信login 返回的code+session_Key生成的token设置成无限期， 然后前端只判断checkSession是否过期， 在token存在情况下, 需要使用wx.getsetting获取， 是否有各种权限， 没有的话，主要我们弹出获取权限页面， 如果需要手动触发的话， 不要手动触发的话，直接弹出获取权限弹窗
 
- #### 小程序如何检查代码内的性能
+11. 小程序如何检查代码内的性能
 
 #### Taro 
 
@@ -1078,7 +1106,7 @@ plugin就是一个包含apply方法的类，可以在apply函数中直接执行�
 
 11. webpack 热更新是如何实现的
 
-12. webpack splitchunks 如何实现的
+12. webpack splitchunks 如何实现的， 有哪些配置
 
 
 #### vite 理解
@@ -1162,6 +1190,14 @@ recast是词法分析库，可以将js代码转成语法树，并生成sourcemap
 我理解就是项目中不同模块的依赖关系
 
 6. pnpm和npm有什么不同
+
+7. 组件库如何进行版本控制
+
+8. 软链接和硬链接的区别
+
+9. 进程间通信有几种方式，都是什么原理啊
+
+10. 单元测试、ui自动化测试、交互自动化测试
 
 #### 异常监控
 1. try {} catch {} 运行
