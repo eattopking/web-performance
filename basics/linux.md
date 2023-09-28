@@ -41,3 +41,5 @@ file --brief --no-pad 文件路径
 
 /etc/ssh/sshd_config
 
+### 软链接和硬链接的区别
+
