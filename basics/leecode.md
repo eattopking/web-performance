@@ -626,6 +626,31 @@ console.log(arrTotree( [{id: 1, pid: 0}, {id: 0, pid: -1}, {id: 2, pid: 1}]));
 
 24. add(1)(2)(3) = 6 add(1,3,4)(2)(3) = 13
 
+function add(...rest) {
+  const sum = [...rest];
+
+  const _add = (...params) => {
+    if (params.length) {
+      sum.push(...params);
+      return _add;
+    } else {
+      return sum.reduce((res, cur) => {
+        return res + cur;
+      }, 0);
+    }
+  }
+
+  _add.toString = function() {
+    return sum.reduce((res, cur) => {
+      return res + cur;
+    }, 0);
+  }
+
+  return _add;
+}
+
+console.log(add(1,2,3)(1,2,3)(1)())
+
 ### 队列
 
 中等
