@@ -148,6 +148,26 @@ promise可以处理异步，async await是通过promise和generator实现的，�
 28. 进程中堆内存和堆外内存的如何区分
 node 中进程中的内存是堆内存是由v8分配的， 通过流或者buffer操作的数据使用的是堆外内存，流也是通过buffer实现的
 
+29. html文件, css文件, js文件相互影响关系
+
+2. css文件加载（加载就下载和解析）, 不影响html元素的解析, 但是影响render tree 生成, 这也是浏览器自我优化的一部分, 避免多于的重排和重绘,
+css文件加载, 阻止css文件后面的script文件的执行, 等css文件加载完成后, script文件内的代码才继续执行，因为js可以修改样式信息, css加载是并行加载可以多个css同时加载互不影响, css加载不会影响它下面的js文件的下载，但是会影响js的执行只要html不执行就不能继续解析dom
+
+3. 正常不加defer 和 async的script标签, 会同步加载和执行js代码, 所以在加载和执行的时候就会阻止html元素的解析（因为js 可能会改变 DOM 的结构）,
+当添加defer属性时, script标签异步下载js文件, 不会阻塞html元素的解析, 当html元素全部解析完成后, DOMContentLoaded事件触发之前, 按照加载顺序, 执行js文件, DOMContentLoaded事件就是html全部元素都加载和解析完成后, 就会执行, DOMContentLoaded是document上的事件, 当添加async属性时, 会异步下载和执行js代码, 不会阻塞html元素解析, js代码会异步下载完成后立即异步执行, defer和async都是只在外部引用js文件时生效, 正常不加defer 和 async的script标签会阻塞link元素的解析, 所以会阻塞css的加载
+
+4. load事件 是在window上的事件, 是在整个页面的资源加载完成后执行, 就是页面所有资源都下载完成后
+
+5. html元素的解析, 是包括html标签在内的所以元素的解析, 当</html>解析完成后, 才是所有html元素解析完成
+
+6. html和css的加载是并行的，互不干扰的，dom树和cssom树合并形成render树之后就可以开始渲染了，不用解析道最后一个</html>结尾标签，css加载不影响html解析，但是影响dom树的渲染
+
+7. 浏览器在遇到script标签之后如果script标签没有加defer和async，会先渲染一遍之前解析好的html和css，这是为了因为在js中可能获取dom，所以要把之前的都渲染了，以备js中要获取， 然后在去下载和执行js
+
+8. html解析完毕之后就可以通过js获取了，而不用必须渲染完毕
+
+9. css link的话就是现在完毕立即解析， 如果是style标签的话就是执行到理解解析，正常的话css生成和dom解析相匹配的cssom树了就是渲染一下，css和dom就是边解析边渲染的
+
 
 #### ts复习
 1. 数据类型
