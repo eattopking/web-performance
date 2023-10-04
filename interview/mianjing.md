@@ -779,6 +779,8 @@ no-transform: 告诉中间代理不要改变资源的格式
    并且实现多路复用同一个连接的多个请求数据传输是独立的，一个请求丢包了等待重发了，其他请求正常传输。
 
    3. 如何实现http2， 实现http2要做哪些事
+   首先需要nginx的最低版本是1.10.0，openssl最低版本是1.0.2，http2基本上就只支持https，如果nginx中的openssl的版本过低在升级openssl之后需要重新编译nginx，在安装一遍，这样openssl的版本就对了，浏览器支持http2是更加所以在操作系统版本和浏览器版本决定的，当建立tcp连接的时候，nginx会更根据握手信息判断浏览器是否支持http2，支持的话建立http2的tcp连接，不支持的话就建立http1.1的连接，nginx支持https的http2需要将
+   只针对https的监听 listen 443 ssl 改为 listen 443 ssl http2 然后重启nginx即可;
    
 
 10. 大文件传输方式
@@ -882,6 +884,26 @@ work进程中获取不到window、document， 只能获取自己的全局对象 
 dns、 tcp链接、请求资源、浏览器渲染过程、js执行
 
 7. 浏览器页签之前如何通信
+
+1. 通过localStorage通过，localStorage是同源的， localStorage变化可以通过window.addEventListener('storage', (e) => {
+  e是设置localStorage属性的详细信息，比如key、新旧值等
+})监听，设置localStorage.setItem("num", num++)，e就获取到num相关的信息
+
+2. 本地起一个ws服务，客户端同时监听websocket， 一个客户端请求ws，ws同时向多端发送消息，实现页面间通信， 浏览器对http协议有同源策略，对websocket协议没有
+
+ws通过tcp建立连接（和http一样有三次握手四次挥手的过程），然后ws内部使用http协议的get请求向ws服务器请求升级协议为websocket，
+请求头是：Connecttion: Upgrade 表示升级协议、Upgrade： websocket表示升级的协议为websocket
+响应状态码为101，并且响应头是Connecttion: Upgrade、Upgrade： websocket 表示升级协议为websocket成功，之后就用websocket协议通信了
+
+ws传输的数据可以是文本，也可以是二进制，可以设置，如果是二进制用的时候需要转化，通过ws请求的时候需要将文本转为二进制
+
+ws 默认端口是80，wss 加密的端口是443（wss的加密也是使用TLS）
+ws 是应用层协议、双向数据传输（全双工通信）、通过tcp建立持久连接
+
+
+3. sharedWorker 这种web worker（需要遵守同源策略），可以同源间共享，通过这种方式实现进程间通信， 继续完善
+
+
 
 #### 小程序
 实现原理
