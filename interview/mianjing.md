@@ -320,7 +320,7 @@ import { startTransition } from 'react'; 这个startTransition和 useTransition(
 
 6. react提供的情况案例，如何解决Effect初始化要执行一次， 如何设置effect 有两个参数，但是只受一个参数控制
 
-// 第一次不更新，后面参数变化在更新， 就是模式didupdate
+// 事例一 第一次不更新，后面参数变化在更新， 就是模式didupdate， 看一下useEffect第一次执行时候return回调执行了没有（答案是不执行）
 const useUpdateEffect = (effect, deps) => {
   const isFirstRender = useRef(true);
 
@@ -328,6 +328,7 @@ const useUpdateEffect = (effect, deps) => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
     } else {
+      // 看一下这里第二次更新时候effect()返回的回调执行了没有（答案是没有，因为没有注册上呢），第三次更新effect()返回的回调执行了没有（答案是有，因为第二次的时候已经注册上了）
       return effect();
     }
   }, deps);
