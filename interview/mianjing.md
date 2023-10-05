@@ -901,9 +901,81 @@ ws 默认端口是80，wss 加密的端口是443（wss的加密也是使用TLS�
 ws 是应用层协议、双向数据传输（全双工通信）、通过tcp建立持久连接
 
 
-3. sharedWorker 这种web worker（需要遵守同源策略），可以同源间共享，通过这种方式实现进程间通信， 继续完善
+3. sharedWorker 这种web worker（需要遵守同源策略），可以同源间共享，通过这种方式实现进程间通信
 
+### web worker
 
+1. 正常 worker是支持多线程，正常的web worker使用如下
+
+通过 const worker = new Worker('work.js'); 一个文件创建一个worker线程，
+然后在主线程通过worker.postMessage('Hello World')给worker子线程发消息，
+
+// 然后通过worker子线程文件中 work.js
+self.addEventListener('message', function (e) {
+  // worker子线程中通过如下给主线程发消息
+  self.postMessage('You said: ' + e.data);
+}, false);监听主线程发的消息, 然后主线程中通过
+worker.onmessage = function (event) {
+  console.log('Received message ' + event.data);
+}监听子线程发的消息
+
+2. sharedWorker和正常worker不同的是，正常的worker只有在创建worker的脚本中才可以被获取然后通行，sharedWorker在同源的脚本中创建一次，其他同源的通过同一个文件创建，会共享同一个worker，然后可以通过这个worker作为中转通信，
+
+主进程通过创建sharedWorker线程
+
+let myWorker = new SharedWorker('./sharedWorker.js', 'test worker')
+   
+// 监听共享线程传递的消息， 通过这种方式注册监听就不用调用sharedWorker.port.start()开启和共享线程的连接了，但是使用addEventListener()监听message就需要
+myWorker.port.onmessage = (e) => alert(e.data);
+
+// 主线程给共享线程发消息，移除存储的实例
+myWorker.port.postMessage('close');
+
+// 主线程关闭和共享线程的连接
+myWorker.port.close()
+
+// sharedWorker.js 共享线程文件
+
+let number = 3
+// 储存所有port
+this.ports = []
+onconnect = e => {
+    // 每个主线程和共享线程连接成功后都会掉一次这个方法，都会获取一个共享线程和主线程通信的实例，我们可以将这个实例存在一个数组中，然后统一遍历数组给各个主线程发送数据
+    const port = e.ports[0];
+
+    // 给对应主线程实例都注册onmessage，监听对应主线程发的消息
+    port.onmessage = (e) => {
+        switch (e.data) {
+                case 'getData':
+                        // 广播：给所有port发消息
+                        broadcast(number)
+                        break;
+                case 'close':
+                        clearInvalidPort(port)
+                        break;
+
+                default:
+                        break;
+        }
+    }
+}
+
+function broadcast(message) {
+	console.log('ports', this.ports)
+	this.ports.forEach(port => {
+    // 给浏览器页签发消息
+		port.postMessage(message)
+	})
+}
+
+function clearInvalidPort(port) {
+	const index = this.ports.findIndex(item => item === port);
+	if (~index) {
+		this.ports.splice(index, 1);
+	}
+}
+
+4. cookie + setInterval
 
 #### 小程序
 实现原理
