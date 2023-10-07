@@ -604,22 +604,7 @@ console.log(obj == 0 && obj == 1 && obj == 2)
 // 一维数组转换成树 [{id: 0, pid: -1}, {id: 1, pid: 0}, {id: 2, pid: 1}]
 
 function arrTotree(arr) {
-  let current = null;
-  let result = null;
-
-  for(let item of arr) {
-    const { id, pid } = item;
-    if (pid === -1) {
-      current = { id, child: null };
-      result = current;
-    } else {
-      const child = { id, child: null };
-      current.child = child;
-      current = child;
-    }
-  }
   
-  return result;
 }
 // { id: 0, child: { id: 1, child: { id: 2, child: null } } }
 console.log(arrTotree( [{id: 1, pid: 0}, {id: 0, pid: -1}, {id: 2, pid: 1}]));
