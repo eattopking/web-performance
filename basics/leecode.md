@@ -636,6 +636,31 @@ function add(...rest) {
 
 console.log(add(1,2,3)(1,2,3)(1)())
 
+25. class App {
+	list = [];
+	use = (callback) => {
+		this.list.push(() => {
+			callback(this.run)
+		});
+	}
+	
+	run = () => {
+		const callback = this.list.shift()
+		callback && callback();
+	}
+}
+
+var app = new App();
+
+app.use(next => setTimeout(() => next(), 500))
+
+app.use(next => {
+  console.log(123); 
+  next();
+});
+
+app.run();
+
 ### 队列
 
 中等
