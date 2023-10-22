@@ -432,6 +432,10 @@ function useEffect(callback, deps) {
 1. 输入和输出是确定的，可以做缓存
 
 18. react17之后 react/jsx-runtimne 运行时将jsx转为虚拟dom， 是通过babel编译之后自动引入react-runtime的，不是我们每次开发都引入react了
+
+19. react diff 算法更新机制
+
+20. react 实践中的一些小技巧
 #### vue复习
 
 1. vue2的生命周期 和react生命周期有何不同
@@ -1358,6 +1362,10 @@ recast是词法分析库，可以将js代码转成语法树，并生成sourcemap
 4. window.addEventListener("unhandledrejection", (event) => {
   console.warn(`UNHANDLED PROMISE REJECTION: ${event.reason}`);
 }); 当promise的reject没有被catch处理的时候会触发
+
+#### 高途印象深刻的项目
+
+印象比较深刻的是一个小程序的项目从0到1的，当时技术选型的时候，因为当时业务需求是想同时支持h5和小程序，所以就考虑使用跨平台的方案，当时跨平台的方案有两种一种是taro 使用react语法， 一种是uniapp使用的是vue的语法，考虑到技术栈的统一，因为我们是react技术栈，还有考虑到社区的活跃度、稳定性 最后选择了taro，然后taro还分两个版本，一个是编译式的（taro1、taro2）、一个是运行时的（taro3）,在小程序端创建一个浏览器环境，解决编译式taro只能支持react，不支持sourcemap、jsx支持不全的问题，但是在进行测试之后，发现taro3的性能比taro2要低很多，因为我们本来也是使用的react技术栈，所以我从性能出发我们选择了taro2，这是一个从0到1的项目小程序后端的配置都是从0到1配置一遍，还有登陆功能等的流程实现了一遍，中间遇到的问题就是需要对图片进行批改，一开始是使用原生canvas做的，但是发现实现之后代码可维护性不好，并且性能也不好，所以又继续调研找到一个库fabric它是通过两层canvas实现的，有一个舞台的概念，通过这个库又实现了一遍解决了可维护性和性能的问题
 
 
 #### 做过的比较印象深刻的项目
