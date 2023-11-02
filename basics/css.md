@@ -392,3 +392,11 @@ div:last-of-type 匹配父元素中最后一个div元素
 
 ### css书写遵循的原则
 
+### 解决css 命名冲突的几种方式
+
+1. 使用css module，需要在编译时处理，webpack是借助css-loader处理，less和scss等能支持css module也是借助了css 自身的能力，也是最后转为css后在通过像webpack css-loader处理处理，less和scss本身就是支持css 所有的能力，只不过他们还提供更多其他的能力
+
+2. css in js， 比如react 中emotion，使用css in js 可以解决初始化判断后在展示对应样式的闪的问题，css in js就是将对应的样式插入到一个style标签中，然后统一展示样式
+
+3. 还有一个就是无痛切换自己和子组建的样式的，就是在自己的style上设置行内的css变量，然后自己和子元素都可以使用，这样也可以实现动态切换，css变量是有作用域概念的，css在写公共样式或者切换主题上很有用的
+
