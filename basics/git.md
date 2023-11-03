@@ -26,6 +26,21 @@ git 中两个分支的比较， 都是后面文件和前面文件的比较， �
 
 git rebase 将本地的多个commit合并成一个请求, 这种场景只能在本地使用
 
+#### git commit --amend
+
+1. 在创建一个commit之后， 再修改内容提交的时候不想创建新的commit，只想作为上次commit的追加内容就是用git commit --amend，如果这个commit没有push，追加之后直接git push 就可以提交到远端了
+2. 如果这个commit已经push到远端了，这个时候也可以通过git commit --amend追加，但是推送到远端的时候需要使用git push --force
+
+
+#### 如果想将一个分支上的几个提交，合并到另一个分支可以使用git cherry-pick
+
+1. git cherry-pick <commitHash>
+2. git cherry-pick 分支名，表示这个分支最新的提交
+3. 当git cherry-pick发生冲突的时候，用户解决完冲突后，git add . 之后，然后接着执行git cherry-pick --continue，继续合并
+4. 在发生冲突的时候 git cherry-pick --abort，表示放弃合并，回到操作前的样子。
+5. git cherry-pick --quit，发生代码冲突后，退出 Cherry pick，但是不回到操作前的样子
+
+
 
 #### git push -u 的含义
 
