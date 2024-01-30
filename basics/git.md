@@ -26,6 +26,8 @@ git 中两个分支的比较， 都是后面文件和前面文件的比较， �
 
 git rebase 将本地的多个commit合并成一个请求, 这种场景只能在本地使用
 
+git rebase -i的文档：https://juejin.cn/post/7035512330662182920
+
 #### git commit --amend
 
 1. 在创建一个commit之后， 再修改内容提交的时候不想创建新的commit，只想作为上次commit的追加内容就是用git commit --amend，如果这个commit没有push，追加之后直接git push 就可以提交到远端了
