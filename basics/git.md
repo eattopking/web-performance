@@ -86,3 +86,7 @@ git push -u 就是在第一个见本地分支push到远端的时候, 将本地�
 
 4. 等找到之后git bisect reset，就回到一开始的commitId
 ```
+
+### git log 用法
+
+https://www.cnblogs.com/EnSnail/p/6772454.html
