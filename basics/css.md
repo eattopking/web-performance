@@ -96,6 +96,8 @@ svg 是通过xml语法的一个矢量图， 也是html标签可以被浏览器�
 
 3. 在react中, 可以将svg标签放在一个.svg的文件中, 然后在组件中直接引入这个文件就相当于引入了svg标签, 引入的就是组件了, 然后在react直接使用这个组件, 就相当于使用svg标签了, 这是因为webpack的@svgr/webpack， loader实现的
 
+4. 字体图标和svg区别就是字体图标是通过伪元素实现的，svg是一个矢量图是一个图片是一个html标签，svg是图片可以多色，字体图标只能是单色
+
 ### css变量
 
  /* css变量也可是有作用域的，在选择器下定义就只能在选择器和其子组件中使用 */
@@ -391,4 +393,55 @@ div:last-of-type 匹配父元素中最后一个div元素
 ### grid布局
 
 ### css书写遵循的原则
+
+### 解决css 命名冲突的几种方式
+
+1. 使用css module，需要在编译时处理，webpack是借助css-loader处理，less和scss等能支持css module也是借助了css 自身的能力，也是最后转为css后在通过像webpack css-loader处理处理，less和scss本身就是支持css 所有的能力，只不过他们还提供更多其他的能力, css module 相同的一个less文件中定义两个相同的类名，那么通过css-loader转化后在css文件中的类名是相同的
+
+:global(.cos-wise) & {
+        padding-bottom: .11rem !important;
+        // 这里test还是会被转化为css module格式的类名
+        .test {
+
+        }
+}
+
+.aaaaa {
+     cos-wise是普通类名
+    :global(.cos-wise) {
+        padding-bottom: .11rem !important;
+        // 这里test还是会被转化为css module格式的类名
+        .test {
+
+        }
+    }
+}
+
+.aaaaa {
+    :global {
+        // 这里边定义的都是普通类名
+        padding-bottom: .11rem !important;
+        // 这里test还是会被转化为css module格式的类名
+        .test {
+
+        }
+    }
+}
+
+
+
+2. css in js， 比如react 中emotion，使用css in js 可以解决初始化判断后在展示对应样式的闪的问题，css in js就是将对应的样式插入到一个style标签中，然后统一展示样式
+
+3. 还有一个就是无痛切换自己和子组建的样式的，就是在自己的style上设置行内的css变量，然后自己和子元素都可以使用，这样也可以实现动态切换，css变量是有作用域概念的，css在写公共样式或者切换主题上很有用的
+
+### transform 相关总结
+
+1. transform-origin transform的设值都是以转换中心开始的，这个转换中心是在一开始就确定的，之后就不变了
+
+2. translate的位移是以transform-origin（转换中心）为坐标轴中心，然后设置移动，translate的百分比设置是相对于自身的
+
+
+### animation 相关总结
+1. animation可以设置循环播放， 循环播放的起始点只要不要显示窗口内，那么重复播放的时候从末尾到起始，就不会有闪一下的效果，否则就有
+
 
