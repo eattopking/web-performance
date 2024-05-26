@@ -4,33 +4,43 @@
     <meta charset="utf-8" />
     <title>菜鸟教程(runoob.com)</title>
     <style>
-        .border-1px {
+        .move {
             position: relative;
             width: 100px;
             height: 100px;
             background: red;
-            border-radius: 8px;
+            transform-origin: center;
+            transform: translateX(50px); 
+            
+            /* animation-name: slidein;
+            animation-duration: 3s;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear; */
+      
         }
-        /*全部边框*/
-        .border-1px:after {
-            content: '';
-            position: absolute;
-            box-sizing: border-box;
-            top: 0;
-            left: 0;
-            width: 200%;
-            height: 200%;
-            border: 1px solid #000;
-            border-radius: 16px;
-            -webkit-transform: scale(0.5);
-            transform: scale(0.5);
-            overflow: hidden;
-            -webkit-transform-origin: top left;
+
+        .test {
+          transform: translateX(-50px); 
+        }
+
+        @keyframes slidein {
+          0% {
+            transform: translateX(50px);
+          }
+          100% {
+            transform: translateX(-50px);
+          }
         }
     </style>
   </head>
   <!-- 创建页面 -->
   <body>
-    <div class="border-1px">cell</div>
+    <div id="myDIV" class="move">cell</div>
   </body>
+  <script>
+    setTimeout(() => {
+      document.getElementById("myDIV").classList.add("test");
+    }, 2000)
+   
+  </script>
 </html>
