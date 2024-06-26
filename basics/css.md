@@ -18,11 +18,7 @@ width auto 表示子元素的整体宽度（包括padding， 边框等），等�
 
 3. css的一个规律， top 和left 是相对于父级的， bottom和right是相对于自己的
 
-
-4. 解决安卓手机按钮文案不垂直居中， 设置这个属性 line-height: normal;
-
-
-5. 移动端适配脚本
+4. 移动端适配脚本
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
 // 移动端自适应脚本
     (function (doc, win) {
@@ -40,6 +36,9 @@ width auto 表示子元素的整体宽度（包括padding， 边框等），等�
       win.addEventListener(resizeEvt, recalc, false);
       doc.addEventListener('DOMContentLoaded', recalc, false);
     })(document, window);
+
+### 兼容性问题
+1. 解决安卓手机按钮文案不垂直居中， 设置这个属性 line-height: normal;
 
 ### rem 做移动端适配的原理
 

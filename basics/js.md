@@ -99,7 +99,7 @@ try 可以和 catch 一起使用， 也可以try .. finally 这样使用
 
 ### switch 使用
 
-switch当匹配到的case执行后没有break掉， 会继续执行下面没有匹配到的case的代码， 知道出现break之后才结束
+switch当匹配到的case执行后没有break掉， 会继续执行下面没有匹配到的case的代码， 直到出现break之后才结束
 
 # Promise 总结
 
@@ -337,11 +337,11 @@ const newInstanceof (left, right) {
 
 事件流就是触发事件之后，事件的执行过程，事件的执行过程分为三个阶段：
 
-1. 首先是捕获阶段， 就是从document开始， 向触发了这个事件的元素，开始查询， 如果有元素注册相同类型的事件， 并且允许在捕获阶段执行，那就执行这个元素的事件回调
+1. 首先是捕获阶段， 首先触发window上的事件，然后是触发document上的事件，然后依次触发document子节点上的事件， 向触发了这个事件的元素，开始查询， 如果有元素注册相同类型的事件， 并且允许在捕获阶段执行，那就执行这个元素的事件回调
 
 2. 然后是目标阶段， 就是看我们触发事件的这个元素是否注册了这个类型的事件，注册了就执行这个事件的回调函数（不管是注册的允许在冒泡阶段执行的事件，还是注册的允许在捕获阶段执行的事件在目标阶段都会被执行）
 
-3. 最后就是冒泡阶段， 从触发事件的元素向document方向，开始查询， 如果有父元素注册了相同类型的事件，并且允许在冒泡阶段执行， 那就是执行这个事件回调
+3. 最后就是冒泡阶段， 从触发事件的元素向window方向，开始查询，document是window的子节点， 如果有父元素注册了相同类型的事件，并且允许在冒泡阶段执行， 那就是执行这个事件回调
 
 
 
@@ -419,7 +419,7 @@ function vvv () {
   console.log(77777, a)
 }
 
-### 见元素滚动到可视区域
+### 将元素滚动到可视区域
 dom?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 ### 判断当前页面在iframe中加载的
@@ -428,3 +428,6 @@ window.frameElement?.tagName === 'IFRAME'， true就表示在iframe中加载的
 
 ### 在iframe加载的页面中获取承载iframe标签的这个页面的window
 window.parent
+
+### window、document、html标签的区别
+window是表示一个视口或者一个浏览器页签， document表示视口内的dom内容，html标签是document的直接子节点
