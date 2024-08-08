@@ -109,6 +109,23 @@ svg 是通过xml语法的一个矢量图， 也是html标签可以被浏览器�
         background-color: var(--bg, yellow);
    }
 
+  // css变量还可以在非全局的类名中使用，既可以在当前这个类中使用，也可以在子元素的类中使用，因为css变量是有作用域的，子级可以使用父级的css变量
+  .move {
+      --bg: yellow;
+      position: relative;
+      width: 100px;
+      height: 100px;
+      background: var(--bg, red);
+      transform-origin: center;
+      transform: translateX(50px); 
+      
+      /* animation-name: slidein;
+      animation-duration: 3s;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear; */
+
+  }
+
 ### 容器查询
 
 给容器设置

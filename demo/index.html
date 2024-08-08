@@ -5,10 +5,11 @@
     <title>菜鸟教程(runoob.com)</title>
     <style>
         .move {
+            --bg: yellow;
             position: relative;
             width: 100px;
             height: 100px;
-            background: red;
+            background: var(--bg, red);
             transform-origin: center;
             transform: translateX(50px); 
             
