@@ -49,6 +49,13 @@ docker push 将自己创建的镜像推动到docker hub， 自己创建的镜像
 docker run -d -p 80:80 --name nginx-web -v /root/nginx/www:/usr/share/nginx/html -v /root/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v /root/nginx/logs:/var/log/nginx nginx
 
 
+### docker 问题总结
+
+1. Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json?all=1: dial unix /var/run/docker.sock: connect: permission denied
+
+解决方式执行：newgrp docker
+
+
 #### docker run 参数
 
 [react-native ios 调试](../images/docker1.png)
