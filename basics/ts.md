@@ -1,4 +1,4 @@
-ts的本质就是在定义和调用的时候做约束
+ts的本质就是在定义和调用的时候做约束，并提供扩展的数据结构
 
 ### ts 编译
 全局安装ts可以使用tsc指令了，ts官网提供的编译命令就是tsc
@@ -8,7 +8,7 @@ $ yarn global add typescript
 
 tsc 指令可以将ts直接编译成js
 
-
+1. tsc index.ts 将index.ts转为index.js,ts重复编译js会覆盖之前的编译结果内容，编译结果文件名称不变
 
 ### 运算符号 用在类型中的
 1. 非空运算符 !， let a = 'cccc'; (a!表示a不可能是undefined 和null)
@@ -71,17 +71,17 @@ type TEST = {
 3. keyof 取出对象类型中的key 并用 ｜ 拼接， 如果key只有一个那就直接去除那个key值
 
 4. extends, 在类型是使用extends 就是返回true或者false用于判断
-type Info<T> = T extends <{a: infer U; b: infer U}> ? U : never;
+type Info<T> = T extends {a: infer U; b: infer U} ? U : never;
 
 type Test = Info<{a: number; b: string}> 最后结果type Test = number ｜ string;
 type Test = Info<{a: number; b: number}> 最后结果type Test = number;
 type Test = Info<number> 最后结果type Test = never;
 
-如果 T 的传值字段和  <{a: infer U; b: infer U}>相同， 就是说明T 继承自<{a: infer U; b: infer U}>，
+如果 T 的传值字段和  {a: infer U; b: infer U}相同， 就是说明T 继承自{a: infer U; b: infer U}，
 
-T extends <{a: infer U; b: infer U}>就返回true， type Info的类型就是U，否则是never，然后如果U的类型相同类型就是单一的，否则不同的类型将通过｜组成联合类型
+T extends {a: infer U; b: infer U}就返回true， type Info的类型就是U，否则是never，然后如果U的类型相同类型就是单一的，否则不同的类型将通过｜组成联合类型
 
-5. infer 可以声明类型变量，可以用在判断中产生一个新的类型， 例如上面
+5. infer 可以声明新泛型类型，可以用在判断中产生一个新泛型类型， 例如上面
 
 6. is 在类型中明确类型的，感觉类似是断言，暂时没看出来有啥用
 
@@ -101,6 +101,23 @@ console.log(isNumber(true)) //false
 ### extends作用
 
 1. 用于接口继承
+interface A {
+    a: string;
+}
+
+interface B {
+    b: string;
+}
+
+interface C extends A,B {
+    c: string;
+}
+
+此时C 为 {
+    a: string;
+    b: string;
+    c: string;
+},这叫做多重继承
 
 2. 用于类型中条件判断， 判断一个接口是否继承自另一个接口，可以用于类型判断的三元表达式中，返回true或者false
 
@@ -123,6 +140,17 @@ type A2 = 'x' | 'y' extends 'x' ? string : number; // number
 4. 联合类型作为泛型参数传递进去，这个时候判断a是否是b的子类型，作为条件判断返回类型，会有分配条件判断
 type P<T> = T extends 'x' ? string : number;
 type A3 = P<'x' | 'y'>  // A3的类型是 string | number;
+
+分配条件类型：就是内容是联合类型的泛型在extends左侧进行继承时，会将联合类型拆分开分别和extends进行继承比对，然后将每次的结果再组合成一个新的联合类型
+
+4.1 防止条件判断中的分配
+
+
+ts 代码解读复制代码  type P<T> = [T] extends ['x'] ? string : number;
+  type A1 = P<'x' | 'y'> // number
+  type A2 = P<never> // string
+
+在条件判断类型的定义中，将泛型参数使用[]括起来，即可阻断条件判断类型的分配，此时，传入参数T的类型将被当做一个整体，不再分配。
 
 5. 作为参数的泛型参数的约束条件，是子类型是true传入参数就是正确，否则报错
 type Pcik<T, K extends keyof T> = {
@@ -178,7 +206,7 @@ type Object = {
    c: object
 }
 
-type Test = Pick<Object, a | b>, 结果是type Test = {
+type Test = Pick<Object, 'a' | 'b'>, 结果是type Test = {
    a: number;
    b: string;
 }
@@ -187,7 +215,7 @@ type Test = Pick<Object, a | b>, 结果是type Test = {
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
 
-提出类型中的字段返回新的对象类型
+剔除类型中的字段返回新的对象类型
 type Test = Omit<{a: string; b: number}, 'a'>， 结果是type Test = {b: number}
 
 7. Exclude<T, U>, 剔除T联合类型中的U类型
@@ -282,7 +310,6 @@ a<Test>({ length: 111, test: 'string' });
 ### 接口
 1. 接口可以定义对象类型、可以定义函数类型、也可以定义类类型
 
-定义函数类型就叫你接口
 
 定义函数类型叫做函数接口
 
