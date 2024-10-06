@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  is伪类的demo
+
+  :is伪类就是，在选择器的每个测试可以设置多个可选项，然后自由匹配，dom结构上有对应的结构就生效
+  <head>
+    <meta charset="utf-8" />
+    <title>css demo</title>
+    <style>
+      :is(.test1, .test2, menu, dir) :is(.testp1, .testp2) {
+        color: red;
+      }
+    </style>
+  </head>
+  <!-- 创建页面 -->
+  <body>
+    <div id="myDIV" class="move">
+      <div class="test1">
+        <p class="testp1">1111</p>
+      </div>
+      <div class="test2">
+        <p class="testp2">2222</p>
+      </div>
+    </div>
+  </body>
+  <script>
+   
+  </script>
+</html>

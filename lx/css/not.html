@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  :not伪类的demo
+
+  :not伪类就是，反选伪类，当元素符合对应选择条件是就不设置对应的样式，反过来不符合就设置对应的样式
+  <head>
+    <meta charset="utf-8" />
+    <title>css demo</title>
+    <style>
+      p:not(.testp1) {
+        color: green;
+      }
+    </style>
+  </head>
+  <!-- 创建页面 -->
+  <body>
+    <div id="myDIV" class="move">
+      <div class="test1">
+        <p class="testp1">1111</p>
+      </div>
+      <div class="test2">
+        <p class="testp2">2222</p>
+      </div>
+    </div>
+  </body>
+  <script>
+   
+  </script>
+</html>

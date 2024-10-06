@@ -145,17 +145,6 @@ svg 是通过xml语法的一个矢量图， 也是html标签可以被浏览器�
   }
 }
 
-### css :has 伪类
-
-通过选择器判断父元素内是否有某个子元素，来控制样式展示
-p:has(span) {
-  /* magic styles */
-}
-
-figure:has(figcaption) {
-  /* this figure has a figcaption */
-}
-
 ### 新的 CSS 视口单位
 为了解决移动端网页滚动时，动态工具栏自动收缩的问题，CSS 工作组规定了视口的各种状态。
 
@@ -230,6 +219,7 @@ pointer-events
   scroll-start-y: 100px;
 }
 
+
 ### :snapped
 
 当前滚动的元素，停留在哪个元素上这伪类就选中哪个元素
@@ -237,20 +227,6 @@ pointer-events
   --shadow-distance: 30px;
 }
 
-### :toggle() 实现切换
-
-只有一些内置 html 元素拥有 :checked 状态，:toggle 提案是用它把这个状态拓展到每一个自定义元素：
-button {
-  toggle-trigger: lightswitch;
-}
-
-button::before {
-  content: "🌚 ";
-}
-html:toggle(lightswitch) button::before {
-  content: "🌝 ";
-}
-上面的例子把 button 定义为 lightswitch 的触发器，且定义当 lightswitch 触发或不触发时的 css 样式，这样就可以实现点击按钮后，黑脸与黄脸的切换。
 
 ### CSS 函数
 
@@ -388,7 +364,22 @@ div:last-of-type 匹配父元素中最后一个div元素
 
 25. :root 匹配根元素html元素
 
-26. :where选择器是和:is选择器作用相同的， 只不过:is选择器的的优先级是根据参数的选择器优先级，而where的优先级一直是0
+26. :where选择器是和:is选择器作用相同的， 只不过:is选择器的的优先级是根据参数的选择器优先级，而where的优先级一直是0，就是where包裹的选择器的权重是0，is包裹的选择器权重是选择器自身的权重
+
+27. ### :toggle() 实现切换
+
+只有一些内置 html 元素拥有 :checked 状态，:toggle 提案是用它把这个状态拓展到每一个自定义元素：
+button {
+  toggle-trigger: lightswitch;
+}
+
+button::before {
+  content: "🌚 ";
+}
+html:toggle(lightswitch) button::before {
+  content: "🌝 ";
+}
+上面的例子把 button 定义为 lightswitch 的触发器，且定义当 lightswitch 触发或不触发时的 css 样式，这样就可以实现点击按钮后，黑脸与黄脸的切换。
 
 ### css伪元素
 

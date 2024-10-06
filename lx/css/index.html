@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>css demo</title>
+    <style>
+        .move {
+            --bg: yellow;
+            position: relative;
+            width: 100px;
+            height: 100px;
+            background: var(--bg, red);
+            transform-origin: center;
+            transform: translateX(50px); 
+            
+            /* animation-name: slidein;
+            animation-duration: 3s;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear; */
+      
+        }
+
+        .test {
+          transform: translateX(-50px); 
+        }
+
+        @keyframes slidein {
+          0% {
+            transform: translateX(50px);
+          }
+          100% {
+            transform: translateX(-50px);
+          }
+        }
+    </style>
+  </head>
+  <!-- 创建页面 -->
+  <body>
+    <div id="myDIV" class="move">cell</div>
+  </body>
+  <script>
+    setTimeout(() => {
+      document.getElementById("myDIV").classList.add("test");
+    }, 2000)
+   
+  </script>
+</html>
