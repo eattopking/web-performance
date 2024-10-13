@@ -107,8 +107,8 @@ function newStatement3 (invoice, plays) {
     return result;
 }
 
-function format(aNumber) {
-    return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(aNumber);
+function usd(aNumber) {
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(aNumber / 100);
 }
 
 function playFor(aPerformance) {
@@ -154,9 +154,9 @@ function newStatement4 (invoice) {
         // add volume credits
         volumeCredits += volumeCreditsFor(aPerformance);
         // print line for this order
-        result += ` ${playFor(aPerformance).name}: ${format(amountFor(aPerformance)/100)} (${aPerformance.audience} seats)\n`; totalAmount += amountFor(aPerformance);
+        result += ` ${playFor(aPerformance).name}: ${usd(amountFor(aPerformance))} (${aPerformance.audience} seats)\n`; totalAmount += amountFor(aPerformance);
     }
-    result += `Amount owed is ${format(totalAmount/100)}\n`;
+    result += `Amount owed is ${usd(totalAmount)}\n`;
     result += `You earned ${volumeCredits} credits\n`; 
     return result;
 }
