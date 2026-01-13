@@ -451,4 +451,11 @@ html:toggle(lightswitch) button::before {
 ### animation 相关总结
 1. animation可以设置循环播放， 循环播放的起始点只要不要显示窗口内，那么重复播放的时候从末尾到起始，就不会有闪一下的效果，否则就有
 
+### ae2css 是一个 ae 的插件，将 AE 制作的动画导出为 CSS 代码
+
+github地址，https://github.com/bigxixi/ae2css
+
+### galacean 可以做小动画，小游戏
+https://galacean.antgroup.com/
+ 
 
