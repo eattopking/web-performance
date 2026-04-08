@@ -179,10 +179,6 @@ Function.prototype.bind = function (scope, ...rest) {
     }
 }
 
-
-
-
-
 8. 失败重连
 promise.catch的时候重复调用方法，有一个数，重连一次就--，到0的时候直接返回error结果， 最终就是返回一个promise
 
