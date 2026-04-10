@@ -505,7 +505,7 @@ vue2中使用jsx，是在render函数里面使用，render函数和data是并列
 #### rn复习
 1. react Native 架构原理
 
-1.1. 开启hermes引擎之后，metro 编译react-native代码的时候hermes会有个预编译把metro编译出来的jsbundle转换成hermes bytecode，（原来的js引擎搜边转换边执行的，js引擎最后都是执行的字节码，hermes也可以边转换边执行，但是速度要比v8和jscode慢，以为hermes移除了JIT编译器，就是去掉了边转换边执行的优化，这样带来的好处就是减小了hermes引擎的体积，优化了内存大小，还有JIT在启动时需要预热，影响app启动时间， hermes有针对移动端的垃圾回收策略）
+1.1. 开启hermes引擎之后，metro 编译react-native代码的时候hermes会有个预编译把metro编译出来的jsbundle转换成hermes bytecode，（原来的js引擎搜边转换边执行的，js引擎最后都是执行的字节码，hermes也可以边转换边执行，但是速度要比v8和jscode慢，因为hermes移除了JIT编译器，就是去掉了边转换边执行的优化，这样带来的好处就是减小了hermes引擎的体积，优化了内存大小，还有JIT在启动时需要预热，影响app启动时间， hermes有针对移动端的垃圾回收策略）
 
 1.2 然后通过hermes js引擎执行，hermes bytecode
 
@@ -674,7 +674,7 @@ electron是内部封装了chromium和node，创建跨平台桌面端应用的框
 3. 包体积过大依赖的插件过多导致启动变慢，可以尝试移除不必要的插件
 
 8. electron如何优化包的大小
-以mac为例子，包体积分为两部分 Frameworks 和resources， 其中Frameworks是electron核心没有什么优化的空间， 之前有一个electron-boilerplate是精简的electron但是也有好几年不更新了，所以我们优化的点主要是在resources，它里边的app.asar就是我们前端的资源文件， 我们将第三方的文件按需加载，减少node_modules, 打包的时候设置compression：store 进行压缩， /** 压缩形式，默认normal;store打包最快，适合测试;maximum打包体积最小，适合生产模式 **/
+以mac为例子，包体积分为两部分 Frameworks 和resources， 其中Frameworks是electron核心没有什么优化的空间， 之前有一个electron-boilerplate是精简的electron但是也有好几年不更新了，所以我们优化的点主要是在resources，它里边的app.asar就是我们前端的资源文件， 我们将第三方的文件按需加载，减少node_modules, 打包的时候设置compression：maximum 进行压缩， /** 压缩形式，默认normal;store打包最快，适合测试;maximum打包体积最小，适合生产模式 **/
 
 
 9. 除了electron还有哪些可以开发桌面端
@@ -1619,7 +1619,7 @@ arcGIS是地理相关的软件，开发地图的时候可能会用到
 3. 制定稳定性准入标准，提供降级预案
   1. 资源域名被封禁提供备用域名并支持平台自动配置替换
   2. 分享降级，修改分享地址配置，度口令降级，更换度口令文案
-  3. 性能指标：端上屏小于1000ms、tti：<= 2000ms，html体积 <= 14KB，初始css体积 <= 20KB；、异步分包体积单个小于80k、整体页面节点数小于500
+  3. 性能指标：端上屏小于1000ms、tti：<= 2000ms，html体积 <= 14KB，初始css体积 <= 20KB；、js主包体积小于600k、异步分包体积单个小于80k、整体页面节点数小于500
   4. 制定核心流程p0case，便于紧急上线快速回归
 4. 开发提效aetocss协调UE降低动画开发成本，降低开发成本80%，只剩调试成本
   和ue确定动画导出标准，推动UE使用这个插件产出动画
@@ -1633,7 +1633,6 @@ arcGIS是地理相关的软件，开发地图的时候可能会用到
   背景：想结合马年这个主题做个有交互性的套马活动，在此为基础上开始进行调研，一开始调研了three.js，通过写demo发现，threejs上手成本高，和UE的调试成本也很高，对我们期望快速上线，轻量化的随求不相符，后面通过调研有发现了gelance, 是蚂蚁出的移动端动效方案，分为两种模式一种Galacean Effects，这是一种动效播放模式，就是将AE产出的物料进行播放，不需要前端去操作额外的交互，还有一种模式是是gelance Engine可以实现复杂的3d交互（遵循 ECS（实体-组件-系统）3D互动引擎），我通过demo，发现Effects模式就是可以满足我们的想要的效果，主要依赖UE的成本产出物料，开发成本相对较低，上手较快，且经历了蚂蚁的验证，兼容可以得到保障，所以最终选择了Galacean Effects进行套马活动的开发
 
   gelance Engine和Galacean Effects的区别：engine使用glb二进制文件，将所有贴图、模型数据都打到一个包里，避免文件散落、体积小、加载速度快，Effects使用json文件，json中用的图片放在一个images文件夹里
-
   屏幕适配要求：galacean容器宽高和figma的宽高保持一致
 
   gelance降级：
@@ -1642,7 +1641,7 @@ arcGIS是地理相关的软件，开发地图的时候可能会用到
   如何判断套中：
   这是一个AABB矩形碰撞检测，绳索的坐标是x,y, 只要绳索的坐标是在马的身体中心向左或向右1.24，向上或向下0.7这个范围内就表示套中了，使用矩形碰撞检测的原因是计算简单，性能高，一开始调这个套中马这个坐标花了一些时间，一开始不是偏左就是偏右，后面才确定了整体的矩形范围
 
-  遇到的坑总结的经验：
+  套马遇到的坑总结的经验：
   1. 同一个页面不要使用多个 Player，如果一定要用，请暂停其他 Player，只保留一个 Player 播放。
     1. 一个player表示一个canvas画布图层
 
@@ -1657,8 +1656,35 @@ arcGIS是地理相关的软件，开发地图的时候可能会用到
   7. 网络条件允许的情况下使用压缩纹理, 最新版运行时已经支持KTX2纹理, 需要用到大纹理(2K)以上的建议使用。
 
 
-### ai应用总结
-•	AI 提效探索 (Highlight)： 熟练运用 Vibe Coding 模式及 AI 工具辅助代码开发，掌握 Figma MCP 协作生态，能够通过 Prompt 调优“训练”大模型生成代码及技术文档，赋能团队研发提效 
+### ai实践应用总结
+1. AI 提效探索 (Highlight)： 熟练运用 Vibe Coding 模式及 AI 工具辅助代码开发，掌握 Figma MCP 协作生态，能够通过 Prompt 调优“训练”大模型生成代码及技术文档，赋能团队研发提效 
+
+使用ai进行提效，编写skill进行旧代码架构迁移、结合figma mcp开发skill进行页面快速实现
+（遇到的坑： figma中的图层模块需要进行语义化命名， 这样ai才能根据自然语言描述识别对应的功能模块进行实现， figma有两个mcp，一个是官方的figma-remote-mcp， 一个是社区开源的figma-developer-mcp，官方的需要登陆， 开源的需要设置密钥key，通过测试还是官方的实现效果要更好，但是也有一个坑，就是我公司的figma账号一天只能使用免费使用6次这个mcp， 最后没办法，我开了一个会员一个月可以使用600次）
+
+2. chromadb是什么，有什么作用
+这个是一个向量数据库，它是用来存储大模型检索的私有的向量数据的比如公司内部的员工手册等，传统的数据库是根据关键词来搜索的，chromadb可以根据语义搜索，因为相同语义的内容转化为向量后是差不多的
+
+如何将普通的转化为向量数字：llamaindex分割数据和向量转化，或者是chromadb会自调用向量模型自动将文本转化为向量，可以使用默认向量模型all-MiniLM-L6-v2，也可以自己自定向量模型，比如openai的向量模型（text-embedding-3-small），需要配置自定义的向量转化函数在函数内指定向量模型，指定模型需要设置模型的API key
+
+3. RAG是什么
+RAG是一个架构，检索（去向量数据库中检索相近语义的词）、增强（将检索出来的相近词，和原问题组合，组成一个新的更新完善的prompt）、生成（将完成的prompt提供给大模型，让大模型生成我们要用的答案）
+
+4. LlamaIndex和LangChain是干啥的
+在RAG架构中前期存储数据（LlamaIndex负责拆分数据并将数据转化为向量，然后将数据存到chromaDB中），检索（LangChain收到问题将问题发给LlamaIndex，LlamaIndex将问题文本转化为向量然后让chromaDb检索内容）、增强（将检索到的内容和问题传给你langchain，langchain将检索到的内容和问题给到大模型）、生成（大模型根据prompt生成答案）
+
+5. RAG、agent、 mcp、skills、llm之间的关系是什么都有什么作用
+RAG是（检索、增强、生成）的架构、agent是一个根据RAG、skill、llm结合到一起创建的可以自主规划的智能、mcp是大模型外部功能拓展接口、skills是大模型的具体任务规划、llm就是大预言模型
+
+6. 有哪些skill、有哪些mcp，用这个mcp和skill做过哪些项目
+使用公司内部react skill，使用figma mcp，进行组件开发，还有编写组件迁移skill、使用百度内部知识库skill进行知识库的操作
+
+7. Openclaw怎么用，用它做哪些事情，他的原理是什么
+首先Openclaw是一个智能体（agent）、使用它需要先去官网安装下载，然后配置大模型api key、然后在配置文件中配置社交软件token可以通过社交软件操作openclaw、安装skill扩展它的能力，openclaw是应用了RAG架构更上层的架构，不止回答问题，还可以进行物理操作
+
+通过给龙虾喂技术文档模版、相关前端相关技术信息、公司的项目通用流程规范、描述各种图表应用场景（时序图、 流程图、 架构图）训练龙虾根据场景在数据方案中绘制图表技图画图，最后产出两个方案形式一种用于评审，一种产出md形式，结合生成页面的skill，根据md文档中描述的功能模块进行功能开发、安装邮箱skill帮我收集每天的邮件汇总成报告、安装周报skill，把每天的工作和龙虾说，让它每周最后一天帮生成周报
+
+
 
 
 
