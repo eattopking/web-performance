@@ -246,7 +246,7 @@ new 实现的原理： 就是自定义一个 new 函数， 然后参数是我们
 诀窍： new 就是先创建一个空对象，然后被这个对象添加属性
 
 function customNew(fun, ...rest) {
-const that = Object.create(fun.prototype);
+    const that = Object.create(fun.prototype);
 
     const result = fun.apply(that, rest);
 

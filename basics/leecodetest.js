@@ -13,7 +13,7 @@ function flat(arr) {
         return Object.prototype.toString.call(obj).slice(8, -1) === 'Object';
     };
     const _flat = (arr) => {
-        arr.reduce((res, cur) => {
+        return arr.reduce((res, cur) => {
             const list = Array.isArray(cur) ? _flat(cur) : isObj(cur) ? flat(Object.values(cur)) : cur.valueOf();
             return res.concat(list);
         }, []);
@@ -219,3 +219,42 @@ async function asyncPool(limit, arr, callback) {
     return Promise.allSettled(result);
 }
 
+// new 实现
+function myNew(fun, ...rest) {
+    const that = Object.create(fun.prototype);
+    const result = fun.apply(that, rest)
+    const type = typeof result;
+    if ((type === 'object' && result !== null) || type == 'function') {
+        return result;
+    }
+
+    return that;
+}
+
+// 观察者模式
+
+class Event {
+    eventList = {};
+
+    addEvent = (eventName, callback) => {
+        if (this.eventList[eventName]) {
+            this.eventList[eventName].push(callback);
+        } else {
+            this.eventList[eventName] = [callback];
+        }
+    }
+
+    removeEvent = (eventName, callback) => {
+        if (this.eventList[eventName]) {
+            this.eventList[eventName] = this.eventList[eventName].filter((item) => item !== callback);
+        }
+    }
+
+    emitEvent = (eventName, ...rest) => {
+        if (this.eventList[eventName]) {
+            this.eventList[eventName].forEach((event) => {
+                event && event(...rest);
+            });
+        }
+    }
+}
