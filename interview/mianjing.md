@@ -1067,8 +1067,10 @@ taro1、2都是编译时框架，将taro 代码编译成小程序代码，使用
 3. 由于编译只支持了react框架，支持其他框架增加了维护成本和工作量
 
 
-taro3是运行时框架， 在小程序端实现是一个模拟的浏览器环境，实现了bom、dom api等，实现dom是根据小程序中<template>可以引用其他的<template>的特性，把taro的dom树渲染成<template>相互引用的形式实现在小程序端渲染，
+taro3是运行时框架， 在小程序端实现是一个模拟的浏览器环境，实现了bom、dom api等（tarojs/runtime），实现dom是根据小程序中<template>可以引用其他的<template>的特性，把taro的dom树渲染成<template>相互引用的形式实现在小程序端渲染，打平组件（@tarojs/components、）和api（@tarojs/taro）是使用了这个库在打包的时候区分的，
 我们的写的react和vue代码正常编译为js代码，然后在运行时调用taro运行时的api实现不同框架都可以开发小程序，taro实现taro-react 是小程序版本的react-dom，就是将react根页面和taro用小程序api实现的dom实例绑定在一下，并处理react中的事件
+
+taro3实现rn开发： 实现rn开发，首先rn是支持react的，不需要实现模拟的dom、bom（运行时tarojs/runtime），然后也是打平组件和api（@tarojs/components、）和api（@tarojs/taro），最后将css样式转化为rn能够识别的stylesheet
 
 taro和rn的区别
 
@@ -1545,7 +1547,62 @@ ssr 首页实现
 9. 低代码平台的深入架构的什么，数据结构和原理的设计
 本质就是数据驱动视图，json数据控制页面展示
 
-10. 这个难点深入的功能点是什么
+10. ssr用next实现，ssr请求的性能如何优化
+招式一：缓存策略（性能优化的尽头是缓存）
+纯动态的实时 SSR 是极其消耗服务器 CPU 的。只要数据不是“秒级强实时”，就一定要上缓存。
+
+ISR (增量静态再生) 替代纯 SSR： 对于官网、博客、商品详情页，坚决不要用每次请求都实时去查库的纯 SSR。使用 Next.js 的 ISR（在 fetch 中配置 next: { revalidate: 60 } 或传统的 getStaticProps 配合 revalidate）。
+
+效果： 它可以让页面像静态 HTML 一样瞬间秒开，同时在后台悄悄拉取新数据。只有下一个请求过来时，才会看到更新后的页面。
+
+按需验证 (On-demand Revalidation)：
+如果业务要求数据修改后必须立刻生效（比如 SaaS 后台改了页面配置），不要用定时器缓存，而是使用 revalidateTag 或 revalidatePath。后台数据一更新，主动调一下接口清空对应页面的缓存，这样既保证了平时访问的极致速度，又保证了数据的一致性。
+
+招式二：打破串行等待（数据获取层优化）
+在服务端拉取数据时，极其容易写出**“瀑布流（Waterfall）”**请求。
+
+并行请求 (Promise.all)：
+如果页面需要展示用户信息、轮播图、推荐列表，这三个接口彼此没有依赖，绝对不能用三个 await 连着写。
+
+JavaScript
+// ❌ 错误示范：瀑布流，耗时 = A + B + C
+const user = await getUser();
+const banners = await getBanners();
+
+// ✅ 正确示范：并发请求，耗时 = max(A, B, C)
+const [user, banners] = await Promise.all([getUser(), getBanners()]);
+招式三：Streaming (流式渲染) 与 Suspense
+这是 Next.js 13+ App Router 带来的核武器级别优化。
+
+解决“木桶效应”： 传统的 SSR，如果页面底部的“推荐列表”接口很慢，整个 HTML 都会被卡住发不出去。
+
+如何优化： 用 React 的 <Suspense> 把慢组件包裹起来。Next.js 会先把页面的骨架（比如导航栏、侧边栏）立刻生成 HTML 发给浏览器（TTFB 瞬间降下来）。等后台慢接口的数据查到了，再把这一块的 HTML 通过流（Chunked Transfer Encoding）悄悄“补发”给浏览器并拼接到对应位置。
+
+JavaScript
+import { Suspense } from 'react'
+
+export default function Page() {
+  return (
+    <section>
+      <FastHeader />
+      <Suspense fallback={<LoadingSkeleton />}>
+        {/* 这个组件里的 await 不会阻塞整个页面的加载 */}
+        <SlowProductList /> 
+      </Suspense>
+    </section>
+  )
+}
+招式四：架构与服务端资源的优化
+发挥 RSC (React Server Components) 的威力：
+Next.js 13 默认所有组件都是 Server Components。它的妙处在于，服务端的代码和依赖包绝对不会打包发送给客户端。如果你用了一个很重的 Markdown 解析库（比如 2MB），只要你在 Server Component 里用它把内容转成 HTML，最终传给客户端的就只有纯文本。这极大降低了 JS Payload 的体积和 Hydration（水合）的时间。
+
+数据库连接池 (Connection Pooling)：
+很多人抱怨 Next.js SSR 慢，排查到最后发现是数据库被压垮了。在 SSR 架构中，尤其是部署在 Serverless 环境下（如 Vercel），每一次请求可能都会新建一个数据库连接。必须在后端使用 Prisma/PgBouncer 等连接池工具，否则并发一上来，数据库连接耗尽，SSR 直接全部 502。
+
+Edge Runtime (边缘计算)：
+如果有些简单的 SSR 页面（比如只需做一下权限校验然后重定向），可以在 Next.js 中把它的 runtime 声明为 edge 而不是 nodejs。Edge 函数运行在离用户最近的 CDN 节点，没有 Node.js 的冷启动负担，请求几乎是零延迟的。
+
+11. 这个难点深入的功能点是什么
 1. 对项目初期调研，根据业务场景的需求进行调研了多个开源项目包括h5-dooring、timage-editor，最终找到了满足需求的ant landing， 因为这个项目比较老所以，为了后续更好的维护，对项目进行了hooks加上ts的改造，然后看懂了所有实现的代码，对不需要的部分进行了精简，然后将官网ssr部分、编辑器部分、还有模块组件库部分一起放在一个monorepo项目中，然后ssr和编辑器可以共同引用模块组件库
 
 2. 对模块组件的开发，开发时要保证兼容pc和h5展示因为h5和pc端的展示效果是不同的、然后都要实现响应式、还有兼容预览和线上的数据、因为为了所见即所得的效果预览的时候也希望有一些交互效果，可以点点击跳转之类的
