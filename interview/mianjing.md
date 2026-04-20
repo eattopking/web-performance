@@ -1070,7 +1070,7 @@ taro1、2都是编译时框架，将taro 代码编译成小程序代码，使用
 taro3是运行时框架， 在小程序端实现是一个模拟的浏览器环境，实现了bom、dom api等（tarojs/runtime），实现dom是根据小程序中<template>可以引用其他的<template>的特性，把taro的dom树渲染成<template>相互引用的形式实现在小程序端渲染，打平组件（@tarojs/components、）和api（@tarojs/taro）是使用了这个库在打包的时候区分的，
 我们的写的react和vue代码正常编译为js代码，然后在运行时调用taro运行时的api实现不同框架都可以开发小程序，taro实现taro-react 是小程序版本的react-dom，就是将react根页面和taro用小程序api实现的dom实例绑定在一下，并处理react中的事件
 
-taro3实现rn开发： 实现rn开发，首先rn是支持react的，不需要实现模拟的dom、bom（运行时tarojs/runtime），然后也是打平组件和api（@tarojs/components、）和api（@tarojs/taro），最后将css样式转化为rn能够识别的stylesheet
+taro3实现rn开发： 实现rn开发，首先rn是支持react的，不需要实现模拟的dom、bom（运行时tarojs/runtime），然后也是打平组件和api（@tarojs/components、）和api（@tarojs/taro），最后taro实现了一个样式编译器将css样式转化为rn能够识别的stylesheet
 
 taro和rn的区别
 
