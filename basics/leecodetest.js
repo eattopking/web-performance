@@ -431,3 +431,48 @@ class Scheduler {
     return result;
   }
 }
+
+// 简版深拷贝
+let deepcopy = (obj) => {
+  if (typeof obj !== 'object' || obj == null) {
+    return obj;
+  }
+  const isObj = () => Object.prototype.toString().slice(-8, 1) === 'object';
+  if (isObj(obj)) {
+    let newData = {};
+    let keys = Object.keys(obj);
+    for (let key of keys) {
+      newData[key] = deepcopy(obj[key]);
+    }
+    return newData;
+  }
+
+  if (Array.isArray(obj)) {
+    let newArr = [];
+    newArr = obj.reduce((result, cur) => {
+      return result.push(deepcopy(cur));
+    }, []);
+    return newArr;
+  }
+};
+
+let obj = { b: 1, c: { d: 9 }, d: [1, 3, 4, { f: [] }] };
+
+console.log(deepcopy(obj));
+
+// 将0移动到数组末尾，如输入[1, 0, 3, 0, 11, 0]，输出[1, 3, 11, 0, 0, 0]
+function moveZero(arr) {
+  let curZeroIndex = null;
+  arr.forEach((item, index) => {
+    if (item === 0 && curZeroIndex === null) {
+      curZeroIndex = index;
+    } else if (item !== 0 && curZeroIndex !== null) {
+      arr[curZeroIndex] = item;
+      arr[index] = 0;
+      curZeroIndex = index;
+    }
+  });
+  return arr;
+}
+
+console.log(moveZero([1, 0, 3, 0, 11, 0]));
