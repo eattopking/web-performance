@@ -62,7 +62,7 @@ function flat(arr) {
   const isObj = (obj) => Object.prototype.toString.call(obj).slice(8, -1) === 'Object';
   const _flat = (arr) => {
     return arr.reduce((res, cur) => {
-      const list = Array.isArray(cur) ? flat(cur) : isObj(cur) ? flat(Object.values(cur)) : cur.valueOf();
+      const list = Array.isArray(cur) ? _flat(cur) : isObj(cur) ? _flat(Object.values(cur)) : cur.valueOf();
       return res.concat(list);
     }, [])
   }
