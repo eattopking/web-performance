@@ -132,14 +132,13 @@ function wrongConnect(func, times, delay) {
 // promise.all \ promise.allSettled
 
 Promise.all = function (arr) {
-  if (!Array.isArray(arr)) {
-    throw new Error();
-  }
-
-  const result = [];
-  let count = 0;
-
   return new Promise((resolve, reject) => {
+    if (!Array.isArray(arr)) {
+      throw new Error();
+    }
+
+    const result = [];
+    let count = 0;
     for (let i = 0; i < arr.length; i++) {
       Promise.resolve(arr[i])
         .then((data) => {
@@ -352,28 +351,39 @@ function reverseList(node) {
 // LRU 缓存实现
 
 class LRU {
-  data = new Map();
-  constructor(len) {
-    this.len = len;
-  }
-  set(key, value) {
-    this.data.set(key, value);
-    if (this.data.has(key)) {
-      this.data.delete(key);
+    data = new Map();
+    constructor(length) {
+        if (length < 1) throw new Error('invalid length')
+        this.length = length
     }
-    if (this.data.size > this.len) {
-      this.data.delete(this.data.keys().next().value);
+
+    set(key, value) {
+        const data = this.data
+
+        if (data.has(key)) {
+            data.delete(key)
+        }
+        data.set(key, value)
+
+        if (data.size > this.length) {
+            // 如果超出了容量，则删除 Map 最老的元素
+            const delKey = data.keys().next().value
+            data.delete(delKey)
+        }
     }
-  }
-  get(key) {
-    if (!this.data.has.has(key)) {
-      return null;
+
+    get(key) {
+        const data = this.data
+
+        if (!data.has(key)) return null
+
+        const value = data.get(key)
+
+        data.delete(key)
+        data.set(key, value)
+
+        return value
     }
-    const value = this.data.get(key);
-    this.data.delete(key);
-    this.data.set(key, value);
-    return value;
-  }
 }
 
 // 请实现一个 Scheduler 类，包含一个 add 方法。 add 接收一个返回 Promise 的任务生成函数。 无论 add 被调用多少次，同一时刻正在执行的任务数量不能超过 max（比如 2）。 当有任务完成时，自动从等待队列中取出下一个任务执行。”
