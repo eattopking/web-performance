@@ -351,39 +351,39 @@ function reverseList(node) {
 // LRU 缓存实现
 
 class LRU {
-    data = new Map();
-    constructor(length) {
-        if (length < 1) throw new Error('invalid length')
-        this.length = length
+  data = new Map();
+  constructor(length) {
+    if (length < 1) throw new Error('invalid length');
+    this.length = length;
+  }
+
+  set(key, value) {
+    const data = this.data;
+
+    if (data.has(key)) {
+      data.delete(key);
     }
+    data.set(key, value);
 
-    set(key, value) {
-        const data = this.data
-
-        if (data.has(key)) {
-            data.delete(key)
-        }
-        data.set(key, value)
-
-        if (data.size > this.length) {
-            // 如果超出了容量，则删除 Map 最老的元素
-            const delKey = data.keys().next().value
-            data.delete(delKey)
-        }
+    if (data.size > this.length) {
+      // 如果超出了容量，则删除 Map 最老的元素
+      const delKey = data.keys().next().value;
+      data.delete(delKey);
     }
+  }
 
-    get(key) {
-        const data = this.data
+  get(key) {
+    const data = this.data;
 
-        if (!data.has(key)) return null
+    if (!data.has(key)) return null;
 
-        const value = data.get(key)
+    const value = data.get(key);
 
-        data.delete(key)
-        data.set(key, value)
+    data.delete(key);
+    data.set(key, value);
 
-        return value
-    }
+    return value;
+  }
 }
 
 // 请实现一个 Scheduler 类，包含一个 add 方法。 add 接收一个返回 Promise 的任务生成函数。 无论 add 被调用多少次，同一时刻正在执行的任务数量不能超过 max（比如 2）。 当有任务完成时，自动从等待队列中取出下一个任务执行。”
@@ -486,3 +486,46 @@ function moveZero(arr) {
 }
 
 console.log(moveZero([1, 0, 3, 0, 11, 0]));
+
+// 最大回文子串
+
+// 链表相加
+// 算法题:两个很大的数用单向链表表示，链表的每个节点表示数的每一位，例如1->2->3表示整数123，7->8->9->5表示整数7895。把这两个数相加，相加结果也用链表表示。
+
+const addTwoNumbers = (l1, l2) => {
+  const stack1 = [];
+  const stack2 = [];
+
+  let cur1 = l1;
+  while (cur1) {
+    stack1.push(cur1.val);
+    cur1 = l1.next;
+  }
+
+  let cur2 = l2;
+  while (cur2) {
+    stack2.push(cur2.val);
+    cur2 = l2.next;
+  }
+
+  let carry = 0;
+  let head = null;
+
+  while (stack1.length > 0 || stack2.length > 0 || carry > 0) {
+    const val1 = stack1.length > 0 ? stack1.pop() : 0;
+    const val2 = stack2.length > 0 ? stack2.pop() : 0;
+    const sum = val1 + val2 + carry;
+
+    carry = Math.floor(sum / 10);
+    const val = sum % 10;
+
+    const newNode = {
+      val,
+      next: head,
+    };
+
+    head = newNode;
+  }
+
+  return head;
+};
