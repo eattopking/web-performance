@@ -324,7 +324,7 @@ function treeToArr(root) {
   return arr;
 }
 
-// 反转单链表
+// 反转单链表1
 function reverseList(node) {
   let curNode = undefined;
   let prevNode = undefined;
@@ -347,6 +347,42 @@ function reverseList(node) {
 
   return curNode;
 }
+// 解法二
+function reverseList(li) {
+  let queue = [];
+  let cur = li;
+  while (cur) {
+    queue.push(cur.val);
+    cur = cur.next;
+  }
+
+  let head = null;
+
+  while (queue.length > 0) {
+    const val = queue.shift();
+    const newNode = {
+      val,
+      next: head,
+    };
+    head = newNode;
+  }
+
+  return head;
+}
+
+// let a = {
+//   val: 1,
+//   next: {
+//     val: 2,
+//     next: {
+//       val: 3,
+//       next: null
+//     }
+//   }
+// }
+
+// let f = reverseList(a)
+// console.log(f)
 
 // LRU 缓存实现
 
@@ -487,7 +523,38 @@ function moveZero(arr) {
 
 console.log(moveZero([1, 0, 3, 0, 11, 0]));
 
-// 最大回文子串
+// 最大回文子串 回文数分为两种aba、c(奇数)  abba、bb(偶数)
+const childSum = (s) => {
+  let startIndex = 0;
+  let maxLen = 1;
+  for (let i = 0; i < s.length; i++) {
+    let left1 = i;
+    let right1 = i;
+
+    while (left1 >= 0 && right1 < s.length && s[left1] === s[right1]) {
+      const len = right1 - left1 + 1;
+      if (len > maxLen) {
+        maxLen = len;
+        startIndex = left1;
+      }
+      left1--;
+      right1++;
+    }
+    let left2 = i;
+    let right2 = i + 1;
+    while (left2 >= 0 && right2 < s.length && s[left2] === s[right2]) {
+      const len = right2 - left2 + 1;
+      if (len > maxLen) {
+        maxLen = len;
+        startIndex = left2;
+      }
+      left2--;
+      right2++;
+    }
+  }
+
+  return s.substring(startIndex, startIndex + maxLen);
+};
 
 // 链表相加
 // 算法题:两个很大的数用单向链表表示，链表的每个节点表示数的每一位，例如1->2->3表示整数123，7->8->9->5表示整数7895。把这两个数相加，相加结果也用链表表示。
@@ -528,4 +595,340 @@ const addTwoNumbers = (l1, l2) => {
   }
 
   return head;
+};
+
+// 合并数组
+
+const mergeArr = (arr1, arr2) => {
+  const result = [];
+  let i = 0;
+  let j = 0;
+
+  while (i < arr1.length && j < arr2.length) {
+    const val1 = arr1[i];
+    const val2 = arr2[j];
+
+    if (val1 < val2) {
+      result.push(val1);
+      i++;
+    } else {
+      result.push(val2);
+      j++;
+    }
+  }
+
+  if (i < arr1.length) {
+    result.push(...arr1.slice(i));
+  }
+
+  if (j < arr2.length) {
+    result.push(...arr2.slice(j));
+  }
+
+  return result;
+};
+
+// console.log(mergeArr([1,3,4], [1,2,5]))
+
+// 求二叉搜索树的第k小值
+const getNum = (tree, count) => {
+  const arr = [];
+  const getSortList = (node) => {
+    if (node === null) return;
+    getSortList(node.left);
+    arr.push(node.value);
+    getSortList(node.right);
+  };
+  getSortList(tree);
+  return arr[count - 1];
+};
+// const tree = {
+//     value: 5,
+//     left: {
+//         value: 3,
+//         left: {
+//             value: 2,
+//             left: null,
+//             right: null
+//         },
+//         right: {
+//             value: 4,
+//             left: null,
+//             right: null,
+//         }
+//     },
+//     right: {
+//         value: 7,
+//         left: {
+//             value: 6,
+//             left: null,
+//             right: null
+//         },
+//         right: {
+//             value: 8,
+//             left: null,
+//             right: null
+//         }
+//     }
+// }
+
+// console.log(getNum(tree, 3))
+
+// 斐波那契数列的两种算法 核心就是索引和数值已经关联上了
+
+function fibonacci(n) {
+  if (n <= 0) return 0;
+  if (n === 1) return 1;
+
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+function fib(n) {
+  if (n <= 0) return 0;
+  if (n === 1) return 1;
+
+  let n1 = 1;
+  let n2 = 0;
+  let res = 0;
+  for (let i = 2; i <= n; i++) {
+    res = n1 + n2;
+    n2 = n1;
+    n1 = res;
+  }
+
+  return res;
+}
+
+// console.log(fib(6))
+
+// 青蛙跳台阶有几种方式
+const numWays = function (n) {
+  if (n === 0) return 1;
+  let arr = [null, 1, 2];
+  for (let i = 3; i <= n; i++) {
+    arr[i] = (arr[i - 1] + arr[i - 2]) % 1000000007;
+  }
+  return arr[n];
+};
+// console.log(numWays(4))
+
+// 字符串中连续最多的字符，以及次数
+
+const getNumAndStr = (str) => {
+  let res = {
+    str: 0,
+    len: 0,
+  };
+  if (str.length === 0) return res;
+  let maxLen = 0;
+  let i = 0;
+  let j = 0;
+  for (; i < str.length; i++) {
+    if (str[i] === str[j]) {
+      maxLen++;
+    }
+
+    if (str[i] !== str[j] || i === str.length - 1) {
+      if (maxLen > res.len) {
+        res.len = maxLen;
+        res.str = str[j];
+      }
+      maxLen = 0;
+
+      if (i < str.length - 1) {
+        j = i;
+        i--;
+      }
+    }
+  }
+  return res;
+};
+
+// const str = 'aabbcccddeeee11223'
+// console.log(getNumAndStr(str))
+
+// 数组快速排序
+
+const fastSort = (arr) => {
+  const mIndex = Math.floor(arr.length / 2);
+  const mVal = arr[mIndex];
+
+  let left = [];
+  let right = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    if (i !== mIndex) {
+      if (arr[i] < mVal) {
+        left.push(arr[i]);
+      } else {
+        right.push(arr[i]);
+      }
+    }
+  }
+
+  return fastSort(left).concat([mVal], fastSort(right));
+};
+
+// 用JS实现数字千分位格式化
+const format = (str) => {
+  const arr = str.split('').reverse();
+  return arr.reduce((result, cur, index) => {
+    if (index % 3 === 0) {
+      if (result) {
+        return `${cur},${result}`;
+      } else {
+        return cur;
+      }
+    }
+    return cur + result;
+  }, '');
+};
+
+// 获取求1-10000之间的所有对称数（回文）
+
+const getArr = (num) => {
+  const result = [];
+  for (let i = i; i <= num; i++) {
+    const str = i.toString();
+    if (str === str.split('').reverse().join()) {
+      result.push(i);
+    }
+  }
+
+  return result;
+};
+
+// 把一个数组旋转k步
+const moveArr = (arr, k) => {
+  if (!k) return arr;
+  const num = Math.abs(k % arr.length);
+  const haed = arr.slice(-num);
+  const end = arr.slice(0, arr.length - num);
+  return haed.concat(end);
+};
+
+// 判断一个字符串是否括号匹配
+
+const isMatchStr = (str) => {
+  const stack = [];
+  const leftStr = '({[';
+  const rightStr = ')}]';
+  const isMatch = (l, r) => {
+    if (l === '(' && r === ')') return true;
+    if (l === '[' && r === ']') return true;
+    if (l === '{' && r === '}') return true;
+    return false;
+  };
+  for (let i = 0; i < str.length; i++) {
+    const s = str[i];
+    if (leftStr.includes(s)) {
+      stack.push(s);
+    } else if (rightStr.includes(s)) {
+      if ((isMatch(stack[stack.length - 1]), s)) {
+        stack.pop();
+      } else {
+        return false;
+      }
+    }
+  }
+  return stack.length === 0;
+};
+
+// 如何用两个栈实现个队列
+
+class Queue {
+  stack1 = [];
+  stack2 = [];
+  add(val) {
+    this.stack1.push(val);
+  }
+
+  delete() {
+    let res;
+    const stack1 = this.stack1;
+    const stack2 = this.stack2;
+    while (stack1.length) {
+      const val = stack1.pop();
+      if (val != null) {
+        stack2.push(val);
+      }
+    }
+
+    res = stack2.pop();
+
+    while (stack2.length) {
+      const val = stack2.pop();
+      if (val != null) {
+        stack1.push(val);
+      }
+    }
+
+    return res;
+  }
+
+  length() {
+    return this.stack1.length;
+  }
+}
+
+// curry 实现
+
+function curry(fn) {
+  const len = fn.length;
+  let args = [];
+
+  function calc(...rest) {
+    args = [...args, ...rest];
+
+    if (args.length < len) {
+      return calc;
+    } else {
+      return fn.apply(null, args.slice(0, len));
+    }
+  }
+  return calc;
+}
+
+// 二分查找
+
+const find = (arr, target) => {
+  let startIndex = 0;
+  let endIndex = arr.length - 1;
+
+  while (startIndex <= endIndex) {
+    const mIndex = Math.floor((startIndex + endIndex) / 2);
+    const mVal = arr[mIndex];
+
+    if (mVal < target) {
+      startIndex = mIndex + 1;
+    } else if (mVal > target) {
+      endIndex = mIndex - 1;
+    } else {
+      return mIndex;
+    }
+  }
+  return -1;
+};
+
+// 找出一个数组中和为n的两个数
+const findNum = (arr, n) => {
+  const res = [];
+  let i = 0;
+  let j = arr.length - 1;
+
+  while (i < j) {
+    const n1 = arr[i];
+    const n2 = arr[j];
+    const sum = n1 + n2;
+    if (sum > n) {
+      j--;
+    } else if (sum < n) {
+      i++;
+    } else {
+      res.push(n1);
+      res.push(n2);
+      return res;
+    }
+  }
+  return res;
 };
