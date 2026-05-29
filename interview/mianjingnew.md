@@ -81,7 +81,7 @@
 - **答案：**
   - **依赖清理：** 仅将必要的包放在 `package.json` 的 `dependencies` 中，构建工具相关的放入 `devDependencies`（Electron 打包时不会包含 dev 依赖）。
   - **前端打包：** 使用 Webpack/Vite 压缩前端代码和资源，剔除未使用的代码（Tree Shaking）。
-  - **原生模块按需编译：** 如果引入了庞大的原生模块，确保只编译目标平台所需的部分。
+  - **原生模块按需编译：** 如果引入了庞大的原生模块，确保只编译目标平台所需的部分,使用electron-builder进行双package.json的编译， 生产构建的electron-builder.yml中指定构建时获取package.json的目录。
   - **asar 归档：** 虽然 asar 主要不是为了压缩，但合并成单文件可以减少文件系统开销。
 
 **10. 遇到过 Electron 应用中的白屏问题吗？通常怎么排查和解决？**
@@ -201,6 +201,35 @@ React Native 的“老架构”痛点在于：JS 线程和 Native（原生）线
 
 总结
 React Native 的最新架构让它从一个“通过 JSON 发送指令的跨端框架”，变成了一个“底层由 C++ 统一接管、JS 直接同步操控原生底层”的高性能引擎。现在的 React Native 在复杂列表滚动、手势动画和启动速度上，已经拥有了无限逼近纯原生（Swift/Kotlin）的表现。
+
+# react-native 如何自己开发原生组件
+
+# React Native 的第三方原生组件是通过npm安装嘛，还是通过端的模块化管理安装
+
+第一步通过npm将js和端原生代码安装到node_modules, 第二步安卓的端不需要特殊处理，安卓编译的时候会自动去获取node_modules中的原生代码，ios端需要将文件夹切换到ios 然后执行pod install，将原生代码注册到原生ios项目中
+
+# 怎么把rn集成到现有的项目中
+
+1. 直接到原生项目中的情况
+   创建package.json
+   创建rn代码入口
+   修改gradle配置指向node_modules, 实现gradle构建自动连接node_modules中的包的原生代码
+   修改原生代码打通网络权限，让手机上可以下载js文件方便调试
+   在原生代码中创建rn控制器可以rn画布
+
+2. 原生项目和rn项目是两个项目的情况
+
+# 如何在手机上装app进行开发调试
+
+# rn手势响应有哪些坑
+
+# rn样式和图片有哪些坑
+
+# rn 网络安全问题有哪些
+
+# Codegen的作用和原理
+
+# 如何发布应用到商店
 
 ---
 

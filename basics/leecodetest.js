@@ -483,7 +483,8 @@ let deepcopy = (obj) => {
   if (typeof obj !== 'object' || obj == null) {
     return obj;
   }
-  const isObj = () => Object.prototype.toString().slice(-8, 1) === 'object';
+  const isObj = (o) =>
+    Object.prototype.toString.call(o).slice(-8, 1) === 'object';
   if (isObj(obj)) {
     let newData = {};
     let keys = Object.keys(obj);
@@ -750,6 +751,7 @@ const getNumAndStr = (str) => {
 // 数组快速排序
 
 const fastSort = (arr) => {
+  if (arr.length === 0) return arr;
   const mIndex = Math.floor(arr.length / 2);
   const mVal = arr[mIndex];
 
@@ -932,3 +934,94 @@ const findNum = (arr, n) => {
   }
   return res;
 };
+
+// 给定一个二叉树和一个给定值，要求找到和为给定值的全部路径
+
+const getPath = (tree, sum) => {
+  const result = [];
+  const callback = (node, sum, path) => {
+    if (!node) return;
+    path.push(node.val);
+    if (!node.left && node.right && sum === node.val) {
+      result.push([...path]);
+    }
+    callback(node.left, sum - node.val, path);
+    callback(node.right, sum - node.val, path);
+    path.pop();
+  };
+
+  callback(tree, sum, []);
+  return result;
+};
+
+// 给定一个整数数组，判断是否存在重复元素。如果存在一值在数组中出现至少两次，函数返回 true 。如果数组中每个元素都不相同，则返回 false 。
+const sameNum = (arr) => {
+  if (!arr.length) return false;
+  const map = new Map();
+  for (let item of arr) {
+    if (map.has(item)) {
+      return true;
+    }
+    map.set(item, 1);
+  }
+  return false;
+};
+
+// 给定一个字符串，找到它的第一个不重复的字符，并返回它的索引。如果不存在，则返回 -1。
+const onlyStr = (str) => {
+  const map = new Map();
+  for (let i = 0; i < str.length; i++) {
+    const item = str[i];
+    if (map.has(item)) {
+      map.set(item, map.get(item) + 1);
+    } else {
+      map.set(item, 1);
+    }
+  }
+
+  for (let j = 0; j < str.length; j++) {
+    const item = str[i];
+    if (map.get(item) === 1) {
+      return j;
+    }
+  }
+
+  return -1;
+};
+
+// 给定一个大小为 n 的数组，找到其中的多数元素。多数元素是指在数组中出现次数 大于 ⌊ n/2 ⌋ 的元素。你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+const moreItem = (arr) => {
+  const map = new Map();
+  for(let item of arr) {
+    if (map.has(map)) {
+      map.set(item, map.get(item) + 1);
+    } else {
+      map.set(item, 1);
+    }
+  }
+  for(let [key, value] of map) {
+    if (value > arr.length / 2) {
+      return key;
+    }
+  }
+}
+
+// 给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
+
+const onlyNum = (arr) => {
+  const map = new Map();
+  for(let item of arr) {
+    if (map.has(item)) {
+      map.set(item, map.get(map) + 1);
+    } else {
+      map.set(item, 1);
+    }
+  }
+  for(let [key, value] of map) {
+    if (value === 1) {
+      return key;
+    }
+  }
+}
+
+// 

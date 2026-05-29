@@ -460,6 +460,59 @@ redux 是函数式思想，mobx是面向对象思想
 
 19. react 实践中的一些小技巧
 
+在 React Router 中，最核心的两种路由模式分别是 Hash 模式 (<HashRouter>) 和 History 模式 (<BrowserRouter>)。
+
+它们的核心目的都是实现“单页应用（SPA）中 URL 改变但页面不刷新”，但在底层原理、外观和部署要求上有本质的区别。
+
+一、 Hash 模式 (<HashRouter>)
+它的 URL 外观带有 # 号，例如：https://example.com/#/about。
+
+1. 底层原理
+核心机制：利用 URL 中的 hash（即 # 及后面的部分）来模拟完整的 URL。
+
+不触发刷新：在 HTTP 规范中，hash 仅仅是指导浏览器动作的符号（通常用于页面内的锚点定位），改变 hash 永远不会向服务器发送真实的 HTTP 请求，因此页面不会重载。
+
+监听方式：前端通过监听浏览器原生的 hashchange 事件，感知到 URL # 后面的路径变化，从而用 React 渲染出对应的组件。
+
+JavaScript
+window.addEventListener('hashchange', () => {
+  // 根据 window.location.hash 渲染对应组件
+});
+2. 存在的问题
+外观丑陋：URL 中带有 # 符号，看起来不够正式和专业。
+
+SEO（搜索引擎优化）极差：绝大多数搜索引擎的爬虫在抓取网页时，会直接忽略 URL 中 # 后面的内容。这意味着你的子页面基本无法被收录。
+
+锚点功能冲突：由于路由接管了 hash，HTML 原生的由 #id 触发的页面内锚点滚动功能会失效，需要前端手动写代码去模拟。
+
+二、 History 模式 (<BrowserRouter>)
+它的 URL 外观和正常的网站一模一样，例如：https://example.com/about。
+
+1. 底层原理
+核心机制：依赖 HTML5 引入的 History API。
+
+不触发刷新：主要调用了 history.pushState() 和 history.replaceState() 两个方法。它们可以在不刷新页面的前提下，直接修改浏览器地址栏的 URL，并向浏览器的历史栈中压入/替换记录。
+
+监听方式：对于用户点击浏览器的“前进/后退”按钮，前端通过监听 popstate 事件来感知并切换组件。
+
+JavaScript
+window.addEventListener('popstate', () => {
+  // 根据 window.location.pathname 渲染对应组件
+});
+2. 存在的问题
+刷新页面报 404 错误（最大痛点）：
+在单页应用中，真正的物理文件通常只有一个 index.html。如果你在 https://example.com/about 路径下直接按下 F5 刷新页面，浏览器会认为你真的在向服务器请求 /about 这个目录或文件。服务器上当然没有这个物理文件，于是直接返回 404 Not Found。
+
+强依赖服务端配置：
+为了解决 404 问题，必须要求后端/运维配合。需要在服务器（如 Nginx、Apache、Node.js）上配置回退路由（Fallback）：即无论用户请求什么路径，只要服务器找不到对应的静态文件，就统统把 index.html 吐给前端，剩下的路由解析逻辑交回给前端的 React Router 去处理。
+
+Nginx 配置示例：
+
+Nginx
+location / {
+    try_files $uri $uri/ /index.html;
+}
+
 #### vue复习
 
 1. vue2的生命周期 和react生命周期有何不同
@@ -1771,7 +1824,7 @@ gelance降级：
    在RAG架构中前期存储数据（LlamaIndex负责拆分数据并将数据转化为向量，然后将数据存到chromaDB中），检索（LangChain收到问题将问题发给LlamaIndex，LlamaIndex将问题文本转化为向量然后让chromaDb检索内容）、增强（将检索到的内容和问题传给你langchain，langchain将检索到的内容和问题给到大模型）、生成（大模型根据prompt生成答案）
 
 5. RAG、agent、 mcp、skills、llm之间的关系是什么都有什么作用
-   RAG是（检索、增强、生成）的架构、agent是一个根据RAG、skill、llm结合到一起创建的可以自主规划的智能、mcp是大模型外部功能拓展接口、skills是大模型的具体任务规划、llm就是大预言模型
+   RAG是（检索、增强、生成）的架构、agent是一个根据RAG、skill、llm结合到一起创建的可以自主规划的智能体、mcp是大模型外部功能拓展接口、skills是大模型的具体任务规划、llm就是大预言模型
 
 6. 有哪些skill、有哪些mcp，用这个mcp和skill做过哪些项目
    使用公司内部react skill，使用figma mcp，进行组件开发，还有编写组件迁移skill、使用百度内部知识库skill进行知识库的操作
