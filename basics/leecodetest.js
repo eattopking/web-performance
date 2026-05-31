@@ -1024,4 +1024,23 @@ const onlyNum = (arr) => {
   }
 }
 
-// 
+// 两个数组的交集 Ⅱ (给定两个数组，编写一个函数来计算它们的交集)
+const intersect = (arr1, arr2) => {
+  const map = new Map();
+  const result = [];
+  for (let n of arr1) {
+    if (map.has(n)) {
+      map.set(n, map.get(n) + 1);
+    } else {
+      map.set(n, 1)
+    }
+  }
+
+  for(let n of arr2) {
+    if (map.has(n)) {
+      map.push(n);
+      map.set(n, map.get(n) - 1);
+    }
+  }
+  return result;
+}
