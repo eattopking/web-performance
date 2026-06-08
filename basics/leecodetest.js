@@ -484,7 +484,7 @@ let deepcopy = (obj) => {
     return obj;
   }
   const isObj = (o) =>
-    Object.prototype.toString.call(o).slice(-8, 1) === 'object';
+    Object.prototype.toString.call(o).slice(8, -1) === 'object';
   if (isObj(obj)) {
     let newData = {};
     let keys = Object.keys(obj);
@@ -508,18 +508,19 @@ let obj = { b: 1, c: { d: 9 }, d: [1, 3, 4, { f: [] }] };
 console.log(deepcopy(obj));
 
 // 将0移动到数组末尾，如输入[1, 0, 3, 0, 11, 0]，输出[1, 3, 11, 0, 0, 0]
-function moveZero(arr) {
-  let curZeroIndex = null;
-  arr.forEach((item, index) => {
-    if (item === 0 && curZeroIndex === null) {
-      curZeroIndex = index;
-    } else if (item !== 0 && curZeroIndex !== null) {
-      arr[curZeroIndex] = item;
-      arr[index] = 0;
-      curZeroIndex = index;
+function moveZeroes(nums) {
+    let lastNonZeroFoundAt = 0; // 慢指针：记录非0元素的位置
+
+    // 快指针 i 遍历整个数组
+    for (let i = 0; i < nums.length; i++) {
+        if (nums[i] !== 0) {
+            // 如果当前元素不是0，就把它交换到慢指针的位置
+            // 这里用了解构赋值来交换两个元素的值
+            [nums[lastNonZeroFoundAt], nums[i]] = [nums[i], nums[lastNonZeroFoundAt]];
+            lastNonZeroFoundAt++; // 慢指针后移
+        }
     }
-  });
-  return arr;
+    return nums;
 }
 
 console.log(moveZero([1, 0, 3, 0, 11, 0]));
@@ -1043,4 +1044,45 @@ const intersect = (arr1, arr2) => {
     }
   }
   return result;
+}
+
+// 编写一个函数来查找字符串数组中的最长公共前缀。如果不存在公共前缀，返回空字符串 ""。
+const commonStart = (arr) => {
+  if (!arr.length) {
+    return '';
+  }
+
+  if (arr.length === 1) {
+    return arr[0];
+  }
+
+  return arr.reduce((result, cur) => {
+    let res = '';
+    for(let i = 0; i < cur.length; i++) {
+      const item = cur[i];
+      if (result[i] === item) {
+        res += item;
+      } else {
+        return res;
+      }
+    }
+    return res;
+  }, arr[0]);
+}
+
+// 给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。在「杨辉三角」中，每个数是它左上方和右上方的数的和。
+
+const getRows = (nums) => {
+    if (!nums) {
+      return [];
+    }
+    const result = Array.from(new Array(nums), () => []);
+    for(let i = 0; i < nums; i++) {
+      result[i][0] = 1;
+      result[i][i] = 1;
+      for(let j = 1; j < i; j++) {
+        result[i][j] = result[i - 1][j - 1] + result[i - 1][j];
+      }
+    }
+    return result;
 }
