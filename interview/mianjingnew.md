@@ -108,13 +108,132 @@ ffi C/C++ 实现的动态链接库
 
 # electron白屏如何兼容
 
+1. html没有加载到
+
+2. 使用 ready-to-show 事件
+   不要让窗口猴急地弹出来，等它在内存里把首屏画面“画”好了再显示。
+
+JavaScript
+// 主进程 main.js
+const { BrowserWindow } = require('electron');
+
+function createWindow() {
+const win = new BrowserWindow({
+width: 800,
+height: 600,
+show: false, // 🔴 第一步：初始化时先隐藏窗口
+backgroundColor: '#ffffff', // 建议设置一个与网页背景一致的底色，防止闪烁
+webPreferences: {
+nodeIntegration: true
+}
+});
+
+win.loadFile('index.html');
+
+// 🟢 第二步：监听 ready-to-show 事件
+win.once('ready-to-show', () => {
+win.show(); // 此时网页首屏已经渲染完毕，绝对不会白屏
+});
+}
+
+3. preload.js中引用了没有的node模块，或者使用了window因为有严格的上下文隔离
+
+4. 动态禁用硬件加速（Hardware Acceleration）
+   如果遇到特定机器白屏，或者在主进程捕获到了 GPU 崩溃，可以尝试关闭硬件加速。
+
+JavaScript
+const { app } = require('electron');
+
+// 方案 A：简单粗暴，直接全量禁用硬件加速（会导致动画性能下降，按需使用）
+// app.disableHardwareAcceleration();
+
+// 方案 B：更优雅，只在检测到 GPU 崩溃时，提示用户并加上禁用参数重启
+app.on('child-process-gone', (event, details) => {
+if (details.type === 'GPU') {
+console.error('GPU 进程崩溃了！');
+// 可以记录日志，或者在下次启动时附加 --disable-gpu 参数
+}
+});
+
+5. 渲染进程奔溃，使用reload重启
+
+6. js报错，再控制台排查错误
+
 # electron错误如何监控
+
+主进程
+渲染进程
+页面
+这个三个维度监听报错
 
 # 如何使用向量数据库实现搜索
 
 # electron用rust实现动态连接库如何和node通信
 
 # electron 如何调用其他桌面端应用
+
+1. execFile（适合直接调用可执行文件）
+   这是最安全的 Node.js 方法，因为它不会像 exec 那样产生 Shell 注入漏洞。
+
+JavaScript
+// 主进程 (main.js)
+const { execFile } = require('child_process');
+const path = require('path');
+
+function launchExternalApp() {
+// 针对不同操作系统指定路径
+const appPath = process.platform === 'win32'
+? 'C:\\Windows\\notepad.exe' // Windows 记事本
+: '/System/Applications/Calculator.app/Contents/MacOS/Calculator'; // Mac 计算器
+
+// 执行外部程序，后面数组可以传递命令行参数
+const child = execFile(appPath, ['example.txt'], (error, stdout, stderr) => {
+if (error) {
+console.error('启动失败:', error);
+return;
+}
+console.log('应用输出:', stdout);
+});
+
+// 监听应用关闭事件
+child.on('close', (code) => {
+console.log(`外部应用已关闭，退出码: ${code}`);
+});
+}
+📂 方式二：使用 Electron shell.openPath（最省心，“火后即忘”）
+如果你只想把应用拉起来，后续它怎么运行、什么时候关闭你完全不想管（Fire and Forget），用 Electron 内置的 shell 模块最优雅。
+
+优点： 它不仅能调应用，还能调特定的文件（会自动用系统默认的软件打开，比如给它一个 .psd 文件，它会自动唤起 Photoshop）。
+
+JavaScript
+// 主进程 (main.js)
+const { shell } = require('electron');
+
+async function launchApp() {
+const absolutePath = 'C:\\Program Files\\Git\\git-bash.exe';
+
+try {
+// openPath 是异步的，会返回一个错误字符串（如果成功则返回空字符串）
+const errMsg = await shell.openPath(absolutePath);
+if (errMsg) {
+console.error('启动失败原因:', errMsg);
+} else {
+console.log('成功唤起外部应用！');
+}
+} catch (err) {
+console.error(err);
+}
+}
+🌐 方式三：使用伪协议/深层链接（适合调用飞书、Discord、VSCode 等）
+很多现代桌面应用在安装时，都会在操作系统中注册自己的自定义协议（URL Scheme）。比如微信的 weixin://，VSCode 的 vscode://。
+
+如果你想调用的应用支持这种协议，你可以使用 shell.openExternal：
+
+JavaScript
+const { shell } = require('electron');
+
+// 唤起本地的 Slack 并跳转到特定频道（如果用户安装了的话）
+shell.openExternal('slack://channel?id=C123456');
 
 # electron 如何接入sso单点登陆
 

@@ -509,18 +509,18 @@ console.log(deepcopy(obj));
 
 // 将0移动到数组末尾，如输入[1, 0, 3, 0, 11, 0]，输出[1, 3, 11, 0, 0, 0]
 function moveZeroes(nums) {
-    let lastNonZeroFoundAt = 0; // 慢指针：记录非0元素的位置
+  let lastNonZeroFoundAt = 0; // 慢指针：记录非0元素的位置
 
-    // 快指针 i 遍历整个数组
-    for (let i = 0; i < nums.length; i++) {
-        if (nums[i] !== 0) {
-            // 如果当前元素不是0，就把它交换到慢指针的位置
-            // 这里用了解构赋值来交换两个元素的值
-            [nums[lastNonZeroFoundAt], nums[i]] = [nums[i], nums[lastNonZeroFoundAt]];
-            lastNonZeroFoundAt++; // 慢指针后移
-        }
+  // 快指针 i 遍历整个数组
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] !== 0) {
+      // 如果当前元素不是0，就把它交换到慢指针的位置
+      // 这里用了解构赋值来交换两个元素的值
+      [nums[lastNonZeroFoundAt], nums[i]] = [nums[i], nums[lastNonZeroFoundAt]];
+      lastNonZeroFoundAt++; // 慢指针后移
     }
-    return nums;
+  }
+  return nums;
 }
 
 console.log(moveZero([1, 0, 3, 0, 11, 0]));
@@ -993,37 +993,37 @@ const onlyStr = (str) => {
 // 给定一个大小为 n 的数组，找到其中的多数元素。多数元素是指在数组中出现次数 大于 ⌊ n/2 ⌋ 的元素。你可以假设数组是非空的，并且给定的数组总是存在多数元素。
 const moreItem = (arr) => {
   const map = new Map();
-  for(let item of arr) {
+  for (let item of arr) {
     if (map.has(map)) {
       map.set(item, map.get(item) + 1);
     } else {
       map.set(item, 1);
     }
   }
-  for(let [key, value] of map) {
+  for (let [key, value] of map) {
     if (value > arr.length / 2) {
       return key;
     }
   }
-}
+};
 
 // 给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
 
 const onlyNum = (arr) => {
   const map = new Map();
-  for(let item of arr) {
+  for (let item of arr) {
     if (map.has(item)) {
       map.set(item, map.get(map) + 1);
     } else {
       map.set(item, 1);
     }
   }
-  for(let [key, value] of map) {
+  for (let [key, value] of map) {
     if (value === 1) {
       return key;
     }
   }
-}
+};
 
 // 两个数组的交集 Ⅱ (给定两个数组，编写一个函数来计算它们的交集)
 const intersect = (arr1, arr2) => {
@@ -1033,18 +1033,18 @@ const intersect = (arr1, arr2) => {
     if (map.has(n)) {
       map.set(n, map.get(n) + 1);
     } else {
-      map.set(n, 1)
+      map.set(n, 1);
     }
   }
 
-  for(let n of arr2) {
+  for (let n of arr2) {
     if (map.has(n)) {
       map.push(n);
       map.set(n, map.get(n) - 1);
     }
   }
   return result;
-}
+};
 
 // 编写一个函数来查找字符串数组中的最长公共前缀。如果不存在公共前缀，返回空字符串 ""。
 const commonStart = (arr) => {
@@ -1058,7 +1058,7 @@ const commonStart = (arr) => {
 
   return arr.reduce((result, cur) => {
     let res = '';
-    for(let i = 0; i < cur.length; i++) {
+    for (let i = 0; i < cur.length; i++) {
       const item = cur[i];
       if (result[i] === item) {
         res += item;
@@ -1068,21 +1068,75 @@ const commonStart = (arr) => {
     }
     return res;
   }, arr[0]);
-}
+};
 
 // 给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。在「杨辉三角」中，每个数是它左上方和右上方的数的和。
 
 const getRows = (nums) => {
-    if (!nums) {
-      return [];
+  if (!nums) {
+    return [];
+  }
+  const result = Array.from(new Array(nums), () => []);
+  for (let i = 0; i < nums; i++) {
+    result[i][0] = 1;
+    result[i][i] = 1;
+    for (let j = 1; j < i; j++) {
+      result[i][j] = result[i - 1][j - 1] + result[i - 1][j];
     }
-    const result = Array.from(new Array(nums), () => []);
-    for(let i = 0; i < nums; i++) {
-      result[i][0] = 1;
-      result[i][i] = 1;
-      for(let j = 1; j < i; j++) {
-        result[i][j] = result[i - 1][j - 1] + result[i - 1][j];
-      }
+  }
+  return result;
+};
+
+// 实现几个括号的组合
+
+const getKuohao = (n) => {
+  const res = [];
+  const callback = (result, leftLen, rightLen) => {
+    if (result.length === n * 2) {
+      return res.push(result);
     }
-    return result;
-}
+
+    if (leftLen < n) {
+      callback(result + '(', leftLen + 1, rightLen);
+    }
+    if (rightLen < leftLen) {
+      callback(result + ')', leftLen, rightLen + 1);
+    }
+  };
+  callback('', 0, 0);
+  return res;
+};
+
+// 版本号排序
+
+// ==========================================
+// 使用示例
+// ==========================================
+// const versions = ['1.0.0', '2.12.1', '2.2.0', '1.10.0', '1.2.3', '1.2'];
+
+// 1. 升序排序（从小到大）
+// const ascending = [...versions].sort(compareVersions);
+// console.log('升序结果:', ascending);
+// 输出: [ '1.0.0', '1.2', '1.2.3', '1.10.0', '2.2.0', '2.12.1' ]
+
+// 2. 降序排序（从大到小）
+// const descending = [...versions].sort((a, b) => compareVersions(b, a));
+// console.log('降序结果:', descending);
+// 输出: [ '2.12.1', '2.2.0', '1.10.0', '1.2.3', '1.2', '1.0.0' ]
+
+const compare = (a, b) => {
+  const v1 = a.split('.').map(Number);
+  const v2 = b.split('.').map(Number);
+  const maxLen = Math.max(v1.length, v2.length);
+  for (let i = 0; i < maxLen; i++) {
+    const num1 = v1[i] || 0;
+    const num2 = v2[i] || 0;
+
+    if (num1 !== num2) {
+      return num1 - num2;
+    }
+  }
+  return 0;
+};
+
+const result = [...versions].sort(compare);
